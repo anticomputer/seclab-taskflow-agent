@@ -1,0 +1,36 @@
+# a simple example of the triage Agent pattern
+taskflow:
+  - task:
+      must_complete: true
+      agents:
+        - assistant
+      user_prompt: |
+        Store the json array ["apples", "oranges", "bananas"] in the `fruits` memory key.
+      env:
+        MEMCACHE_STATE_DIR: "example_taskflow/"
+        MEMCACHE_BACKEND: "dictionary_file"
+      toolboxes:
+        - memcache
+  - task:
+      must_complete: true
+      agents:
+        - assistant
+      user_prompt: |
+        Retrieve the contents of the `fruits` memory key.
+      env:
+        MEMCACHE_STATE_DIR: "example_taskflow/"
+        MEMCACHE_BACKEND: "dictionary_file"
+      toolboxes:
+        - memcache
+  - task:
+      model: gpt-4.1
+      repeat_prompt: true
+      agents:
+        # primary agent for this task
+        - example_triage_agent
+        # handoff agents
+        - apple_expert
+        - orange_expert
+        - banana_expert
+      user_prompt: |
+        Tell me more about how {{ RESULT }} are grown.

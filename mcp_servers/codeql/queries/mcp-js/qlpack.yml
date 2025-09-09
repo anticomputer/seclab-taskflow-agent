@@ -1,0 +1,7 @@
+---
+library: false
+warnOnImplicitThis: false
+name: anticomputer/mcp-js
+version: 0.0.1
+dependencies:
+  codeql/javascript-all: ^2.0.0

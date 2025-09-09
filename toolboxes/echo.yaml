@@ -1,0 +1,7 @@
+server_params:
+  kind: stdio
+  command: python
+  args:
+    - mcp_servers/echo/echo.py
+  env:
+    TEST: value

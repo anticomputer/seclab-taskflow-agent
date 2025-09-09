@@ -1,0 +1,9 @@
+__pycache__
+docker/
+logs/**/*
+.env
+.venv
+.direnv
+.envrc
+.devcontainer
+.git

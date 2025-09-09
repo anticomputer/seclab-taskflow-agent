@@ -1,0 +1,9 @@
+globals:
+  fruit: bananas
+taskflow:
+  - task:
+      agents:
+        - fruit_expert
+      user_prompt: |
+        Tell me more about {{ GLOBALS_fruit }}.
+        

@@ -1,0 +1,8 @@
+taskflow:
+  - task:
+      agents:
+        - fruit_expert
+      user_prompt: |
+        Tell me more about apples.
+        
+        {{ PROMPTS_examples/example_prompt }}

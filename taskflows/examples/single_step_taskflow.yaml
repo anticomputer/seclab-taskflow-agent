@@ -1,0 +1,7 @@
+taskflow:
+  - task:
+      model: gpt-4.1
+      agents:
+        - assistant
+      user_prompt: |
+        Explain the plot of William Gibson's Neuromancer in a single paragraph.

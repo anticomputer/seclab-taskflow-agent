@@ -1,0 +1,9 @@
+taskflow:
+  - task:
+      agents:
+        - fruit_expert
+      inputs:
+        fruit: apples
+      user_prompt: |
+        Tell me more about {{ INPUTS_fruit }}.
+        

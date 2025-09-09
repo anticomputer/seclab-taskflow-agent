@@ -1,0 +1,7 @@
+---
+library: false
+warnOnImplicitThis: false
+name: anticomputer/mcp-cpp
+version: 0.0.1
+dependencies:
+  codeql/cpp-all: ^4.1.0
