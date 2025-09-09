@@ -1,0 +1,108 @@
+# .ignore files
+./.gitignore
+./.dockerignore
+
+# release tooling
+./release.txt
+./release_tools/copy_files.py
+./release_tools/publish_docker.py
+
+# license
+./LICENSE
+
+# deps
+./requirements.txt
+
+# docker
+./docker/run.sh
+
+# docs
+./README.md
+./taskflows/GRAMMAR.md
+
+# logs
+./logs/ABOUT
+
+# code
+./main.py
+./agent.py
+./capi.py
+./mcp_utils.py
+./env_utils.py
+./render_utils.py
+./shell_utils.py
+./yaml_parser.py
+
+# prompts
+./prompts/examples/example_prompt.yaml
+
+# taskflows
+./taskflows/CVE-2023-2283/CVE-2023-2283.yaml
+./taskflows/examples/example_reusable_prompt.yaml
+./taskflows/examples/echo.yaml
+./taskflows/examples/example.yaml
+./taskflows/examples/example_inputs.yaml
+./taskflows/examples/example_repeat_prompt.yaml
+./taskflows/examples/example_repeat_prompt_dictionary.yaml
+./taskflows/examples/example_reusable_taskflows.yaml
+./taskflows/examples/example_large_list_result_iter.yaml
+./taskflows/examples/example_repeat_prompt_async.yaml
+./taskflows/examples/single_step_taskflow.yaml
+./taskflows/examples/example_triage_taskflow.yaml
+./taskflows/examples/example_globals.yaml
+
+# toolboxes
+## github official
+./toolboxes/github_official.yaml
+## echo
+./toolboxes/echo.yaml
+./mcp_servers/echo/echo.py
+## memcache
+./toolboxes/memcache.yaml
+./mcp_servers/memcache/memcache.py
+./mcp_servers/memcache/memcache_backend/__init__.py
+./mcp_servers/memcache/memcache_backend/backend.py
+./mcp_servers/memcache/memcache_backend/dictionary_file.py
+./mcp_servers/memcache/memcache_backend/sql_models.py
+./mcp_servers/memcache/memcache_backend/sqlite.py
+## logbook
+./toolboxes/logbook.yaml
+./mcp_servers/logbook/logbook.py
+## codeql
+./toolboxes/codeql.yaml
+./mcp_servers/codeql/mcp_server.py
+./mcp_servers/codeql/client.py
+./mcp_servers/codeql/queries/README.md
+./mcp_servers/codeql/queries/mcp-js/relative_to_absolute.ql
+./mcp_servers/codeql/queries/mcp-js/qlpack.yml
+./mcp_servers/codeql/queries/mcp-js/absolute_to_relative.ql
+./mcp_servers/codeql/queries/mcp-js/definition_location_for_function.ql
+./mcp_servers/codeql/queries/mcp-js/call_graph_from.ql
+./mcp_servers/codeql/queries/mcp-js/locations.qll
+./mcp_servers/codeql/queries/mcp-js/call_graph_to.ql
+./mcp_servers/codeql/queries/mcp-cpp/stmt_location.ql
+./mcp_servers/codeql/queries/mcp-cpp/declaration_location_for_variable.ql
+./mcp_servers/codeql/queries/mcp-cpp/relative_to_absolute.ql
+./mcp_servers/codeql/queries/mcp-cpp/call_graph_from_to.ql
+./mcp_servers/codeql/queries/mcp-cpp/qlpack.yml
+./mcp_servers/codeql/queries/mcp-cpp/absolute_to_relative.ql
+./mcp_servers/codeql/queries/mcp-cpp/codeql-pack.lock.yml
+./mcp_servers/codeql/queries/mcp-cpp/definition_location_for_function.ql
+./mcp_servers/codeql/queries/mcp-cpp/call_graph_from.ql
+./mcp_servers/codeql/queries/mcp-cpp/list_functions.ql
+./mcp_servers/codeql/queries/mcp-cpp/locations.qll
+./mcp_servers/codeql/queries/mcp-cpp/call_graph_to.ql
+./mcp_servers/codeql/jsonrpyc/LICENSE
+./mcp_servers/codeql/jsonrpyc/__meta__.py
+./mcp_servers/codeql/jsonrpyc/__init__.py
+./mcp_servers/codeql/jsonrpyc/py.typed
+
+# personalities
+./personalities/assistant.yaml
+./personalities/c_auditer.yaml
+./personalities/examples/fruit_expert.yaml
+./personalities/examples/echo.yaml
+./personalities/examples/banana_expert.yaml
+./personalities/examples/orange_expert.yaml
+./personalities/examples/example_triage_agent.yaml
+./personalities/examples/apple_expert.yaml
