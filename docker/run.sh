@@ -3,7 +3,7 @@
 if [ ! -f ".env" ]; then
     touch ".env"
 fi
-docker run \
+docker run -i \
        --volume /var/run/docker.sock:/var/run/docker.sock \
        --volume ./logs:/app/logs \
        --mount type=bind,src=.env,dst=/app/.env,ro \

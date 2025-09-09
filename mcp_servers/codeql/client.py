@@ -37,7 +37,7 @@ def shell_command_to_string(cmd):
 
 class CodeQL:
     def __init__(self,
-                 codeql_cli=os.getenv("CODEQL_CLI", default="gh codeql"),
+                 codeql_cli=os.getenv("CODEQL_CLI", default="codeql"),
                  server_options=["--threads=0",
                                  "--quiet",
                                  "--log-to-stderr"],
