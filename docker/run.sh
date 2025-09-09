@@ -4,6 +4,7 @@ if [ ! -f ".env" ]; then
     touch ".env"
 fi
 docker run -i \
+       --platform linux/amd64 \
        --volume /var/run/docker.sock:/var/run/docker.sock \
        --volume ./logs:/app/logs \
        --mount type=bind,src=.env,dst=/app/.env,ro \

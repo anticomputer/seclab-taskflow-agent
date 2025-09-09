@@ -81,7 +81,7 @@ ENTRYPOINT ["python", "{entrypoint}"]
 def build_and_push_image(dest_dir, image_name, tag):
     # Build
     subprocess.run([
-        "docker", "build", "-t", f"{image_name}:{tag}", dest_dir
+        "docker", "buildx", "build", "--platform", "linux/amd64", "-t", f"{image_name}:{tag}", dest_dir
     ], check=True)
     # Push
     subprocess.run([
