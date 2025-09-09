@@ -4,6 +4,7 @@
 
 # release tooling
 ./release.txt
+./release_tools/HOWTO.md
 ./release_tools/copy_files.py
 ./release_tools/publish_docker.py
 
