@@ -5,7 +5,7 @@ if [ ! -f ".env" ]; then
 fi
 docker run \
        --volume /var/run/docker.sock:/var/run/docker.sock \
-       --volume logs:/app/logs \
+       --volume ./logs:/app/logs \
        --mount type=bind,src=.env,dst=/app/.env,ro \
        ${MY_DATA:+--mount type=bind,src=$MY_DATA,dst=/app/my_data} \
        ${MY_TASKFLOWS:+--mount type=bind,src=$MY_TASKFLOWS,dst=/app/taskflows/my_taskflows,ro} \
