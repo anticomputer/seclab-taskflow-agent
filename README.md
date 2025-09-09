@@ -1,26 +1,22 @@
+# Seclab Taskflow Agent
+
 The Security Lab Taskflow Agent is an MCP enabled multi-Agent framework.
 
-The Taskflow Agent is built on top of the [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/) in contrast to the largely custom backend implementations of our original Copilot extensions framework.
+The Taskflow Agent is built on top of the [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/).
 
-While the Taskflow Agent does not integrate into the dotcom Copilot UX, it does operate using the Copilot API (CAPI) as its backend.
+While the Taskflow Agent does not integrate into the GitHub Doctom Copilot UX, it does operate using the Copilot API (CAPI) as its backend, similar to Copilot IDE extensions.
 
-# Core Concepts
+## Core Concepts
 
 The Taskflow Agent leverages a GitHub Workflow-esque YAML based grammar to perform a series of tasks using a set of Agents.
+
+It's primary value proposition is as a CLI tool that allows users to quickly define and script Agentic workflows without having to write any code.
 
 Agents are defined through [personalities](personalities/), that receive a [task](taskflows/) to complete given a set of [tools](toolboxes/).
 
 Agents can cooperate to complete sequences of tasks through so-called [Taskflows](taskflows/GRAMMAR.md).
 
-# Installation
-
-```sh
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
-```
-
-## System Requirements
+## Requirements
 
 Python >= 3.9 or Docker
 
@@ -30,7 +26,15 @@ Provide a Copilot entitled GitHub PAT via the `COPILOT_TOKEN` environment variab
 
 ## Source
 
-Run `python main.py` for help.
+First install the required dependencies:
+
+```sh
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
+
+Then run `python main.py`.
 
 Example: deploying a prompt to an Agent Personality:
 
@@ -46,7 +50,7 @@ python main.py -t example
 
 ## Docker
 
-Alternatively you can deploy the Agent via it's accompanying Docker image using `docker/run.sh`. 
+Alternatively you can deploy the Agent via its Docker image using `docker/run.sh`. 
 
 The image entrypoint is `main.py` and thus it operates the same as invoking the Agent from source directly.
 
@@ -246,3 +250,19 @@ taskflow:
 Taskflows support [Agent handoffs](https://openai.github.io/openai-agents-python/handoffs/). Handoffs are useful for implementing triage patterns where the primary Agent can decide to handoff a task to any subsequent Agents in the `Agents` list.
 
 See the [taskflow examples](taskflows/examples) for other useful Taskflow patterns such as repeatable and asynchronous templated prompts.
+
+## License 
+
+This project is licensed under the terms of the MIT open source license. Please refer to the [LICENSE](./LICENSE) file for the full terms.
+
+## Maintainers 
+
+[CODEOWNERS](./CODEOWNERS)
+
+## Support
+
+[SUPPORT](./SUPPORT.md)
+
+## Acknowledgement
+
+Security Lab team members @m-y-mo and @p- for contributing heavily to the testing and development of this framework, as well as the rest of the Security Lab team for helpful discussions and use cases.
