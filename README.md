@@ -126,7 +126,7 @@ Example: a persistent Agent configuration with various MCP server environment va
 # Tokens
 COPILOT_TOKEN=...
 # Docker config, MY_DATA is mounted to /app/my_data
-MY_DATA="/home/user/my_data""
+MY_DATA="/home/user/my_data"
 # MCP configs
 GITHUB_PERSONAL_ACCESS_TOKEN=...
 CODEQL_DBS_BASE_PATH="/app/my_data/"
