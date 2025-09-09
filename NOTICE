@@ -1,8 +1,11 @@
 Seclab Taskflow Agent
 Copyright 2025 GitHub
 
-This product includes software developed at GitHub (https://github.com)
+This product includes software developed at GitHub (https://github.com) released under the terms
+of the MIT license (https://github.com/GitHubSecurityLab/seclab-taskflow-agent/blob/main/LICENSE)
+Copyright (c) 2025 GitHub
 
 The Initial Developer of some parts of the framework, which are copied from, derived from, or
-inspired by jsonrpyc (https://github.com/riga/jsonrpyc) is Marcel Rieger
+inspired by jsonrpyc (https://github.com/riga/jsonrpyc) under the terms of the BSD 3-clause
+license (https://github.com/riga/jsonrpyc/blob/master/LICENSE) is Marcel Rieger
 Copyright (c) 2016-2025, Marcel Rieger
