@@ -52,7 +52,8 @@ class CodeQL:
         self.progress_id = 0
         # clients can override e.g. the default ql/progressUpdated callback if they wish
         self.method_handlers = {}
-        self.stderr_log = f"codeql_stderr_log.log" if log_stderr else os.devnull
+        os.makedirs("logs", exist_ok=True)
+        self.stderr_log = f"logs/codeql_stderr_log.log" if log_stderr else os.devnull
 
     # def __del__(self):
     #     self._server_stop()

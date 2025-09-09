@@ -70,6 +70,10 @@ RUN curl -Ls -o /tmp/codeql.zip https://github.com/github/codeql-cli-binaries/re
 
 COPY . /app
 
+# Install CodeQL pack dependencies
+RUN codeql pack install /app/mcp_servers/codeql/queries/mcp-cpp
+RUN codeql pack install /app/mcp_servers/codeql/queries/mcp-js
+
 # Install Python dependencies if requirements.txt exists
 RUN if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
 
