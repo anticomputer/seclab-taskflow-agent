@@ -10,6 +10,6 @@ docker run \
        ${MY_DATA:+--mount type=bind,src=$MY_DATA,dst=/app/my_data} \
        ${MY_TASKFLOWS:+--mount type=bind,src=$MY_TASKFLOWS,dst=/app/taskflows/my_taskflows,ro} \
        ${MY_TOOLBOXES:+--mount type=bind,src=$MY_TOOLBOXES,dst=/app/toolboxes/my_toolboxes,ro} \
-       ${MY_PROMPTS:+--mount type=bind,src=$MY_PROMPTS:/app/prompts/my_prompts,ro} \
+       ${MY_PROMPTS:+--mount type=bind,src=$MY_PROMPTS,dst=/app/prompts/my_prompts,ro} \
        ${MY_PERSONALITIES:+--mount type=bind,src=$MY_PERSONALITIES,dst=/app/personalities/my_personalities,ro} \
        "ghcr.io/githubsecuritylab/seclab-taskflow-agent" "$@"
