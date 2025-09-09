@@ -1,10 +1,6 @@
 The Security Lab Taskflow Agent is an MCP enabled multi-Agent framework.
 
-While the [Security Lab Copilot Extensions Framework](https://github.com/github/seclab-copilot-extensions) was created for team-internal prototyping and exploring various Agentic workflow ideas and approaches, the Taskflow Agent is intended as a "production" implementation.
-
 The Taskflow Agent is built on top of the [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/) in contrast to the largely custom backend implementations of our original Copilot extensions framework.
-
-As such the Taskflow Agent provides a more future-proof CLI focused Agent tool as we leverage the SDK for keeping pace with e.g. evolving MCP protocol specifications.
 
 While the Taskflow Agent does not integrate into the dotcom Copilot UX, it does operate using the Copilot API (CAPI) as its backend.
 
@@ -26,29 +22,115 @@ python -m pip install -r requirements.txt
 
 ## System Requirements
 
-Python >= 3.9
+Python >= 3.9 or Docker
 
 # Usage
 
 Provide a Copilot entitled GitHub PAT via the `COPILOT_TOKEN` environment variable.
 
+## Source
+
 Run `python main.py` for help.
 
 Example: deploying a prompt to an Agent Personality:
 
-```
+```sh
 python main.py -p assistant 'explain modems to me please'
 ```
 
 Example: deploying a Taskflow:
 
-```
+```sh
 python main.py -t example
 ```
 
-## Configuration
+## Docker
 
-Set environment variables via an `.env` file in the project root as required.
+Alternatively you can deploy the Agent via it's accompanying Docker image using `docker/run.sh`. 
+
+The image entrypoint is `main.py` and thus it operates the same as invoking the Agent from source directly.
+
+You can find the Docker image for the Seclab Taskflow Agent [here](https://github.com/GitHubSecurityLab/seclab-taskflow-agent/pkgs/container/seclab-taskflow-agent) and how it is built [here](release_tools/).
+
+Note that this image is based on a public release of the Taskflow Agent, and you will have to mount any custom taskflows, personalities, or prompts into the image for them to be available to the Agent. 
+
+See [docker/run.sh](docker/run.sh) for configuration details.
+
+Example: deploying a Taskflow:
+
+```sh
+docker/run.sh -t example
+```
+Example: deploying a custom taskflow:
+
+```sh
+MY_TASKFLOWS=~/my_taskflows docker/run.sh -t custom_taskflow
+```
+
+Available image mount points are:
+
+- Custom data via `MY_DATA` environment variable
+- Custom personalities via `MY_PERSONALITIES` environment variable
+- Custom taskflows via `MY_TASKFLOWS` environment variable
+- Custom prompts via `MY_PROMPTS` environment variable
+- Custom toolboxes via `MY_TOOLBOXES` environment variable
+
+For more advanced scenarios like e.g. making custom MCP server code available, you can alter the run script to mount your custom code into the image and configure your toolboxes to use said code accordingly.
+
+Example: custom MCP server deployment via Docker image:
+
+```sh
+export MY_MCP_SERVERS=./mcp_servers
+export MY_TOOLBOXES=./toolboxes
+export MY_PERSONALITIES=./personalities
+export MY_TASKFLOWS=./taskflows
+export MY_PROMPTS=./prompts
+
+if [ ! -f ".env" ]; then
+    touch ".env"
+fi
+
+docker run \
+       --volume /var/run/docker.sock:/var/run/docker.sock \
+       --volume logs:/app/logs \
+       --mount type=bind,src=.env,dst=/app/.env,ro \
+       ${MY_DATA:+--mount type=bind,src=$MY_DATA,dst=/app/my_data} \
+       ${MY_MCP_SERVERS:+--mount type=bind,src=$MY_MCP_SERVERS,dst=/app/my_mcp_servers,ro} \
+       ${MY_TASKFLOWS:+--mount type=bind,src=$MY_TASKFLOWS,dst=/app/taskflows/my_taskflows,ro} \
+       ${MY_TOOLBOXES:+--mount type=bind,src=$MY_TOOLBOXES,dst=/app/toolboxes/my_toolboxes,ro} \
+       ${MY_PROMPTS:+--mount type=bind,src=$MY_PROMPTS,dst=/app/prompts/my_prompts,ro} \
+       ${MY_PERSONALITIES:+--mount type=bind,src=$MY_PERSONALITIES,dst=/app/personalities/my_personalities,ro} \
+       "ghcr.io/githubsecuritylab/seclab-taskflow-agent" "$@"
+```
+
+Our default run script makes the Docker socket available to the image, which contains the Docker cli, so 3rd party Docker based stdio MCP servers also function as normal.
+
+Example: a toolbox configuration for the official GitHub MCP Server:
+
+```yaml
+server_params:
+  kind: stdio
+  command: docker
+  args: ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server"]
+  env:
+    GITHUB_PERSONAL_ACCESS_TOKEN: "{{ env GITHUB_PERSONAL_ACCESS_TOKEN }}"
+```
+
+## Framework Configuration
+
+Set environment variables via an `.env` file in the project root.
+
+Example: a persistent Agent configuration with various MCP server environment variables set:
+
+```sh
+# Tokens
+COPILOT_TOKEN=...
+# Docker config, MY_DATA is mounted to /app/my_data
+MY_DATA="/home/user/my_data""
+# MCP configs
+GITHUB_PERSONAL_ACCESS_TOKEN=...
+CODEQL_DBS_BASE_PATH="/app/my_data/"
+```
 
 # Personalities
 
@@ -164,9 +246,3 @@ taskflow:
 Taskflows support [Agent handoffs](https://openai.github.io/openai-agents-python/handoffs/). Handoffs are useful for implementing triage patterns where the primary Agent can decide to handoff a task to any subsequent Agents in the `Agents` list.
 
 See the [taskflow examples](taskflows/examples) for other useful Taskflow patterns such as repeatable and asynchronous templated prompts.
-
-# Docker based deployments
-
-You can find a Docker image for the Seclab Taskflow Agent [here](https://github.com/GitHubSecurityLab/seclab-taskflow-agent/pkgs/container/seclab-taskflow-agent)
-
-Note that this image is based on the public release of the Taskflow Agent, and you will have to mount any custom taskflows, personalities, or prompts into the image for them to be available to the Agent. See [docker/run.sh](docker/run.sh) for examples of use.
