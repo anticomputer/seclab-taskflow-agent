@@ -16,10 +16,6 @@ taskflow:
         is insecure in the C programming language. Do this before handing off
         to any other agent.
         
-        Then provide a summary of a high impact CVE ID that involved a `strcpy`
-        based buffer overflow based on your GHSA knowledge as an additional
-        example.
-
         Finally, why are apples and oranges healthy to eat?
         
       # taskflows can set temporary environment variables, these support the general
@@ -31,11 +27,11 @@ taskflow:
         MEMCACHE_STATE_DIR: "example_taskflow/"
         MEMCACHE_BACKEND: "dictionary_file"
       # taskflows can optionally override personality toolboxes, in this example
-      # kevin normally only has the memcache toolbox, but we extend it here with
+      # this normally only has the memcache toolbox, but we extend it here with
       # the GHSA toolbox
       toolboxes:
-        - ghsa
         - memcache
+        - codeql
   - task:
       must_complete: true
       model: gpt-4.1

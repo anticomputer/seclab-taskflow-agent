@@ -20,10 +20,10 @@ jiter==0.10.0
 jsonschema==4.24.0
 jsonschema-specifications==2025.4.1
 markdown-it-py==3.0.0
-mcp==1.12.0
+mcp==1.13.1
 mdurl==0.1.2
-openai==1.97.0
-openai-agents==0.2.2
+openai==1.107.0
+openai-agents==0.2.11
 parso==0.8.4
 pluggy==1.6.0
 pydantic==2.11.7
