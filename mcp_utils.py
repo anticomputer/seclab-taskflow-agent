@@ -338,9 +338,9 @@ def mcp_client_params(available_toolboxes: dict, requested_toolboxes: list):
                     env = available_toolboxes[tb]['server_params'].get('env')
                     args = available_toolboxes[tb]['server_params'].get('args')
                     cmd = available_toolboxes[tb]['server_params'].get('command')
-                    exe = shutil.which(cmd)
                     if cmd is not None:
                         logging.debug(f"Initializing streamable toolbox: {tb}\nargs:\n{args }\nenv:\n{env}\n")
+                        exe = shutil.which(cmd)
                         if exe is None:
                             raise FileNotFoundError(f"Could not resolve path to {cmd}")
                         start_cmd = [exe]
