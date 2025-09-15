@@ -1,7 +1,15 @@
 import logging
 import asyncio
-from threading import Thread
+from threading import Thread, Event
 import json
+import subprocess
+from typing import Optional, Callable
+import shutil
+import time
+import os
+import socket
+import signal
+from urllib.parse import urlparse
 
 from mcp.types import CallToolResult, TextContent
 from agents.mcp import MCPServerStdio
@@ -9,6 +17,124 @@ from agents.mcp import MCPServerStdio
 from env_utils import swap_env
 
 DEFAULT_MCP_CLIENT_SESSION_TIMEOUT = 120
+
+# A process management class for running in-process MCP streamable servers
+class StreamableMCPThread(Thread):
+    def __init__(
+            self,
+            cmd,
+            url: str = '',
+            on_output: Optional[Callable[[str], None]] = None,
+            on_error: Optional[Callable[[str], None]] = None,
+            poll_interval: float = 0.5,
+            env: Optional[dict[str, str]] = None
+    ):
+        super().__init__(daemon=True)
+        self.url = url
+        self.cmd = cmd
+        self.on_output = on_output
+        self.on_error = on_error
+        self.poll_interval = poll_interval
+        self.env = os.environ.copy() # XXX: risk of leaking env secrets
+        self.env.update(env)
+        self._stop_event = Event()
+        self.process = None
+        self.exit_code = None
+        self.exception: Optional[BaseException] = None
+
+    async def async_wait_for_connection(self, timeout=30.0, poll_interval=0.5):
+        parsed = urlparse(self.url)
+        host = parsed.hostname
+        port = parsed.port
+        if host is None or port is None:
+            raise ValueError(f"URL must include a host and port: {self.url}")
+        deadline = asyncio.get_event_loop().time() + timeout
+        while True:
+            try:
+                reader, writer = await asyncio.open_connection(host, port)
+                writer.close()
+                await writer.wait_closed()
+                return  # Success
+            except (OSError, ConnectionRefusedError):
+                if asyncio.get_event_loop().time() > deadline:
+                    raise TimeoutError(f"Could not connect to {host}:{port} after {timeout} seconds")
+                await asyncio.sleep(poll_interval)
+
+    def wait_for_connection(self, timeout=30.0, poll_interval=0.5):
+        parsed = urlparse(self.url)
+        host = parsed.hostname
+        port = parsed.port
+        if host is None or port is None:
+            raise ValueError(f"URL must include a host and port: {url}")
+        deadline = time.time() + timeout
+        while True:
+            try:
+                with socket.create_connection((host, port), timeout=2):
+                    return  # Success
+            except OSError:
+                if time.time() > deadline:
+                    raise TimeoutError(f"Could not connect to {host}:{port} after {timeout} seconds")
+                time.sleep(poll_interval)
+
+    def run(self):
+        try:
+            self.process = subprocess.Popen(
+                self.cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                bufsize=1,
+                universal_newlines=True,
+                env=self.env
+            )
+
+            stdout_thread = Thread(target=self._read_stream, args=(self.process.stdout, self.on_output))
+            stderr_thread = Thread(target=self._read_stream, args=(self.process.stderr, self.on_error))
+            stdout_thread.start()
+            stderr_thread.start()
+
+            while self.process.poll() is None and not self._stop_event.is_set():
+                time.sleep(self.poll_interval)
+
+            # Process ended or stop requested
+            if self.process.poll() is None:
+                self.process.terminate()
+                self.process.wait()
+            self.exit_code = self.process.returncode
+
+            stdout_thread.join()
+            stderr_thread.join()
+
+            # sigterm (-15) is expected
+            if self.exit_code not in [0, -15]:
+                self.exception = subprocess.CalledProcessError(
+                    self.exit_code, self.cmd
+                )
+
+        except BaseException as e:
+            self.exception = e
+
+    def _read_stream(self, stream, callback):
+        if stream is None or callback is None:
+            return
+        for line in iter(stream.readline, ''):
+            callback(line.rstrip('\n'))
+        stream.close()
+
+    def stop(self):
+        self._stop_event.set()
+        if self.process and self.process.poll() is None:
+            self.process.terminate()
+
+    def is_running(self):
+        return self.process and self.process.poll() is None
+
+    def join_and_raise(self, timeout: Optional[float] = None):
+        self.join(timeout)
+        if self.is_alive():
+            raise RuntimeError("Process thread did not exit within timeout.")
+        if self.exception is not None:
+            raise self.exception
 
 # used for debugging asyncio event loop issues in mcp stdio servers
 # lifts the asyncio event loop in use to a dedicated threaded loop
@@ -179,6 +305,7 @@ def mcp_client_params(available_toolboxes: dict, requested_toolboxes: list):
                     server_params['command'] = available_toolboxes[tb]['server_params'].get('command')
                     server_params['args'] = args
                     server_params['env'] = env
+                # XXX: SSE is deprecated in the MCP spec, but keep it around for now
                 case 'sse':
                     headers = available_toolboxes[tb]['server_params'].get('headers')
                     # support {{ env SOMETHING }} for header values as well for e.g. tokens
@@ -190,6 +317,10 @@ def mcp_client_params(available_toolboxes: dict, requested_toolboxes: list):
                     server_params['url'] = available_toolboxes[tb]['server_params'].get('url')
                     server_params['headers'] = headers
                     server_params['timeout'] = timeout
+                # for more involved local MCP servers, jsonrpc over stdio seems less than reliable
+                # as an alternative you can configure local toolboxes to use the streamable transport
+                # but still be started/stopped on demand similar to stdio mcp servers
+                # all it requires is a streamable config that also has cmd/args/env set
                 case 'streamable':
                     headers = available_toolboxes[tb]['server_params'].get('headers')
                     # support {{ env SOMETHING }} for header values as well for e.g. tokens
@@ -201,6 +332,33 @@ def mcp_client_params(available_toolboxes: dict, requested_toolboxes: list):
                     server_params['url'] = available_toolboxes[tb]['server_params'].get('url')
                     server_params['headers'] = headers
                     server_params['timeout'] = timeout
+                    # if command/args/env is set, we also need to start this MCP server ourselves
+                    # this way we can use the streamable transport for MCP servers that get fussy
+                    # over stdio jsonrpc polling
+                    env = available_toolboxes[tb]['server_params'].get('env')
+                    args = available_toolboxes[tb]['server_params'].get('args')
+                    cmd = available_toolboxes[tb]['server_params'].get('command')
+                    exe = shutil.which(cmd)
+                    if cmd is not None:
+                        logging.debug(f"Initializing streamable toolbox: {tb}\nargs:\n{args }\nenv:\n{env}\n")
+                        if exe is None:
+                            raise FileNotFoundError(f"Could not resolve path to {cmd}")
+                        start_cmd = [exe]
+                        if args is not None and isinstance(args, list):
+                            for i, v in enumerate(args):
+                                args[i] = swap_env(v)
+                            start_cmd += args
+                        server_params['command'] = start_cmd
+                        if env is not None and isinstance(env, dict):
+                            for k, v in dict(env).items():
+                                try:
+                                    env[k] = swap_env(v)
+                                except LookupError as e:
+                                    logging.critical(e)
+                                    logging.info("Assuming toolbox has default configuration available")
+                                    del env[k]
+                                    pass
+                        server_params['env'] = env
                 case _:
                     raise ValueError(f"Unsupported MCP transport {kind}")
             confirms = available_toolboxes[tb].get('confirm', [])

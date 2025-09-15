@@ -5,7 +5,8 @@ logging.basicConfig(
     filename='logs/mcp_memcache.log',
     filemode='a'
 )
-from mcp.server.fastmcp import FastMCP
+#from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP # move to FastMCP 2.0
 import json
 from pathlib import Path
 import os
@@ -65,4 +66,4 @@ def memcache_clear_cache():
     return backend.clear_cache()
 
 if __name__ == "__main__":
-    mcp.run()
+    mcp.run(show_banner=False)

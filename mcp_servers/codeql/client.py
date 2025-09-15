@@ -38,12 +38,16 @@ def shell_command_to_string(cmd):
 class CodeQL:
     def __init__(self,
                  codeql_cli=os.getenv("CODEQL_CLI", default="codeql"),
-                 server_options=["--threads=0",
-                                 "--quiet",
-                                 "--log-to-stderr"],
+                 server_options=["--threads=0", "--quiet"],
                  log_stderr=False):
+        self.server_options = server_options.copy()
+        if log_stderr:
+            os.makedirs("logs", exist_ok=True)
+            self.stderr_log = f"logs/codeql_stderr_log.log"
+            self.server_options.append("--log-to-stderr")
+        else:
+            self.stderr_log = os.devnull
         self.codeql_cli = codeql_cli.split()
-        self.server_options = server_options
         self.search_paths = []
         self.active_database = None
         self.active_connection = None
@@ -52,8 +56,6 @@ class CodeQL:
         self.progress_id = 0
         # clients can override e.g. the default ql/progressUpdated callback if they wish
         self.method_handlers = {}
-        os.makedirs("logs", exist_ok=True)
-        self.stderr_log = f"logs/codeql_stderr_log.log" if log_stderr else os.devnull
 
     # def __del__(self):
     #     self._server_stop()
@@ -74,6 +76,9 @@ class CodeQL:
                              stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
                              stderr=self.stderr_log)
+
+        # XXX: should we give codeql query server some time to finish initializing ?
+        # XXX: because the query server process is silent we can not just poll for some standard banner
 
         # set some default callbacks for common notifications
         def _handle_ql_progressUpdated(params):
@@ -587,30 +592,33 @@ def run_query(query_path: str | Path, database: Path,
         target_pos = get_query_position(query_path, target)
         if not target_pos:
             raise ValueError(f"Could not resolve quick eval target for {target}")
-    with (QueryServer(database,
-                      keep_alive=keep_alive,
-                      log_stderr=log_stderr) as server,
-          tempfile.TemporaryDirectory() as base_path):
-        if callable(progress_callback):
-            server.method_handlers['ql/progressUpdated'] = progress_callback
-        bqrs_path = base_path / Path("query.bqrs")
-        if search_paths:
-            server.search_paths += search_paths
-        server._server_run_query_from_path(bqrs_path, query_path,
-                                           quick_eval_pos=target_pos,
-                                           template_values=template_values)
-        while server.active_query_id:
-            time.sleep(WAIT_INTERVAL)
-        failed, msg = server.active_query_error
-        if failed:
-            raise RuntimeError(msg)
-        match fmt:
-            case 'json':
-                result = server._bqrs_to_json(bqrs_path, entities=entities)
-            case 'csv':
-                result = server._bqrs_to_csv(bqrs_path, entities=entities)
-            case 'sarif':
-                result = server._bqrs_to_sarif(bqrs_path, server._query_info(query_path))
-            case _:
-                raise ValueError("Unsupported output format {fmt}")
+    try:
+        with (QueryServer(database,
+                          keep_alive=keep_alive,
+                          log_stderr=log_stderr) as server,
+              tempfile.TemporaryDirectory() as base_path):
+            if callable(progress_callback):
+                server.method_handlers['ql/progressUpdated'] = progress_callback
+            bqrs_path = base_path / Path("query.bqrs")
+            if search_paths:
+                server.search_paths += search_paths
+            server._server_run_query_from_path(bqrs_path, query_path,
+                                               quick_eval_pos=target_pos,
+                                               template_values=template_values)
+            while server.active_query_id:
+                time.sleep(WAIT_INTERVAL)
+            failed, msg = server.active_query_error
+            if failed:
+                raise RuntimeError(msg)
+            match fmt:
+                case 'json':
+                    result = server._bqrs_to_json(bqrs_path, entities=entities)
+                case 'csv':
+                    result = server._bqrs_to_csv(bqrs_path, entities=entities)
+                case 'sarif':
+                    result = server._bqrs_to_sarif(bqrs_path, server._query_info(query_path))
+                case _:
+                    raise ValueError("Unsupported output format {fmt}")
+    except BrokenPipeError as e:
+        raise RuntimeError("Broken Pipe to query server") from e
     return result

@@ -1,6 +1,7 @@
 server_params:
-  kind: stdio
-  reconnecting: true
+  kind: streamable
+  url: 'http://localhost:9999/mcp'
+  # if you set a command/args/env we will also start the server on demand
   command: python
   args: ["mcp_servers/codeql/mcp_server.py"]
   env:

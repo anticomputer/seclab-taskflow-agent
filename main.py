@@ -23,14 +23,12 @@ from openai.types.responses import ResponseTextDeltaEvent
 from typing import Any
 
 from shell_utils import shell_tool_call
-from mcp_utils import DEFAULT_MCP_CLIENT_SESSION_TIMEOUT, ReconnectingMCPServerStdio, AsyncDebugMCPServerStdio, MCPNamespaceWrap
+from mcp_utils import DEFAULT_MCP_CLIENT_SESSION_TIMEOUT, ReconnectingMCPServerStdio, AsyncDebugMCPServerStdio, MCPNamespaceWrap, mcp_client_params, mcp_system_prompt, StreamableMCPThread
 from render_utils import render_model_output, flush_async_output
 from env_utils import TmpEnv
 from yaml_parser import YamlParser
 from agent import TaskAgent
 from capi import list_tool_call_models
-from mcp_utils import mcp_client_params
-from mcp_utils import mcp_system_prompt
 
 load_dotenv()
 
@@ -132,27 +130,47 @@ async def deploy_task_agents(agents: dict,
             # XXX: auto-allow all tools if task is headless by clearing confirms
             confirms = []
         client_session_timeout = client_session_timeout or DEFAULT_MCP_CLIENT_SESSION_TIMEOUT
+        server_proc = None
         match params['kind']:
+            # since we spawn stdio servers each time we do not expect
+            # new tools to appear over time so cache the tools list
             case 'stdio':
                 if params.get('reconnecting', False):
                     mcp_server = ReconnectingMCPServerStdio(
                         name=tb,
                         params=params,
                         tool_filter=tool_filter,
-                        client_session_timeout_seconds=client_session_timeout)
+                        client_session_timeout_seconds=client_session_timeout,
+                        cache_tools_list=True)
                 else:
                     mcp_server = MCPServerStdio(
                         name=tb,
                         params=params,
                         tool_filter=tool_filter,
-                        client_session_timeout_seconds=client_session_timeout)
+                        client_session_timeout_seconds=client_session_timeout,
+                        cache_tools_list=True)
             case 'sse':
                 mcp_server = MCPServerSse(
                     name=tb,
                     params=params,
                     tool_filter=tool_filter,
                     client_session_timeout_seconds=client_session_timeout)
-            case 'streamable': # XXX: needs testing
+            case 'streamable':
+                # check if we need to start this server locally as well
+                if 'command' in params:
+                    def _print_out(line):
+                        msg = f"Streamable MCP Server stdout: {line}"
+                        logging.info(msg)
+                        print(msg)
+                    def _print_err(line):
+                        msg = f"Streamable MCP Server stderr: {line}"
+                        logging.info(msg)
+                        print(msg)
+                    server_proc = StreamableMCPThread(params['command'],
+                                                      url=params['url'],
+                                                      env=params['env'],
+                                                      on_output=_print_out,
+                                                      on_error=_print_err)
                 mcp_server = MCPServerStreamableHttp(
                     name=tb,
                     params=params,
@@ -161,7 +179,7 @@ async def deploy_task_agents(agents: dict,
             case _:
                 raise ValueError(f"Unsupported MCP transport {params['kind']}")
         # provide namespace and confirmation control through wrapper class
-        mcp_servers.append(MCPNamespaceWrap(confirms, mcp_server))
+        mcp_servers.append((MCPNamespaceWrap(confirms, mcp_server), server_proc))
 
     # connect mcp servers
     # https://openai.github.io/openai-agents-python/ref/mcp/server/
@@ -173,22 +191,33 @@ async def deploy_task_agents(agents: dict,
             # connects/cleanups have to happen in the same task
             # but we also want to use wait_for to set a timeout
             # so we use a dedicated session task to accomplish both
-            for server in mcp_servers:
+            for s in mcp_servers:
+                server, server_proc = s
                 logging.debug(f"Connecting mcp server: {server._name}")
+                if server_proc is not None:
+                    server_proc.start()
+                    await server_proc.async_wait_for_connection(poll_interval=0.1)
                 await server.connect()
             # signal that we're connected
             connected.set()
             # wait until we're told to clean up
             await cleanup.wait()
-            for server in reversed(mcp_servers):
+            for s in reversed(mcp_servers):
+                server, server_proc = s
                 try:
                     logging.debug(f"Starting cleanup for mcp server: {server._name}")
                     await server.cleanup()
                     logging.debug(f"Cleaned up mcp server: {server._name}")
+                    if server_proc:
+                        server_proc.stop()
+                        try:
+                            await asyncio.to_thread(server_proc.join_and_raise)
+                        except Exception as e:
+                            print(f"Streamable mcp server process exception: {e}")
                 except asyncio.CancelledError:
                     logging.error(f"Timeout on cleanup for mcp server: {server._name}")
                 finally:
-                    mcp_servers.remove(server)
+                    mcp_servers.remove(s)
         except RuntimeError as e:
             logging.error(f"RuntimeError in mcp session task: {e}")
         except asyncio.CancelledError as e:
@@ -238,7 +267,7 @@ async def deploy_task_agents(agents: dict,
                 # XXX: are initial handoff functions still visible to handoff agents in the run?
                 handoffs=[],
                 exclude_from_context=exclude_from_context,
-                mcp_servers=mcp_servers,
+                mcp_servers=[s[0] for s in mcp_servers],
                 model=model,
                 model_settings=model_settings,
                 run_hooks=run_hooks,
@@ -257,7 +286,7 @@ async def deploy_task_agents(agents: dict,
             instructions=prompt_with_handoff_instructions(system_prompt) if handoffs else system_prompt,
             handoffs=handoffs,
             exclude_from_context=exclude_from_context,
-            mcp_servers=mcp_servers,
+            mcp_servers=[s[0] for s in mcp_servers],
             model=model,
             model_settings=model_settings,
             run_hooks=run_hooks,
