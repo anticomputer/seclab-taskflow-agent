@@ -208,7 +208,7 @@ async def deploy_task_agents(agents: dict,
                     logging.debug(f"Starting cleanup for mcp server: {server._name}")
                     await server.cleanup()
                     logging.debug(f"Cleaned up mcp server: {server._name}")
-                    if server_proc:
+                    if server_proc is not None:
                         server_proc.stop()
                         try:
                             await asyncio.to_thread(server_proc.join_and_raise)
