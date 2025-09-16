@@ -5,7 +5,8 @@ logging.basicConfig(
     filename='logs/mcp_echo.log',
     filemode='a'
 )
-from mcp.server.fastmcp import FastMCP
+#from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP # move to FastMCP 2.0
 
 mcp = FastMCP("Echo")
 
@@ -30,4 +31,4 @@ def echo_prompt(message: str) -> str:
     return f"Please process this message: {message}"
 
 if __name__ == "__main__":
-    mcp.run()
+    mcp.run(show_banner=False)

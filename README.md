@@ -14,17 +14,43 @@ It's primary value proposition is as a CLI tool that allows users to quickly def
 
 Agents are defined through [personalities](personalities/), that receive a [task](taskflows/) to complete given a set of [tools](toolboxes/).
 
-Agents can cooperate to complete sequences of tasks through so-called [Taskflows](taskflows/GRAMMAR.md).
+Agents can cooperate to complete sequences of tasks through so-called [taskflows](taskflows/GRAMMAR.md).
+
+You can find a detailed overview of the taskflow grammar [here](https://github.com/GitHubSecurityLab/seclab-taskflow-agent/blob/main/taskflows/GRAMMAR.md) and example taskflows [here](https://github.com/GitHubSecurityLab/seclab-taskflow-agent/tree/main/taskflows/examples).
+
+## Use Cases and Examples
+
+The Seclab Taskflow Agent framework was primarily designed to fit the iterative feedback loop driven work involved in Agentic security research workflows and vulnerability triage tasks. 
+
+Its design philosophy is centered around the belief that a prompt level focus of capturing vulnerability patterns will greatly improve and scale security research results as frontier model capabilities evolve over time.
+
+While the maintainer himself primarily uses this framework as a code auditing tool it also serves as a more generic swiss army knife for exploring Agentic workflows. For example, the GitHub Security Lab also uses this framework for automated code scanning alert triage.
+
+The framework includes a [CodeQL](https://codeql.github.com/) MCP server that can be used for Agentic code review, see the [CVE-2023-2283](https://github.com/GitHubSecurityLab/seclab-taskflow-agent/blob/main/taskflows/CVE-2023-2283/CVE-2023-2283.yaml) for an example of how to have an Agent review C code using a CodeQL database.
+
+Instead of generating CodeQL queries itself, the CodeQL MCP Server is used to provide CodeQL-query based MCP tools that allow an Agent to navigate and explore code. It leverages templated CodeQL queries to provide targeted context for model driven code analysis.
 
 ## Requirements
 
 Python >= 3.9 or Docker
 
-# Usage
+## Configuration
 
-Provide a Copilot entitled GitHub PAT via the `COPILOT_TOKEN` environment variable.
+Provide a GitHub token for an account that is entitled to use GitHub Copilot via the `COPILOT_TOKEN` environment variable. Further configuration is use case dependent, i.e. pending which MCP servers you'd like to use in your taskflows.
 
-## Source
+You can set persisting environment variables via an `.env` file in the project root.
+
+Example:
+
+```sh
+# Tokens
+COPILOT_TOKEN=<your_github_token>
+# MCP configs
+GITHUB_PERSONAL_ACCESS_TOKEN=<your_github_token>
+CODEQL_DBS_BASE_PATH="/app/my_data/"
+```
+
+## Deploying from Source
 
 First install the required dependencies:
 
@@ -48,9 +74,11 @@ Example: deploying a Taskflow:
 python main.py -t example
 ```
 
-## Docker
+## Deploying from Docker
 
-Alternatively you can deploy the Agent via its Docker image using `docker/run.sh`. 
+You can deploy the Taskflow Agent via its Docker image using `docker/run.sh`. 
+
+WARNING: the Agent Docker image is _NOT_ intended as a security boundary but strictly a deployment convenience.
 
 The image entrypoint is `main.py` and thus it operates the same as invoking the Agent from source directly.
 
@@ -58,30 +86,30 @@ You can find the Docker image for the Seclab Taskflow Agent [here](https://githu
 
 Note that this image is based on a public release of the Taskflow Agent, and you will have to mount any custom taskflows, personalities, or prompts into the image for them to be available to the Agent. 
 
-See [docker/run.sh](docker/run.sh) for configuration details.
+Optional image mount points to supply custom data are configured via the environment:
 
-Example: deploying a Taskflow:
+- Custom data via `MY_DATA`, mounts to `/app/my_data`
+- Custom personalities via `MY_PERSONALITIES`, mounts to `/app/personalities/my_personalities`
+- Custom taskflows via `MY_TASKFLOWS`, mounts to `/app/taskflows/my_taskflows`
+- Custom prompts via `MY_PROMPTS`, mounts to `/app/prompts/my_prompts`
+- Custom toolboxes via `MY_TOOLBOXES`, mounts to `/app/toolboxes/my_toolboxes`
+
+See [docker/run.sh](docker/run.sh) for further details.
+
+Example: deploying a Taskflow (example.yaml):
 
 ```sh
 docker/run.sh -t example
 ```
-Example: deploying a custom taskflow:
+Example: deploying a custom taskflow (custom_taskflow.yaml):
 
 ```sh
 MY_TASKFLOWS=~/my_taskflows docker/run.sh -t custom_taskflow
 ```
 
-Available image mount points are:
-
-- Custom data via `MY_DATA` environment variable
-- Custom personalities via `MY_PERSONALITIES` environment variable
-- Custom taskflows via `MY_TASKFLOWS` environment variable
-- Custom prompts via `MY_PROMPTS` environment variable
-- Custom toolboxes via `MY_TOOLBOXES` environment variable
-
 For more advanced scenarios like e.g. making custom MCP server code available, you can alter the run script to mount your custom code into the image and configure your toolboxes to use said code accordingly.
 
-Example: custom MCP server deployment via Docker image:
+Example: a custom MCP server deployment via Docker image:
 
 ```sh
 export MY_MCP_SERVERS=./mcp_servers
@@ -109,7 +137,7 @@ docker run \
 
 Our default run script makes the Docker socket available to the image, which contains the Docker cli, so 3rd party Docker based stdio MCP servers also function as normal.
 
-Example: a toolbox configuration for the official GitHub MCP Server:
+Example: a toolbox configuration using the official GitHub MCP Server via Docker:
 
 ```yaml
 server_params:
@@ -120,23 +148,7 @@ server_params:
     GITHUB_PERSONAL_ACCESS_TOKEN: "{{ env GITHUB_PERSONAL_ACCESS_TOKEN }}"
 ```
 
-## Framework Configuration
-
-Set environment variables via an `.env` file in the project root.
-
-Example: a persistent Agent configuration with various MCP server environment variables set:
-
-```sh
-# Tokens
-COPILOT_TOKEN=...
-# Docker config, MY_DATA is mounted to /app/my_data
-MY_DATA="/home/user/my_data"
-# MCP configs
-GITHUB_PERSONAL_ACCESS_TOKEN=...
-CODEQL_DBS_BASE_PATH="/app/my_data/"
-```
-
-# Personalities
+## Personalities
 
 Core characteristics for a single Agent. Configured through YAML files in `personalities/`.
 
@@ -157,7 +169,7 @@ toolboxes:
   - echo
 ```
 
-# Toolboxes
+## Toolboxes
 
 MCP servers that provide tools. Configured through YAML files in `toolboxes/`.
 
@@ -174,18 +186,7 @@ server_params:
     SOME: value
 ```
 
-Example sse config:
-
-```yaml
-server_params:
-  kind: sse
-  # make sure you .env config the echo server, see echo_sse.py for example
-  url: http://127.0.0.1:9000/echo
-  headers:
-    SomeHeader: "{{ env USER }}"
-```
-
-# Taskflows
+## Taskflows
 
 A sequence of interdependent tasks performed by a set of Agents. Configured through a YAML based [grammar](taskflows/GRAMMAR.md) in [taskflows/](taskflows/).
 
@@ -263,6 +264,6 @@ This project is licensed under the terms of the MIT open source license. Please 
 
 [SUPPORT](./SUPPORT.md)
 
-## Acknowledgement
+## Acknowledgements
 
-Security Lab team members @m-y-mo and @p- for contributing heavily to the testing and development of this framework, as well as the rest of the Security Lab team for helpful discussions and use cases.
+Security Lab team members [Man Yue Mo](https://github.com/m-y-mo) and [Peter Stockli](https://github.com/p-) for contributing heavily to the testing and development of this framework, as well as the rest of the Security Lab team for helpful discussions and feedback.

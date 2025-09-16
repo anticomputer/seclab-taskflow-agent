@@ -5,7 +5,8 @@ logging.basicConfig(
     filename='logs/mcp_logbook.log',
     filemode='a'
 )
-from mcp.server.fastmcp import FastMCP
+#from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP # move to FastMCP 2.0
 import json
 from pathlib import Path
 import os
@@ -89,4 +90,4 @@ def logbook_erase(key: str) -> str:
 
 
 if __name__ == "__main__":
-    mcp.run()
+    mcp.run(show_banner=False)

@@ -7,7 +7,8 @@ logging.basicConfig(
 )
 from client import run_query, file_from_uri, list_src_files, _debug_log, search_in_src_archive
 from pydantic import Field
-from mcp.server.fastmcp import FastMCP, Context
+#from mcp.server.fastmcp import FastMCP, Context
+from fastmcp import FastMCP, Context # use FastMCP 2.0
 from pathlib import Path
 import os
 import csv
@@ -91,21 +92,28 @@ def _get_file_contents(db: str | Path, uri: str):
     db = Path(db)
     return file_from_uri(uri, db)
 
-
 def _run_query(query_name: str, database_path: str, language: str, template_values: dict):
     """Run a CodeQL query and return the results"""
-    database_path = _resolve_db_path(database_path)
+
+    try:
+        database_path = _resolve_db_path(database_path)
+    except RuntimeError:
+        return json.dumps([f"The database path for {database_path} could not be resolved"])
     try:
         query_path = _resolve_query_path(language, query_name)
     except RuntimeError:
-        return json.dumps([f"This query {query_name} is not supported for {language}"])
-    csv = run_query(Path(__file__).parent.resolve() /
-                    query_path,
-                    database_path,
-                    fmt='csv',
-                    template_values=template_values,
-                    log_stderr=True)
-    return _csv_to_json_obj(csv)
+        return json.dumps([f"The query {query_name} is not supported for language: {language}"])
+    try:
+        csv = run_query(Path(__file__).parent.resolve() /
+                        query_path,
+                        database_path,
+                        fmt='csv',
+                        template_values=template_values,
+                        log_stderr=True)
+        return _csv_to_json_obj(csv)
+    except Exception as e:
+        return json.dumps([f"The query {query_name} encountered an error: {e}"])
+
 
 
 @mcp.tool()
@@ -203,4 +211,4 @@ def list_functions(database_path: str = Field(description="The CodeQL database p
     return _run_query('list_functions', database_path, language, {})
 
 if __name__ == "__main__":
-    mcp.run()
+    mcp.run(show_banner=False, transport="http", host="127.0.0.1", port=9999)
