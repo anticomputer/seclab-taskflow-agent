@@ -93,7 +93,7 @@ Example:
 
 ### Repeated Prompts
 
-Tasks can define templated repeated prompts. A repeated prompt requires the last result output of the previous task in the taskflow to be a json formatted iterable (list or dictionary).
+Tasks can define templated repeated prompts. A repeated prompt requires the last result output of the previous task in the taskflow to be a json formatted iterable.
 
 Example:
 
@@ -107,7 +107,8 @@ Example:
       - assistant
     repeat_prompt: true
     user_prompt: |
-      This is a templated prompt. It can iterate a list via {{ RESULT }} or a dict via {{ RESULT_key }}. 
+      This is a templated prompt. It can iterate the results in a list via {{ RESULT }}, 
+      if the result is a dict you access its keys via {{ RESULT_key }}. 
 ```
 
 ### Context Exclusion
