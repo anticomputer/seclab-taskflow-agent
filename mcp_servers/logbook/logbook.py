@@ -6,7 +6,7 @@ logging.basicConfig(
     filemode='a'
 )
 #from mcp.server.fastmcp import FastMCP
-from fastmcp import FastMMCP # move to FastMCP 2.0
+from fastmcp import FastMCP # move to FastMCP 2.0
 import json
 from pathlib import Path
 import os

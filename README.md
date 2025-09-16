@@ -94,14 +94,14 @@ Optional image mount points to supply custom data are configured via the environ
 - Custom prompts via `MY_PROMPTS`, mounts to `/app/prompts/my_prompts`
 - Custom toolboxes via `MY_TOOLBOXES`, mounts to `/app/toolboxes/my_toolboxes`
 
-See [docker/run.sh](docker/run.sh) for forther details details.
+See [docker/run.sh](docker/run.sh) for further details.
 
 Example: deploying a Taskflow (example.yaml):
 
 ```sh
 docker/run.sh -t example
 ```
-Example: deploying a custom taskflow (custom_taskflow.yaml_:
+Example: deploying a custom taskflow (custom_taskflow.yaml):
 
 ```sh
 MY_TASKFLOWS=~/my_taskflows docker/run.sh -t custom_taskflow

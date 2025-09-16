@@ -98,7 +98,7 @@ def _run_query(query_name: str, database_path: str, language: str, template_valu
     try:
         database_path = _resolve_db_path(database_path)
     except RuntimeError:
-        return json.dumps([f"The database pat for {database_path} could not be resolved"])
+        return json.dumps([f"The database path for {database_path} could not be resolved"])
     try:
         query_path = _resolve_query_path(language, query_name)
     except RuntimeError:

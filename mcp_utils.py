@@ -66,7 +66,7 @@ class StreamableMCPThread(Thread):
         host = parsed.hostname
         port = parsed.port
         if host is None or port is None:
-            raise ValueError(f"URL must include a host and port: {url}")
+            raise ValueError(f"URL must include a host and port: {self.url}")
         deadline = time.time() + timeout
         while True:
             try:
