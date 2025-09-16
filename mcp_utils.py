@@ -20,6 +20,7 @@ DEFAULT_MCP_CLIENT_SESSION_TIMEOUT = 120
 
 # A process management class for running in-process MCP streamable servers
 class StreamableMCPThread(Thread):
+    """Process management for local streamable MCP servers"""
     def __init__(
             self,
             cmd,
@@ -35,7 +36,7 @@ class StreamableMCPThread(Thread):
         self.on_output = on_output
         self.on_error = on_error
         self.poll_interval = poll_interval
-        self.env = os.environ.copy() # XXX: risk of leaking env secrets
+        self.env = os.environ.copy() # XXX: potential for environment leak to MCP
         self.env.update(env)
         self._stop_event = Event()
         self.process = None
@@ -216,6 +217,7 @@ class ReconnectingMCPServerStdio(MCPServerStdio):
             return result
 
 class MCPNamespaceWrap:
+    """An MCP client object wrapper that provides us with namespace control"""
     def __init__(self, confirms, obj):
         self.confirms = confirms
         self._obj = obj

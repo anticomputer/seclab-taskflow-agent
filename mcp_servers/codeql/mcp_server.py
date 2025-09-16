@@ -95,7 +95,10 @@ def _get_file_contents(db: str | Path, uri: str):
 def _run_query(query_name: str, database_path: str, language: str, template_values: dict):
     """Run a CodeQL query and return the results"""
 
-    database_path = _resolve_db_path(database_path)
+    try:
+        database_path = _resolve_db_path(database_path)
+    except RuntimeError:
+        return json.dumps([f"The database pat for {database_path} could not be resolved"])
     try:
         query_path = _resolve_query_path(language, query_name)
     except RuntimeError:

@@ -161,11 +161,11 @@ async def deploy_task_agents(agents: dict,
                     def _print_out(line):
                         msg = f"Streamable MCP Server stdout: {line}"
                         logging.info(msg)
-                        print(msg)
+                        #print(msg)
                     def _print_err(line):
                         msg = f"Streamable MCP Server stderr: {line}"
                         logging.info(msg)
-                        print(msg)
+                        #print(msg)
                     server_proc = StreamableMCPThread(params['command'],
                                                       url=params['url'],
                                                       env=params['env'],
@@ -262,9 +262,6 @@ async def deploy_task_agents(agents: dict,
                         server_prompts=server_prompts,
                         important_guidelines=important_guidelines)
                 ),
-                # XXX: should handoffs have handoffs?
-                # XXX: this would be  a recursive chicken/egg problem :P
-                # XXX: are initial handoff functions still visible to handoff agents in the run?
                 handoffs=[],
                 exclude_from_context=exclude_from_context,
                 mcp_servers=[s[0] for s in mcp_servers],

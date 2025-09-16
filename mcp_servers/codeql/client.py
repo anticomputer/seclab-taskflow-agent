@@ -73,12 +73,12 @@ class CodeQL:
         server_cmd += self.server_options
         self.stderr_log = open(self.stderr_log, 'a')
         p = subprocess.Popen(self.codeql_cli + server_cmd,
+                             text=True,
+                             bufsize=1,
+                             universal_newlines=True,
                              stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
                              stderr=self.stderr_log)
-
-        # XXX: should we give codeql query server some time to finish initializing ?
-        # XXX: because the query server process is silent we can not just poll for some standard banner
 
         # set some default callbacks for common notifications
         def _handle_ql_progressUpdated(params):
@@ -583,7 +583,7 @@ def run_query(query_path: str | Path, database: Path,
               progress_callback=None,
               template_values=None,
               # keep the query server alive if desired
-              keep_alive=False,
+              keep_alive=True,
               log_stderr=False):
     result = ''
     query_path = Path(query_path)
@@ -602,6 +602,7 @@ def run_query(query_path: str | Path, database: Path,
             bqrs_path = base_path / Path("query.bqrs")
             if search_paths:
                 server.search_paths += search_paths
+
             server._server_run_query_from_path(bqrs_path, query_path,
                                                quick_eval_pos=target_pos,
                                                template_values=template_values)
@@ -619,6 +620,6 @@ def run_query(query_path: str | Path, database: Path,
                     result = server._bqrs_to_sarif(bqrs_path, server._query_info(query_path))
                 case _:
                     raise ValueError("Unsupported output format {fmt}")
-    except BrokenPipeError as e:
-        raise RuntimeError("Broken Pipe to query server") from e
+    except Exception as e:
+        raise RuntimeError(f"Error in run_query: {e}") from e
     return result
