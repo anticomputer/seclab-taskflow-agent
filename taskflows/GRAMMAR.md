@@ -20,11 +20,13 @@ Example:
 
 ```yaml
   - task:
-    agents:
-      - assistant
-    user_prompt: |
-      This is a user prompt.
+      agents:
+        - assistant
+      user_prompt: |
+        This is a user prompt.
 ```
+
+Note: The exception to this rule are `run` shell tasks.
 
 ### Agents
 
@@ -52,13 +54,13 @@ Example:
 
 ```yaml
   - task:
-    agents:
-      - primary_agent
-      - handoff_agent1
-      - ...
-      - handoff_agentN
-    user_prompt: |
-      ...
+      agents:
+        - primary_agent
+        - handoff_agent1
+        - ...
+        - handoff_agentN
+      user_prompt: |
+        ...
 ```
 
 ### Model
@@ -67,11 +69,11 @@ Tasks can optionally specify which Model to use on the configured inference endp
 
 ```yaml
   - task:
-    model: gpt-4.1
-    agents:
-      - assistant
-    user_prompt: |
-      This is a user prompt.
+      model: gpt-4.1
+      agents:
+        - assistant
+      user_prompt: |
+        This is a user prompt.
 ```
 
 Note that model identifiers may differ between OpenAI compatible endpoint providers, make sure you change your model identifier accordingly when switching providers.
@@ -84,11 +86,11 @@ Example:
 
 ```yaml
   - task:
-    must_complete: true
-    agents:
-      - assistant
-    user_prompt: |
-      ...
+      must_complete: true
+      agents:
+        - assistant
+      user_prompt: |
+        ...
 ```
 
 ### Repeated Prompts
@@ -103,12 +105,12 @@ Example:
     ...
   # this task can iterate across the iterable
   - task:
-    agents:
-      - assistant
-    repeat_prompt: true
-    user_prompt: |
-      This is a templated prompt. It can iterate the results in a list via {{ RESULT }}, 
-      if the result is a dict you access its keys via {{ RESULT_key }}. 
+      agents:
+        - assistant
+      repeat_prompt: true
+      user_prompt: |
+        This is a templated prompt. It can iterate the results in a list via {{ RESULT }}, 
+        if the result is a dict you access its keys via {{ RESULT_key }}. 
 ```
 
 ### Context Exclusion
@@ -119,13 +121,13 @@ Example:
 
 ```yaml
   - task:
-    exclude_from_context: true
-    agents:
-      - assistant
-    user_prompt: |
-      List all the files in the codeql database `some/codeql/db`.
-    toolboxes:
-      - codeql
+      exclude_from_context: true
+      agents:
+        - assistant
+      user_prompt: |
+        List all the files in the codeql database `some/codeql/db`.
+      toolboxes:
+        - codeql
 ```
 
 ### Toolboxes / MCP Servers
@@ -140,13 +142,13 @@ Example:
 
 ```yaml
   - task:
-    headless: true
-    agents:
-      - assistant
-    user_prompt: |
-      Clear the memory cache.
-    toolboxes:
-      - memcache
+      headless: true
+      agents:
+        - assistant
+      user_prompt: |
+        Clear the memory cache.
+      toolboxes:
+        - memcache
 ```
 
 ### Environment Variables
@@ -157,16 +159,16 @@ Example:
 
 ```yaml
   - task:
-    headless: true
-    agents:
-      - assistant
-    user_prompt: |
-      Store `hello` in the memory key `world`.
-    toolboxes:
-      - memcache
-    env:
-      MEMCACHE_STATE_DIR: "example_taskflow/"
-      MEMCACHE_BACKEND: "dictionary_file"
+      headless: true
+      agents:
+        - assistant
+      user_prompt: |
+        Store `hello` in the memory key `world`.
+      toolboxes:
+        - memcache
+      env:
+        MEMCACHE_STATE_DIR: "example_taskflow/"
+        MEMCACHE_BACKEND: "dictionary_file"
 ```
 
 ### Shell Tasks
@@ -177,15 +179,15 @@ Example:
 
 ```yaml
   - task:
-    must_complete: true
-    run: |
-      echo '["apple", "banana", "orange"]'
+      must_complete: true
+      run: |
+        echo '["apple", "banana", "orange"]'
   - task:
-    repeat_prompt: true
-    agents:
-      - assistant
-    user_prompt: |
-      What kind of fruit is {{ RESULT }}?
+      repeat_prompt: true
+      agents:
+        - assistant
+      user_prompt: |
+        What kind of fruit is {{ RESULT }}?
 ```
 
 Use shell tasks when you want to iterate on results that don't need to be generated via a prompt inferred tool call.
@@ -198,17 +200,17 @@ Example:
 
 ```yaml
   - task:
-    must_complete: true
-    run: |
-      echo '["apple", "banana", "orange"]'
+      must_complete: true
+      run: |
+        echo '["apple", "banana", "orange"]'
   - task:
-    repeat_prompt: true
-    async: true
-    async_limit: 3
-    agents:
-      - assistant
-    user_prompt: |
-      What kind of fruit is {{ RESULT }}?
+      repeat_prompt: true
+      async: true
+      async_limit: 3
+      agents:
+        - assistant
+      user_prompt: |
+        What kind of fruit is {{ RESULT }}?
 ```
 
 ### Globals
@@ -236,12 +238,12 @@ Example:
 
 ```yaml
   - task:
-    agents:
-      - fruit_expert
-    inputs:
-      fruit: apples
-    user_prompt: |
-      Tell me more about {{ INPUTS_fruit }}.
+      agents:
+        - fruit_expert
+      inputs:
+        fruit: apples
+      user_prompt: |
+        Tell me more about {{ INPUTS_fruit }}.
 ```
 
 ### Reusable Prompts
@@ -252,12 +254,12 @@ Example:
 
 ```yaml
   - task:
-    agents:
-      - fruit_expert
-    user_prompt: |
-      Tell me more about apples.
+      agents:
+        - fruit_expert
+      user_prompt: |
+        Tell me more about apples.
 
-      {{ PROMPTS_examples/example_prompt }}
+        {{ PROMPTS_examples/example_prompt }}
 ```
 
 ### Reusable Tasks
@@ -268,6 +270,6 @@ Example:
 
 ```yaml
   - task:
-    uses: single_step_taskflow
-    model: gpt-4o
+      uses: single_step_taskflow
+      model: gpt-4o
 ```
