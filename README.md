@@ -10,7 +10,7 @@ While the Taskflow Agent does not integrate into the GitHub Doctom Copilot UX, i
 
 The Taskflow Agent leverages a GitHub Workflow-esque YAML based grammar to perform a series of tasks using a set of Agents.
 
-It's primary value proposition is as a CLI tool that allows users to quickly define and script Agentic workflows without having to write any code.
+Its primary value proposition is as a CLI tool that allows users to quickly define and script Agentic workflows without having to write any code.
 
 Agents are defined through [personalities](personalities/), that receive a [task](taskflows/) to complete given a set of [tools](toolboxes/).
 
