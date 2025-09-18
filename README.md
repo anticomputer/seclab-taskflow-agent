@@ -118,11 +118,11 @@ For more advanced scenarios like e.g. making custom MCP server code available, y
 Example: a custom MCP server deployment via Docker image:
 
 ```sh
-export MY_MCP_SERVERS=./mcp_servers
-export MY_TOOLBOXES=./toolboxes
-export MY_PERSONALITIES=./personalities
-export MY_TASKFLOWS=./taskflows
-export MY_PROMPTS=./prompts
+export MY_MCP_SERVERS="$PWD"/mcp_servers
+export MY_TOOLBOXES="$PWD"/toolboxes
+export MY_PERSONALITIES="$PWD"/personalities
+export MY_TASKFLOWS="$PWD"/taskflows
+export MY_PROMPTS="$PWD"/prompts
 
 if [ ! -f ".env" ]; then
     touch ".env"
@@ -130,8 +130,8 @@ fi
 
 docker run \
        --volume /var/run/docker.sock:/var/run/docker.sock \
-       --volume logs:/app/logs \
-       --mount type=bind,src=.env,dst=/app/.env,ro \
+       --volume "$PWD"/logs:/app/logs \
+       --mount type=bind,src="$PWD"/env,dst=/app/.env,ro \
        ${MY_DATA:+--mount type=bind,src=$MY_DATA,dst=/app/my_data} \
        ${MY_MCP_SERVERS:+--mount type=bind,src=$MY_MCP_SERVERS,dst=/app/my_mcp_servers,ro} \
        ${MY_TASKFLOWS:+--mount type=bind,src=$MY_TASKFLOWS,dst=/app/taskflows/my_taskflows,ro} \
