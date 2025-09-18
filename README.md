@@ -20,7 +20,7 @@ You can find a detailed overview of the taskflow grammar [here](https://github.c
 
 ## Use Cases and Examples
 
-The Seclab Taskflow Agent framework was primarily designed to fit the iterative feedback loop driven work involved in Agentic security research workflows and vulnerability triage tasks. 
+The Seclab Taskflow Agent framework was primarily designed to fit the iterative feedback loop driven work involved in Agentic security research workflows and vulnerability triage tasks.
 
 Its design philosophy is centered around the belief that a prompt level focus of capturing vulnerability patterns will greatly improve and scale security research results as frontier model capabilities evolve over time.
 
@@ -76,7 +76,7 @@ python main.py -t example
 
 ## Deploying from Docker
 
-You can deploy the Taskflow Agent via its Docker image using `docker/run.sh`. 
+You can deploy the Taskflow Agent via its Docker image using `docker/run.sh`.
 
 WARNING: the Agent Docker image is _NOT_ intended as a security boundary but strictly a deployment convenience.
 
@@ -84,7 +84,7 @@ The image entrypoint is `main.py` and thus it operates the same as invoking the 
 
 You can find the Docker image for the Seclab Taskflow Agent [here](https://github.com/GitHubSecurityLab/seclab-taskflow-agent/pkgs/container/seclab-taskflow-agent) and how it is built [here](release_tools/).
 
-Note that this image is based on a public release of the Taskflow Agent, and you will have to mount any custom taskflows, personalities, or prompts into the image for them to be available to the Agent. 
+Note that this image is based on a public release of the Taskflow Agent, and you will have to mount any custom taskflows, personalities, or prompts into the image for them to be available to the Agent.
 
 Optional image mount points to supply custom data are configured via the environment:
 
@@ -105,6 +105,12 @@ Example: deploying a custom taskflow (custom_taskflow.yaml):
 
 ```sh
 MY_TASKFLOWS=~/my_taskflows docker/run.sh -t custom_taskflow
+```
+
+Example: deploying a custom taskflow (custom_taskflow.yaml) and making local CodeQL databases available to the CodeQL MCP server:
+
+```sh
+MY_TASKFLOWS=~/my_taskflows MY_DATA=~/codeql_databases CODEQL_DBS_BASE_PATH=/app/my_data docker/run.sh -t custom_taskflow
 ```
 
 For more advanced scenarios like e.g. making custom MCP server code available, you can alter the run script to mount your custom code into the image and configure your toolboxes to use said code accordingly.
@@ -163,7 +169,7 @@ personality: |
 
 task: |
   Echo user inputs using the echo tools.
-  
+
 # personality toolboxes map to mcp servers made available to this Agent
 toolboxes:
   - echo
@@ -210,13 +216,13 @@ taskflow:
         `vulnerable_c_example` memory key and explain why `strcpy`
         is insecure in the C programming language. Do this before handing off
         to any other agent.
-        
+
         Then provide a summary of a high impact CVE ID that involved a `strcpy`
         based buffer overflow based on your GHSA knowledge as an additional
         example.
 
         Finally, why are apples and oranges healthy to eat?
-        
+
       # taskflows can set temporary environment variables, these support the general
       # "{{ env FROM_EXISTING_ENVIRONMENT }" pattern we use elsewhere as well
       # these environment variables can then be made available to any stdio mcp server
@@ -252,11 +258,11 @@ Taskflows support [Agent handoffs](https://openai.github.io/openai-agents-python
 
 See the [taskflow examples](taskflows/examples) for other useful Taskflow patterns such as repeatable and asynchronous templated prompts.
 
-## License 
+## License
 
 This project is licensed under the terms of the MIT open source license. Please refer to the [LICENSE](./LICENSE) file for the full terms.
 
-## Maintainers 
+## Maintainers
 
 [CODEOWNERS](./CODEOWNERS)
 
