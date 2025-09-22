@@ -2,7 +2,7 @@ aiofiles==24.1.0
 annotated-types==0.7.0
 anyio==4.9.0
 attrs==25.3.0
-Authlib==1.6.3
+Authlib==1.6.4
 certifi==2025.6.15
 cffi==2.0.0
 charset-normalizer==3.4.2
