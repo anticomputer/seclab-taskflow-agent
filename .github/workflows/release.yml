@@ -26,5 +26,5 @@ jobs:
 
       - name: Create release
         run: |
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u GitHubSecurityLab --password-stdin
           python release_tools/publish_docker.py release.txt main.py ghcr.io/githubsecuritylab/seclab-taskflow-agent ${{ github.event.inputs.release_tag }}
