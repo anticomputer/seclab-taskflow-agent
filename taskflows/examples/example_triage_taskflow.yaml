@@ -1,4 +1,8 @@
 # a simple example of the triage Agent pattern
+seclab-taskflow-agent:
+  type: taskflow
+  version: 1
+
 taskflow:
   - task:
       must_complete: true

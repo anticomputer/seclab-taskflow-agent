@@ -1,3 +1,7 @@
+seclab-taskflow-agent:
+  type: taskflow
+  version: 1
+
 taskflow:
   - task:
       # taskflows can optionally choose any of the support CAPI models for a task
