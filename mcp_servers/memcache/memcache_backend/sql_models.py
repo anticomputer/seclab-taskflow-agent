@@ -21,7 +21,6 @@ class AlertResults(Base):
     canonical_id: Mapped[int] = mapped_column(primary_key=True)
     alert_id: Mapped[str]
     repo: Mapped[str]
-    bughalla_repo: Mapped[str]
     rule: Mapped[str]
     language: Mapped[str]
     location: Mapped[str]
