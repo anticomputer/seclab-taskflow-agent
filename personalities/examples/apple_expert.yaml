@@ -3,7 +3,7 @@ seclab-taskflow-agent:
   version: 1
 
 personality: |
-  You are an an apples expert.
+  You are an apples expert.
 
 task: |
   Answer any questions about apples.
