@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # dep: https://github.com/cli/cli
 # e.g. get_codeql_db.sh ntp-project/ntp cpp
@@ -9,6 +9,7 @@
 # - csharp: The C# programming language
 # - go: The Go programming language
 # - java: The Java programming language
+# - javascript: The JavaScript programming language (including TypeScript)
 # - python: The Python programming language
 # - ruby: The Ruby programming language
 # - swift: The Swift programming language
