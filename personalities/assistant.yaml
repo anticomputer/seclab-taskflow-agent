@@ -1,3 +1,7 @@
+seclab-taskflow-agent:
+  type: personality
+  version: 1
+
 personality: |
   You are a helpful assistant.
 task: |

@@ -79,7 +79,8 @@ def parse_prompt_args(available_tools: AvailableTools,
     l = args[0].l
     return p, t, l, ' '.join(args[0].prompt), help_msg
 
-async def deploy_task_agents(agents: dict,
+async def deploy_task_agents(available_tools: AvailableTools,
+                             agents: dict,
                              prompt: str,
                              async_task: bool = False,
                              toolboxes_override: list = [],
@@ -120,7 +121,7 @@ async def deploy_task_agents(agents: dict,
     tool_filter = create_static_tool_filter(blocked_tool_names=blocked_tools) if blocked_tools else None
 
     # fetch mcp params
-    mcp_params = mcp_client_params(YamlParser('toolboxes').get_yaml_dict(recurse=True), toolboxes)
+    mcp_params = mcp_client_params(available_tools.toolboxes, toolboxes)
     for tb, (params, confirms, server_prompt, client_session_timeout) in mcp_params.items():
         server_prompts.append(server_prompt)
         # https://openai.github.io/openai-agents-python/mcp/
@@ -401,6 +402,7 @@ async def main(available_tools: AvailableTools,
             raise ValueError("No such personality!")
 
         await deploy_task_agents(
+            available_tools,
             { p:personality },
             prompt,
             run_hooks=TaskRunHooks(
@@ -575,6 +577,7 @@ async def main(available_tools: AvailableTools,
                         async def _deploy_task_agents(resolved_agents, prompt):
                             async with semaphore:
                                 result = await deploy_task_agents(
+                                    available_tools,
                                     # pass agents and prompt by assignment, they change in-loop
                                     resolved_agents,
                                     prompt,
@@ -626,9 +629,10 @@ async def main(available_tools: AvailableTools,
 
 if __name__ == '__main__':
     available_tools = AvailableTools(
-        personalities = YamlParser('personalities').get_yaml_dict(),
-        taskflows = YamlParser('taskflows').get_yaml_dict(),
-        prompts = YamlParser('prompts').get_yaml_dict(dir_namespace=True))
+        YamlParser('personalities').get_yaml_dict() |
+        YamlParser('taskflows').get_yaml_dict() |
+        YamlParser('prompts').get_yaml_dict(dir_namespace=True) |
+        YamlParser('toolboxes').get_yaml_dict(recurse=True))
 
     p, t, l, user_prompt, help_msg = parse_prompt_args(available_tools)
 

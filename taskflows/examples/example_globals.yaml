@@ -1,3 +1,7 @@
+seclab-taskflow-agent:
+  type: taskflow
+  version: 1
+
 globals:
   fruit: bananas
 taskflow:
