@@ -5,7 +5,6 @@ if [ ! -f ".env" ]; then
 fi
 docker run -i \
        --platform linux/amd64 \
-       --volume /var/run/docker.sock:/var/run/docker.sock \
        --volume "$PWD/"logs:/app/logs \
        --mount type=bind,src="$PWD/".env,dst=/app/.env,ro \
        ${MY_DATA:+--mount type=bind,src=$MY_DATA,dst=/app/my_data} \
