@@ -3,8 +3,7 @@ seclab-taskflow-agent:
   version: 1
 
 server_params:
-  kind: stdio
-  command: docker
-  args: ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server"]
-  env:
-    GITHUB_PERSONAL_ACCESS_TOKEN: "{{ env GITHUB_PERSONAL_ACCESS_TOKEN }}"
+  kind: streamable
+  url: https://api.githubcopilot.com/mcp/
+  headers:
+    Authorization: "{{ env GITHUB_AUTH_HEADER }}"

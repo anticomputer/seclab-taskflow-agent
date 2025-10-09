@@ -115,23 +115,21 @@ MY_TASKFLOWS=~/my_taskflows MY_DATA=~/codeql_databases CODEQL_DBS_BASE_PATH=/app
 
 For more advanced scenarios like e.g. making custom MCP server code available, you can alter the run script to mount your custom code into the image and configure your toolboxes to use said code accordingly.
 
-Example: a custom MCP server deployment via Docker image:
-
 ```sh
 export MY_MCP_SERVERS="$PWD"/mcp_servers
 export MY_TOOLBOXES="$PWD"/toolboxes
 export MY_PERSONALITIES="$PWD"/personalities
 export MY_TASKFLOWS="$PWD"/taskflows
 export MY_PROMPTS="$PWD"/prompts
+export MY_DATA="$PWD"/data
 
 if [ ! -f ".env" ]; then
     touch ".env"
 fi
 
 docker run \
-       --volume /var/run/docker.sock:/var/run/docker.sock \
        --volume "$PWD"/logs:/app/logs \
-       --mount type=bind,src="$PWD"/env,dst=/app/.env,ro \
+       --mount type=bind,src="$PWD"/.env,dst=/app/.env,ro \
        ${MY_DATA:+--mount type=bind,src=$MY_DATA,dst=/app/my_data} \
        ${MY_MCP_SERVERS:+--mount type=bind,src=$MY_MCP_SERVERS,dst=/app/my_mcp_servers,ro} \
        ${MY_TASKFLOWS:+--mount type=bind,src=$MY_TASKFLOWS,dst=/app/taskflows/my_taskflows,ro} \
@@ -139,19 +137,6 @@ docker run \
        ${MY_PROMPTS:+--mount type=bind,src=$MY_PROMPTS,dst=/app/prompts/my_prompts,ro} \
        ${MY_PERSONALITIES:+--mount type=bind,src=$MY_PERSONALITIES,dst=/app/personalities/my_personalities,ro} \
        "ghcr.io/githubsecuritylab/seclab-taskflow-agent" "$@"
-```
-
-Our default run script makes the Docker socket available to the image, which contains the Docker cli, so 3rd party Docker based stdio MCP servers also function as normal.
-
-Example: a toolbox configuration using the official GitHub MCP Server via Docker:
-
-```yaml
-server_params:
-  kind: stdio
-  command: docker
-  args: ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server"]
-  env:
-    GITHUB_PERSONAL_ACCESS_TOKEN: "{{ env GITHUB_PERSONAL_ACCESS_TOKEN }}"
 ```
 
 ## Personalities
