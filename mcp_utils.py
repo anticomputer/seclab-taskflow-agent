@@ -314,6 +314,19 @@ def mcp_client_params(available_toolboxes: dict, requested_toolboxes: list):
                     if headers and isinstance(headers, dict):
                         for k, v in headers.items():
                             headers[k] = swap_env(v)
+                    optional_headers = available_toolboxes[tb]['server_params'].get('optional_headers')
+                    # support {{ env SOMETHING }} for header values as well for e.g. tokens
+                    if optional_headers and isinstance(optional_headers, dict):
+                        for k, v in dict(optional_headers).items():
+                            try:
+                                optional_headers[k] = swap_env(v)
+                            except LookupError as e:
+                                del optional_headers[k]
+                    if isinstance(headers, dict):
+                        if isinstance(optional_headers, dict):
+                            headers.update(optional_headers)
+                    elif isinstance(optional_headers, dict):
+                        headers = optional_headers
                     # if None will default to float(5) in client code
                     timeout = available_toolboxes[tb]['server_params'].get('timeout')
                     server_params['url'] = available_toolboxes[tb]['server_params'].get('url')
@@ -329,6 +342,19 @@ def mcp_client_params(available_toolboxes: dict, requested_toolboxes: list):
                     if headers and isinstance(headers, dict):
                         for k, v in headers.items():
                             headers[k] = swap_env(v)
+                    optional_headers = available_toolboxes[tb]['server_params'].get('optional_headers')
+                    # support {{ env SOMETHING }} for header values as well for e.g. tokens
+                    if optional_headers and isinstance(optional_headers, dict):
+                        for k, v in dict(optional_headers).items():
+                            try:
+                                optional_headers[k] = swap_env(v)
+                            except LookupError as e:
+                                del optional_headers[k]
+                    if isinstance(headers, dict):
+                        if isinstance(optional_headers, dict):
+                            headers.update(optional_headers)
+                    elif isinstance(optional_headers, dict):
+                        headers = optional_headers
                     # if None will default to float(5) in client code
                     timeout = available_toolboxes[tb]['server_params'].get('timeout')
                     server_params['url'] = available_toolboxes[tb]['server_params'].get('url')
