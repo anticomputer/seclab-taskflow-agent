@@ -322,8 +322,11 @@ def mcp_client_params(available_toolboxes: dict, requested_toolboxes: list):
                                 optional_headers[k] = swap_env(v)
                             except LookupError as e:
                                 del optional_headers[k]
-                                pass
-                    headers.update(optional_headers)
+                    if isinstance(headers, dict):
+                        if isinstance(optional_headers, dict):
+                            headers.update(optional_headers)
+                    elif isinstance(optional_headers, dict):
+                        headers = optional_headers
                     # if None will default to float(5) in client code
                     timeout = available_toolboxes[tb]['server_params'].get('timeout')
                     server_params['url'] = available_toolboxes[tb]['server_params'].get('url')
@@ -347,8 +350,11 @@ def mcp_client_params(available_toolboxes: dict, requested_toolboxes: list):
                                 optional_headers[k] = swap_env(v)
                             except LookupError as e:
                                 del optional_headers[k]
-                                pass
-                    headers.update(optional_headers)
+                    if isinstance(headers, dict):
+                        if isinstance(optional_headers, dict):
+                            headers.update(optional_headers)
+                    elif isinstance(optional_headers, dict):
+                        headers = optional_headers
                     # if None will default to float(5) in client code
                     timeout = available_toolboxes[tb]['server_params'].get('timeout')
                     server_params['url'] = available_toolboxes[tb]['server_params'].get('url')
