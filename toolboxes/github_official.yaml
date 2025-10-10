@@ -5,6 +5,7 @@ seclab-taskflow-agent:
 server_params:
   kind: streamable
   url: https://api.githubcopilot.com/mcp/
+  #See https://github.com/github/github-mcp-server/blob/main/docs/remote-server.md
   headers:
     Authorization: "{{ env GITHUB_AUTH_HEADER }}"
   optional_headers:
