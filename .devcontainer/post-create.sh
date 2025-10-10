@@ -13,38 +13,27 @@ source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 
+# If running in Codespaces, check for necessary secrets and print error if missing
+if [ -n "$CODESPACES" ]; then
+    echo "🔐 Running in Codespaces - injecting secrets from Codespaces settings..."
+    if [ -n "$COPILOT_TOKEN" ]; then
+        echo "Running in Codespaces - please add COPILOT_TOKEN to your Codespaces secrets"
+    fi
+    if [ -n "$GITHUB_AUTH_HEADER" ]; then
+        echo "Running in Codespaces - please add GITHUB_AUTH_HEADER to your Codespaces secrets"
+    fi
+fi
+
 # Create .env file if it doesn't exist
 if [ ! -f .env ]; then
     echo "📝 Creating .env template..."
     cat > .env << 'EOF'
-# GitHub Copilot Token (required)
-# Get a token from a GitHub account with Copilot access
-COPILOT_TOKEN=
-
-# Optional: GitHub Personal Access Token for GitHub MCP tools
-GITHUB_PERSONAL_ACCESS_TOKEN=
 
 # Optional: CodeQL database base path
 CODEQL_DBS_BASE_PATH=/workspaces/seclab-taskflow-agent/my_data
 
-# Optional: MCP server configurations
-# Add any additional environment variables needed for your MCP servers here
-
 EOF
-    echo "⚠️  Please configure your .env file with required tokens!"
-fi
-
-# If running in Codespaces, add secrets to .env
-if [ -n "$CODESPACES" ]; then
-    echo "🔐 Running in Codespaces - injecting secrets from Codespaces settings..."
-    if [ -n "$COPILOT_TOKEN" ]; then
-        echo "COPILOT_TOKEN=${COPILOT_TOKEN}" >> .env
-        echo "✅ COPILOT_TOKEN added from Codespaces secrets"
-    fi
-    if [ -n "$GITHUB_PERSONAL_ACCESS_TOKEN" ]; then
-        echo "GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_PERSONAL_ACCESS_TOKEN}" >> .env
-        echo "✅ GITHUB_PERSONAL_ACCESS_TOKEN added from Codespaces secrets"
-    fi
+    echo "⚠️  Please configure the enviroment or your .env file with required tokens!"
 fi
 
 # Create logs directory if it doesn't exist
@@ -56,6 +45,5 @@ mkdir -p my_data
 echo "✅ Development environment setup complete!"
 echo ""
 echo "📋 Next steps:"
-echo "Configure your .env file with COPILOT_TOKEN"
-echo ""
+echo "Configure your environment with COPILOT_TOKEN and GITHUB_AUTH_HEADER as needed."
 echo "💡 Remember to activate the virtual environment: source .venv/bin/activate"

@@ -10,10 +10,6 @@
       "version": "3.11",
       "installTools": true
     },
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {
-      "version": "latest",
-      "dockerDashComposeVersion": "v2"
-    },
     "ghcr.io/devcontainers/features/git:1": {
       "version": "latest"
     },
@@ -48,10 +44,6 @@
   "containerEnv": {
     "PYTHONUNBUFFERED": "1"
   },
-  // Mount the Docker socket for Docker-in-Docker functionality
-  "mounts": [
-    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
-  ],
   // Set the user to use in the container (non-root)
   "remoteUser": "vscode",
   // Grant the container access to the host's Docker daemon
