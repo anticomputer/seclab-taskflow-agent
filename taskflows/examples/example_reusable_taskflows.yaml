@@ -1,3 +1,7 @@
+seclab-taskflow-agent:
+  type: taskflow
+  version: 1
+
 taskflow:
   - task:
       # with the `uses` directive we can reuse single task taskflows

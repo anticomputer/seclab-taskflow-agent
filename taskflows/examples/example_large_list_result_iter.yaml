@@ -1,3 +1,7 @@
+seclab-taskflow-agent:
+  type: taskflow
+  version: 1
+
 taskflow:
   - task:
       exclude_from_context: true
@@ -13,6 +17,6 @@ taskflow:
       must_complete: true
       repeat_prompt: true
       agents:
-        - echo
+        - assistant
       user_prompt: |
         Echo this:  The title is {{ RESULT_title }} and the url is {{ RESULT_url }}.
