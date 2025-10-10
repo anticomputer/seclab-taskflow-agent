@@ -316,7 +316,6 @@ def mcp_client_params(available_toolboxes: dict, requested_toolboxes: list):
                             headers[k] = swap_env(v)
                     optional_headers = available_toolboxes[tb]['server_params'].get('optional_headers')
                     # support {{ env SOMETHING }} for header values as well for e.g. tokens
-                    remove_key = {}
                     if optional_headers and isinstance(optional_headers, dict):
                         for k, v in dict(optional_headers).items():
                             try:
