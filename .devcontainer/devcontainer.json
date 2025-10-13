@@ -48,7 +48,6 @@
   "remoteUser": "vscode",
   // Grant the container access to the host's Docker daemon
   "runArgs": [
-    "--privileged",
     "--init"
   ]
 }
