@@ -103,7 +103,9 @@ def build_and_push_image(dest_dir, image_name, tag):
     ], check=True)
     print(f"Pushed {image_name}:{tag}")
     digest = get_image_digest(image_name, tag)
-    print(f"Image digest: {digest}") # The prefix "Image digest: " is used for grepping in the release workflow
+    print(f"Image digest: {digest}")
+    with open("/tmp/digest.txt", "w") as f:
+        f.write(digest)
 
 if __name__ == "__main__":
     if len(sys.argv) != 5:
