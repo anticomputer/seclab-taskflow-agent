@@ -17,7 +17,7 @@ permissions:
 env:
   REGISTRY: ghcr.io
   USER: githubsecuritylab
-  IMAGE_NAME: seclab-taskflow-agent3
+  IMAGE_NAME: seclab-taskflow-agent
 
 jobs:
   release:
