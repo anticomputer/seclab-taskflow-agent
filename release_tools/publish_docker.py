@@ -82,6 +82,16 @@ ENTRYPOINT ["python", "{entrypoint}"]
     with open(os.path.join(dest_dir, "Dockerfile"), "w") as f:
         f.write(dockerfile)
 
+def get_image_digest(image_name, tag):
+    result = subprocess.run(
+        ["docker", "buildx", "imagetools", "inspect", f"{image_name}:{tag}"],
+        stdout=subprocess.PIPE, check=True, text=True
+    )
+    for line in result.stdout.splitlines():
+        if line.strip().startswith("Digest:"):
+            return line.strip().split(":", 1)[1].strip()
+    return None
+
 def build_and_push_image(dest_dir, image_name, tag):
     # Build
     subprocess.run([
@@ -92,6 +102,8 @@ def build_and_push_image(dest_dir, image_name, tag):
         "docker", "push", f"{image_name}:{tag}"
     ], check=True)
     print(f"Pushed {image_name}:{tag}")
+    digest = get_image_digest(image_name, tag)
+    print(f"Image digest: {digest}") # The prefix "Image digest: " is used for grepping in the release workflow
 
 if __name__ == "__main__":
     if len(sys.argv) != 5:

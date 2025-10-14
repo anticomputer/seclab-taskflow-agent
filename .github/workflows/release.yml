@@ -9,8 +9,15 @@ on:
         default: 'latest'
 
 permissions:
-    contents: read
-    packages: write
+  id-token: write
+  contents: read
+  attestations: write
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  USER: githubsecuritylab
+  IMAGE_NAME: seclab-taskflow-agent3
 
 jobs:
   release:
@@ -25,6 +32,15 @@ jobs:
           python-version: '3.11'
 
       - name: Create release
+        id: docker_build
         run: |
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u GitHubSecurityLab --password-stdin
-          python release_tools/publish_docker.py release.txt main.py ghcr.io/githubsecuritylab/seclab-taskflow-agent ${{ github.event.inputs.release_tag }}
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          DIGEST=$(python release_tools/publish_docker.py release.txt main.py ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.IMAGE_NAME }} ${{ github.event.inputs.release_tag }} | grep '^Image digest: ' | cut -d':' -f2 | xargs)
+          echo "digest=$DIGEST" >> $GITHUB_OUTPUT
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          subject-digest: '${{ steps.docker_build.outputs.digest }}'
+          push-to-registry: true
