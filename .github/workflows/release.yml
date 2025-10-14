@@ -50,5 +50,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           gh attestation verify oci://ghcr.io/${{ env.USER }}/${{ env.IMAGE_NAME }}:${{ github.event.inputs.release_tag }} -R ${{ github.repository }}
