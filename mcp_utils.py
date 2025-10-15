@@ -221,7 +221,7 @@ class MCPNamespaceWrap:
     def __init__(self, confirms, obj):
         self.confirms = confirms
         self._obj = obj
-        self.namespace = f"{obj.name.upper().replace(' ', '_')}_"
+        self.namespace = f"{obj.name.upper().replace(' ', '_').replace('/','-')}_"
 
     def __getattr__(self, name):
         attr = getattr(self._obj, name)

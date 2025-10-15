@@ -1,11 +1,12 @@
 seclab-taskflow-agent:
-  type: taskflow
   version: 1
+  filetype: taskflow
+  filekey: taskflows/examples/example_inputs.yaml
 
 taskflow:
   - task:
       agents:
-        - fruit_expert
+        - personalities/examples/fruit_expert.yaml
       inputs:
         fruit: apples
       user_prompt: |

@@ -1,13 +1,14 @@
 seclab-taskflow-agent:
-  type: taskflow
   version: 1
+  filetype: taskflow
+  filekey: taskflows/examples/example_globals.yaml
 
 globals:
   fruit: bananas
 taskflow:
   - task:
       agents:
-        - fruit_expert
+        - personalities/examples/fruit_expert.yaml
       user_prompt: |
         Tell me more about {{ GLOBALS_fruit }}.
         

@@ -1,6 +1,7 @@
 seclab-taskflow-agent:
-  type: prompt
   version: 1
+  filetype: prompt
+  filekey: prompts/examples/example_prompt.yaml
 
 prompt: |
   Tell me more about bananas as well.

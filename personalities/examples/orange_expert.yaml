@@ -1,6 +1,7 @@
 seclab-taskflow-agent:
-  type: personality
   version: 1
+  filetype: personality
+  filekey: personalities/examples/orange_expert.yaml
 
 personality: |
   You are an oranges expert.

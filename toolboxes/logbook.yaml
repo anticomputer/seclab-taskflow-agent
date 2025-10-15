@@ -1,6 +1,7 @@
 seclab-taskflow-agent:
-  type: toolbox
   version: 1
+  filetype: toolbox
+  filekey: toolboxes/logbook.yaml
 
 server_params:
   kind: stdio
@@ -12,4 +13,4 @@ server_params:
 # the list of tools that you want the framework to confirm with the user before executing
 # use this to guard rail any potentially dangerous functions from MCP servers
 confirm:
-  - logbook_erase
+  - toolboxes/logbook.yaml_erase

@@ -1,6 +1,7 @@
 seclab-taskflow-agent:
-  type: taskflow
   version: 1
+  filetype: taskflow
+  filekey: taskflows/examples/echo.yaml
 
 taskflow:
   - task:
@@ -8,13 +9,13 @@ taskflow:
       max_steps: 5
       must_complete: true
       agents:
-        - echo
+        - personalities/examples/echo.yaml
       user_prompt: |
         Hello
   - task:
       must_complete: true
       agents:
-        - echo
+        - personalities/examples/echo.yaml
       user_prompt: |
         Goodbye
       env:

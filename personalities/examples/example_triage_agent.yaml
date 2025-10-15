@@ -1,6 +1,7 @@
 seclab-taskflow-agent:
-  type: personality
   version: 1
+  filetype: personality
+  filekey: personalities/examples/example_triage_agent.yaml
 
 personality: |
   You are a triage agent. You route tasks to other agents.

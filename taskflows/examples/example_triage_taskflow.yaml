@@ -1,40 +1,41 @@
 # a simple example of the triage Agent pattern
 seclab-taskflow-agent:
-  type: taskflow
   version: 1
+  filetype: taskflow
+  filekey: taskflows/examples/example_triage_taskflow.yaml
 
 taskflow:
   - task:
       must_complete: true
       agents:
-        - assistant
+        - personalities/assistant.yaml
       user_prompt: |
         Store the json array ["apples", "oranges", "bananas"] in the `fruits` memory key.
       env:
         MEMCACHE_STATE_DIR: "example_taskflow/"
         MEMCACHE_BACKEND: "dictionary_file"
       toolboxes:
-        - memcache
+        - toolboxes/memcache.yaml
   - task:
       must_complete: true
       agents:
-        - assistant
+        - personalities/assistant.yaml
       user_prompt: |
         Retrieve the contents of the `fruits` memory key.
       env:
         MEMCACHE_STATE_DIR: "example_taskflow/"
         MEMCACHE_BACKEND: "dictionary_file"
       toolboxes:
-        - memcache
+        - toolboxes/memcache.yaml
   - task:
       model: gpt-4.1
       repeat_prompt: true
       agents:
         # primary agent for this task
-        - example_triage_agent
+        - personalities/examples/example_triage_agent.yaml
         # handoff agents
-        - apple_expert
-        - orange_expert
-        - banana_expert
+        - personalities/examples/apple_expert.yaml
+        - personalities/examples/orange_expert.yaml
+        - personalities/examples/banana_expert.yaml
       user_prompt: |
         Tell me more about how {{ RESULT }} are grown.

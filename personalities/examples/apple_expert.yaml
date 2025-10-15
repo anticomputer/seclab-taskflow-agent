@@ -1,6 +1,7 @@
 seclab-taskflow-agent:
-  type: personality
   version: 1
+  filetype: personality
+  filekey: personalities/examples/apple_expert.yaml
 
 personality: |
   You are an apples expert.

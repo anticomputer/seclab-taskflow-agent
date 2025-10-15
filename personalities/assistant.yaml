@@ -1,6 +1,7 @@
 seclab-taskflow-agent:
-  type: personality
   version: 1
+  filetype: personality
+  filekey: personalities/assistant.yaml
 
 personality: |
   You are a helpful assistant.

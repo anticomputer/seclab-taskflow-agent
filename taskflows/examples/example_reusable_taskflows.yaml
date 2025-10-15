@@ -1,10 +1,11 @@
 seclab-taskflow-agent:
-  type: taskflow
   version: 1
+  filetype: taskflow
+  filekey: taskflows/examples/example_reusable_taskflows.yaml
 
 taskflow:
   - task:
       # with the `uses` directive we can reuse single task taskflows
-      uses: single_step_taskflow
+      uses: taskflows/examples/single_step_taskflow.yaml
       # and optionally override any of its configurations
       model: gpt-4o

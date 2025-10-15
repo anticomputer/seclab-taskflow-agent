@@ -10,6 +10,7 @@ from pprint import pprint, pformat
 import re
 import json
 import uuid
+import pathlib
 
 from agent import DEFAULT_MODEL, TaskRunHooks, TaskAgentHooks
 #from agents.run import DEFAULT_MAX_TURNS # XXX: this is 10, we need more than that
@@ -628,11 +629,12 @@ async def main(available_tools: AvailableTools,
                     break
 
 if __name__ == '__main__':
+    cwd = pathlib.Path.cwd()
     available_tools = AvailableTools(
-        YamlParser('personalities').get_yaml_dict() |
-        YamlParser('taskflows').get_yaml_dict() |
-        YamlParser('prompts').get_yaml_dict(dir_namespace=True) |
-        YamlParser('toolboxes').get_yaml_dict(recurse=True))
+        YamlParser(cwd).get_yaml_dict((cwd/'personalities').rglob('*')) |
+        YamlParser(cwd).get_yaml_dict((cwd/'taskflows').rglob('*')) |
+        YamlParser(cwd).get_yaml_dict((cwd/'prompts').rglob('*')) |
+        YamlParser(cwd).get_yaml_dict((cwd/'toolboxes').rglob('*')))
 
     p, t, l, user_prompt, help_msg = parse_prompt_args(available_tools)
 
