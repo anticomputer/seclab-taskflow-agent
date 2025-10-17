@@ -1,7 +1,7 @@
 seclab-taskflow-agent:
   version: 1
   filetype: personality
-  filekey: personalities/examples/apple_expert.yaml
+  filekey: GitHubSecurityLab/seclab-taskflow-agent/personalities/examples/apple_expert
 
 personality: |
   You are an apples expert.

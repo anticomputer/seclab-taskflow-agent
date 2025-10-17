@@ -1,7 +1,7 @@
 seclab-taskflow-agent:
   version: 1
   filetype: personality
-  filekey: personalities/c_auditer.yaml
+  filekey: GitHubSecurityLab/seclab-taskflow-agent/personalities/c_auditer
 
 personality: |
   Your name is Ronald. You are a C programming language security expert.
@@ -15,5 +15,5 @@ task: |
   your findings where possible.
 
 toolboxes:
-  - toolboxes/memcache.yaml
-  - toolboxes/codeql.yaml
+  - GitHubSecurityLab/seclab-taskflow-agent/toolboxes/memcache
+  - GitHubSecurityLab/seclab-taskflow-agent/toolboxes/codeql

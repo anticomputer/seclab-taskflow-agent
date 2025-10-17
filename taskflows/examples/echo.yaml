@@ -1,7 +1,7 @@
 seclab-taskflow-agent:
   version: 1
   filetype: taskflow
-  filekey: taskflows/examples/echo.yaml
+  filekey: GitHubSecurityLab/seclab-taskflow-agent/taskflows/examples/echo
 
 taskflow:
   - task:
@@ -9,13 +9,13 @@ taskflow:
       max_steps: 5
       must_complete: true
       agents:
-        - personalities/examples/echo.yaml
+        - GitHubSecurityLab/seclab-taskflow-agent/personalities/examples/echo
       user_prompt: |
         Hello
   - task:
       must_complete: true
       agents:
-        - personalities/examples/echo.yaml
+        - GitHubSecurityLab/seclab-taskflow-agent/personalities/examples/echo
       user_prompt: |
         Goodbye
       env:

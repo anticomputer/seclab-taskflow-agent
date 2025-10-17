@@ -24,7 +24,7 @@ from openai.types.responses import ResponseTextDeltaEvent
 from typing import Any
 
 from shell_utils import shell_tool_call
-from mcp_utils import DEFAULT_MCP_CLIENT_SESSION_TIMEOUT, ReconnectingMCPServerStdio, AsyncDebugMCPServerStdio, MCPNamespaceWrap, mcp_client_params, mcp_system_prompt, StreamableMCPThread
+from mcp_utils import DEFAULT_MCP_CLIENT_SESSION_TIMEOUT, ReconnectingMCPServerStdio, AsyncDebugMCPServerStdio, MCPNamespaceWrap, mcp_client_params, mcp_system_prompt, StreamableMCPThread, compress_name
 from render_utils import render_model_output, flush_async_output
 from env_utils import TmpEnv
 from yaml_parser import YamlParser
@@ -256,7 +256,7 @@ async def deploy_task_agents(available_tools: AvailableTools,
         for handoff_agent in list(agents.keys())[1:]:
             handoffs.append(TaskAgent(
                 # XXX: name has to be descriptive for an effective handoff
-                name=handoff_agent,
+                name=compress_name(handoff_agent),
                 instructions=prompt_with_handoff_instructions(
                     mcp_system_prompt(
                         agents[handoff_agent]['personality'],
@@ -400,7 +400,7 @@ async def main(available_tools: AvailableTools,
     if p:
         personality = available_tools.personalities.get(p)
         if personality is None:
-            raise ValueError("No such personality!")
+            raise ValueError(f"No such personality: {p}")
 
         await deploy_task_agents(
             available_tools,
@@ -414,7 +414,7 @@ async def main(available_tools: AvailableTools,
 
         taskflow = available_tools.taskflows.get(t)
         if taskflow is None:
-            raise ValueError("No such taskflow!")
+            raise ValueError(f"No such taskflow: {t}")
 
         await render_model_output(f"** 🤖💪 Running Task Flow: {t}\n")
 

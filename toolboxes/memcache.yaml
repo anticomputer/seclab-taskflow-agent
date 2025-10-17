@@ -1,7 +1,7 @@
 seclab-taskflow-agent:
   version: 1
   filetype: toolbox
-  filekey: toolboxes/memcache.yaml
+  filekey: GitHubSecurityLab/seclab-taskflow-agent/toolboxes/memcache
 
 server_params:
   kind: stdio
@@ -14,4 +14,4 @@ server_params:
 # the list of tools that you want the framework to confirm with the user before executing
 # use this to guard rail any potentially dangerous functions from MCP servers
 confirm:
-  - toolboxes/memcache.yaml_clear_cache
+  - memcache_clear_cache
