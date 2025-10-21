@@ -1,7 +1,8 @@
-name: Basic test - run the examples to check for errors
+name: Smoke test - run the examples to check for errors
 
 on:
-  pull_request
+  issue_comment:
+    types: [created] # Add "smoke test" as a PR comment to trigger this workflow.
 
 permissions:
   contents: read
@@ -10,6 +11,14 @@ jobs:
   Linux:
     runs-on: ubuntu-latest
     steps:
+      - name: branch-deploy
+        id: branch-deploy
+        uses: github/branch-deploy@48285b12b35e47e2dde0c27d2abb33daa846d98b # v11.0.0
+        with:
+          trigger: "smoke test"
+          reaction: "eyes"
+          stable_branch: "main"
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
