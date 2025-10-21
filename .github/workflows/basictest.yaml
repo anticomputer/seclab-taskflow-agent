@@ -28,6 +28,7 @@ jobs:
         env:
           COPILOT_TOKEN: ${{ secrets.COPILOT_TOKEN }}
         run: |
+          source .venv/bin/activate
           python main.py -p GitHubSecurityLab/seclab-taskflow-agent/personalities/assistant 'explain modems to me please'
           python main.py -p GitHubSecurityLab/seclab-taskflow-agent/personalities/c_auditer 'explain modems to me please'
           python main.py -p GitHubSecurityLab/seclab-taskflow-agent/personalities/examples/echo 'explain modems to me please'
