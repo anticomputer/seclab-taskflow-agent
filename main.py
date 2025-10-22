@@ -437,7 +437,7 @@ async def main(available_tools: AvailableTools,
             model_dict = model_dict.get('models', {})
             if model_dict:
                 if not isinstance(model_dict, dict):
-                    raise ValueError(f"Models section of the model_config file {model_conig} must be a dictionary")
+                    raise ValueError(f"Models section of the model_config file {model_config} must be a dictionary")
             model_keys = model_dict.keys() 
 
         for task in taskflow['taskflow']:
