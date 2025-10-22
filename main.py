@@ -44,6 +44,11 @@ log_file_handler.setLevel(os.getenv('TASK_AGENT_LOGLEVEL', default='DEBUG'))
 log_file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 logging.getLogger('').addHandler(log_file_handler)
 
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.ERROR)  # log only ERROR and above to console
+console_handler.setFormatter(logging.Formatter('%(levelname)s: %(message)s'))
+logging.getLogger('').addHandler(console_handler)
+
 DEFAULT_MAX_TURNS = 50
 RATE_LIMIT_BACKOFF = 5
 MAX_RATE_LIMIT_BACKOFF = 120
