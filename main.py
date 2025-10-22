@@ -414,7 +414,10 @@ async def main(available_tools: AvailableTools,
 
         taskflow = available_tools.taskflows.get(t)
         if taskflow is None:
-            await render_model_output(f"** 🤖❗ Input Error: No such taskflow: {t}. Available taskflows are: {'\n' + '\n'.join(available_tools.taskflows.keys())}")
+            taskflow_list = '\n'.join(available_tools.taskflows.keys())
+            await render_model_output(
+                f"** 🤖❗ Input Error: No such taskflow: {t}. Available taskflows are:\n{taskflow_list}"
+            )
             raise ValueError(f"No such taskflow: {t}")
 
         await render_model_output(f"** 🤖💪 Running Task Flow: {t}\n")
