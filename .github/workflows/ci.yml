@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.11', '3.14'] # the one we have in the Codespace + the latest major one.
+        python-version: ['3.11', '3.13'] # the one we have in the Codespace + the latest supported one by PyO3.
       fail-fast: false  # Continue testing other version(s) if one fails
 
     steps:
