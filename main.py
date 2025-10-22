@@ -429,6 +429,16 @@ async def main(available_tools: AvailableTools,
 
         # optional global vars available for the taskflow tasks
         global_variables = taskflow.get('globals', {})
+        model_config = taskflow.get('model_config', {})
+        if model_config:
+            model_dict = available_tools.model_config.get(model_config, {})
+            if not model_dict:
+                raise ValueError(f"No such model config: {model_config}")
+            model_dict = model_dict.get('models', {})
+            if model_dict:
+                if not isinstance(model_dict, dict):
+                    raise ValueError(f"Models section of the model_config file {model_conig} must be a dictionary")
+            model_keys = model_dict.keys() 
 
         for task in taskflow['taskflow']:
 
@@ -448,7 +458,9 @@ async def main(available_tools: AvailableTools,
                 for k,v in reusable_taskflow['taskflow'][0]['task'].items():
                     if k not in task_body:
                         task_body[k] = v
-
+            model = task_body.get('model', DEFAULT_MODEL)
+            if model in model_keys:
+                model = model_dict[model]
             # parse our taskflow grammar
             name = task_body.get('name', 'taskflow') # placeholder, not used yet
             description = task_body.get('description', 'taskflow') # placeholder not used yet
@@ -465,7 +477,6 @@ async def main(available_tools: AvailableTools,
             toolboxes_override = task_body.get('toolboxes', [])
             env = task_body.get('env', {})
             repeat_prompt = task_body.get('repeat_prompt', False)
-            model = task_body.get('model', DEFAULT_MODEL)
             # this will set Agent 'stop_on_first_tool' tool use behavior, which prevents output back to llm
             exclude_from_context = task_body.get('exclude_from_context', False)
             # this allows you to run repeated prompts concurrently with a limit
@@ -600,6 +611,7 @@ async def main(available_tools: AvailableTools,
                                     run_hooks=TaskRunHooks(
                                         on_tool_end=on_tool_end_hook,
                                         on_tool_start=on_tool_start_hook),
+                                    model = model,
                                     agent_hooks=TaskAgentHooks(
                                         on_handoff=on_handoff_hook))
                             return result
@@ -643,7 +655,8 @@ if __name__ == '__main__':
         YamlParser(cwd).get_yaml_dict((cwd/'personalities').rglob('*')) |
         YamlParser(cwd).get_yaml_dict((cwd/'taskflows').rglob('*')) |
         YamlParser(cwd).get_yaml_dict((cwd/'prompts').rglob('*')) |
-        YamlParser(cwd).get_yaml_dict((cwd/'toolboxes').rglob('*')))
+        YamlParser(cwd).get_yaml_dict((cwd/'toolboxes').rglob('*')) |
+        YamlParser(cwd).get_yaml_dict((cwd/'configs').rglob('*')))
 
     p, t, l, user_prompt, help_msg = parse_prompt_args(available_tools)
 
