@@ -47,7 +47,7 @@ Example:
 COPILOT_TOKEN=<your_github_token>
 # MCP configs
 GITHUB_PERSONAL_ACCESS_TOKEN=<your_github_token>
-CODEQL_DBS_BASE_PATH="/codeql_databases"
+CODEQL_DBS_BASE_PATH="/app/my_data/codeql_databases"
 ```
 
 ## Deploying from Source
