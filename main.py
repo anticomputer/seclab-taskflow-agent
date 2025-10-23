@@ -430,6 +430,7 @@ async def main(available_tools: AvailableTools,
         # optional global vars available for the taskflow tasks
         global_variables = taskflow.get('globals', {})
         model_config = taskflow.get('model_config', {})
+        model_keys = []
         if model_config:
             model_dict = available_tools.model_config.get(model_config, {})
             if not model_dict:
