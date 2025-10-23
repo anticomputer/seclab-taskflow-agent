@@ -47,7 +47,7 @@ Example:
 COPILOT_TOKEN=<your_github_token>
 # MCP configs
 GITHUB_PERSONAL_ACCESS_TOKEN=<your_github_token>
-CODEQL_DBS_BASE_PATH="/app/my_data/"
+CODEQL_DBS_BASE_PATH="/app/my_data/codeql_databases"
 ```
 
 ## Deploying from Source
@@ -110,7 +110,7 @@ MY_TASKFLOWS=~/my_taskflows docker/run.sh -t custom_taskflow
 Example: deploying a custom taskflow (custom_taskflow.yaml) and making local CodeQL databases available to the CodeQL MCP server:
 
 ```sh
-MY_TASKFLOWS=~/my_taskflows MY_DATA=~/codeql_databases CODEQL_DBS_BASE_PATH=/app/my_data docker/run.sh -t custom_taskflow
+MY_TASKFLOWS=~/my_taskflows MY_DATA=~/app/my_data CODEQL_DBS_BASE_PATH=/app/my_data/codeql_databases docker/run.sh -t custom_taskflow
 ```
 
 For more advanced scenarios like e.g. making custom MCP server code available, you can alter the run script to mount your custom code into the image and configure your toolboxes to use said code accordingly.
