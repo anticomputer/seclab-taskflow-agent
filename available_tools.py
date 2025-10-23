@@ -25,6 +25,7 @@ class AvailableTools:
         self.taskflows = {}
         self.prompts = {}
         self.toolboxes = {}
+        self.model_config = {}
 
         # Iterate through all the yaml files and divide them into categories.
         # Each file should contain a header like this:
@@ -49,6 +50,8 @@ class AvailableTools:
                     add_yaml_to_dict(self.prompts, filekey, yaml)
                 elif filetype == 'toolbox':
                     add_yaml_to_dict(self.toolboxes, filekey, yaml)
+                elif filetype == 'model_config':
+                    add_yaml_to_dict(self.model_config, filekey, yaml)
                 else:
                     raise FileTypeException(str(filetype))
             except KeyError as err:
