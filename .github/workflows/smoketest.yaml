@@ -24,7 +24,7 @@ jobs:
           trigger: "smoke test"
           reaction: "eyes"
           stable_branch: "main"
-          update_branch: "disable"
+          update_branch: "disabled"
 
       - name: Setup Python
         uses: actions/setup-python@v5
