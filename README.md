@@ -259,7 +259,7 @@ In the above `task`, `GitHubSecurityLab/seclab-taskflow-agent/personalities/exam
 
 ## Toolboxes
 
-MCP servers that provide tools. Configured through YAML files of `filetype` `toolboxes`. These are files that provides
+MCP servers that provide tools. Configured through YAML files of `filetype` `toolboxes`. These are files that provide
 the type and parameters to start an MCP server. 
 
 For example, to start a stdio MCP server that are implemented in a python file:
