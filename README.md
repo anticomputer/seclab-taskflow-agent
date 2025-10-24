@@ -407,7 +407,7 @@ prompt: |
   Tell me more about bananas as well.
 ```
 
-would replace any `{{ PROMPT_GitHubSecurityLab/seclab-taskflow-agent/prompts/examples/example_prompt }}` template parameter found in the `user_prompt` section a a taskflow:
+would replace any `{{ PROMPT_GitHubSecurityLab/seclab-taskflow-agent/prompts/examples/example_prompt }}` template parameter found in the `user_prompt` section in a taskflow:
 
 ```yaml
   - task:
