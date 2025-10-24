@@ -241,7 +241,7 @@ taskflow:
         - GitHubSecurityLab/seclab-taskflow-agent/toolboxes/github_official
 ```
 
-In this case, the `personality` specified in `agents` provides the system prompt and the user prompt is specified in `user_prompt` field of the task. A big difference in this case is that the `toolboxes` specified in the `task` will overwrite the `toolboxes` that the `personality` has accessed to. So in the above example, the `GitHubSecurityLab/seclab-taskflow-agent/personalities/assistant` will have access to the `GitHubSecurityLab/seclab-taskflow-agent/toolboxes/github_official` toolbox instead of its own toolbox. It is important to note that the `personalities` toolboxes get *overwritten* in this case, so whenever a `toolboxes` field is provided in a `task`, it'll use the provided toolboxes and `personality` loses access to it's own toolboxes. e.g.
+In this case, the `personality` specified in `agents` provides the system prompt and the user prompt is specified in `user_prompt` field of the task. A big difference in this case is that the `toolboxes` specified in the `task` will overwrite the `toolboxes` that the `personality` has accessed to. So in the above example, the `GitHubSecurityLab/seclab-taskflow-agent/personalities/assistant` will have access to the `GitHubSecurityLab/seclab-taskflow-agent/toolboxes/github_official` toolbox instead of its own toolbox. It is important to note that the `personalities` toolboxes get *overwritten* in this case, so whenever a `toolboxes` field is provided in a `task`, it'll use the provided toolboxes and `personality` loses access to its own toolboxes. e.g.
 
 ```yaml
 taskflow:
