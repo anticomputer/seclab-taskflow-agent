@@ -395,7 +395,7 @@ See the [taskflow examples](taskflows/examples) for other useful Taskflow patter
 
 Prompts are configured through YAML files of `filetype` `prompt`. They define a reusable prompt that can be referenced in `taskflow` files.
 
-The contain only one field, the `prompt` field, which is used to replace any `{{ PROMPT_<filekey> }}` template parameter in a taskflow. For example, the following `prompt`.
+They contain only one field, the `prompt` field, which is used to replace any `{{ PROMPT_<filekey> }}` template parameter in a taskflow. For example, the following `prompt`.
 
 ```yaml
 seclab-taskflow-agent:
