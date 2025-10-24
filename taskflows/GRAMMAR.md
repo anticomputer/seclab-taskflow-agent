@@ -139,7 +139,7 @@ Then the tasks created will have their prompts replaced by:
 
 etc. 
 
-Note that when using `repeat_prompt`, the last tool call result of the previous task is used as the iterable. It is recommended to keep the task that creates the iterable short and simple (e.g. just make one tool call to fetch a list of results) to avoid wrong results being passed to the repeate prompt.
+Note that when using `repeat_prompt`, the last tool call result of the previous task is used as the iterable. It is recommended to keep the task that creates the iterable short and simple (e.g. just make one tool call to fetch a list of results) to avoid wrong results being passed to the repeat prompt.
 
 The iterable can also contain a list of primitives like string or number, in which case, the template `{{ RESULT }}` can be used in the `repeat_prompt` prompt to parse the results instead:
 
