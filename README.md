@@ -154,7 +154,7 @@ The `filetype` determines whether the file defines a personality, toolbox, or
 taskflow. This means that different types of files can be stored in the same directory.
 A `filetype` can be one of the followings:
   - taskflow
-  - personalities
+  - personality
   - toolbox
   - prompt
   - model_config
