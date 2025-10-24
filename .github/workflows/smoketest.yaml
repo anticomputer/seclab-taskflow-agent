@@ -49,19 +49,19 @@ jobs:
 
         run: |
           source .venv/bin/activate
-          python main.py -p GitHubSecurityLab/seclab-taskflow-agent/personalities/assistant 'explain modems to me please'
-          python main.py -p GitHubSecurityLab/seclab-taskflow-agent/personalities/c_auditer 'explain modems to me please'
-          python main.py -p GitHubSecurityLab/seclab-taskflow-agent/personalities/examples/echo 'explain modems to me please'
-          python main.py -t GitHubSecurityLab/seclab-taskflow-agent/taskflows/CVE-2023-2283/CVE-2023-2283
-          python main.py -t GitHubSecurityLab/seclab-taskflow-agent/taskflows/examples/echo
-          python main.py -t GitHubSecurityLab/seclab-taskflow-agent/taskflows/examples/example
-          python main.py -t GitHubSecurityLab/seclab-taskflow-agent/taskflows/examples/example_globals
-          python main.py -t GitHubSecurityLab/seclab-taskflow-agent/taskflows/examples/example_inputs
-          python main.py -t GitHubSecurityLab/seclab-taskflow-agent/taskflows/examples/example_large_list_result_iter
-          python main.py -t GitHubSecurityLab/seclab-taskflow-agent/taskflows/examples/example_repeat_prompt
-          python main.py -t GitHubSecurityLab/seclab-taskflow-agent/taskflows/examples/example_repeat_prompt_async
-          python main.py -t GitHubSecurityLab/seclab-taskflow-agent/taskflows/examples/example_repeat_prompt_dictionary
-          python main.py -t GitHubSecurityLab/seclab-taskflow-agent/taskflows/examples/example_reusable_prompt
-          python main.py -t GitHubSecurityLab/seclab-taskflow-agent/taskflows/examples/example_reusable_taskflows
-          python main.py -t GitHubSecurityLab/seclab-taskflow-agent/taskflows/examples/example_triage_taskflow
-          python main.py -t GitHubSecurityLab/seclab-taskflow-agent/taskflows/examples/single_step_taskflow
+          python main.py -p personalities.assistant 'explain modems to me please'
+          python main.py -p personalities.c_auditer 'explain modems to me please'
+          python main.py -p personalities.examples.echo 'explain modems to me please'
+          python main.py -t taskflows.CVE-2023-2283.CVE-2023-2283
+          python main.py -t taskflows.examples.echo
+          python main.py -t taskflows.examples.example
+          python main.py -t taskflows.examples.example_globals
+          python main.py -t taskflows.examples.example_inputs
+          python main.py -t taskflows.examples.example_large_list_result_iter
+          python main.py -t taskflows.examples.example_repeat_prompt
+          python main.py -t taskflows.examples.example_repeat_prompt_async
+          python main.py -t taskflows.examples.example_repeat_prompt_dictionary
+          python main.py -t taskflows.examples.example_reusable_prompt
+          python main.py -t taskflows.examples.example_reusable_taskflows
+          python main.py -t taskflows.examples.example_triage_taskflow
+          python main.py -t taskflows.examples.single_step_taskflow

@@ -1,64 +1,88 @@
+from enum import Enum
 import logging
+import importlib.resources
+import yaml
 
-class VersionException(Exception):
+class BadToolNameError(Exception):
     pass
 
-class FileIDException(Exception):
+class VersionException(Exception):
     pass
 
 class FileTypeException(Exception):
     pass
 
-def add_yaml_to_dict(table, key, yaml):
-    """Add the yaml to the table, but raise an error if the id isn't unique """
-    if key in table:
-        raise FileIDException(str(key))
-    table.update({key: yaml})
+class AvailableToolType(Enum):
+    Personality = "personality"
+    Taskflow = "taskflow"
+    Prompt = "prompt"
+    Toolbox = "toolbox"
+    ModelConfig = "model_config"
 
 class AvailableTools:
     """
     This class is used for storing dictionaries of all the available
     personalities, taskflows, and prompts.
     """
-    def __init__(self, yamls: dict):
-        self.personalities = {}
-        self.taskflows = {}
-        self.prompts = {}
-        self.toolboxes = {}
-        self.model_config = {}
+    def __init__(self):
+        self.__yamlcache = {}
 
-        # Iterate through all the yaml files and divide them into categories.
-        # Each file should contain a header like this:
-        #
-        #   seclab-taskflow-agent:
-        #     type: taskflow
-        #     version: 1
-        #
-        for path, yaml in yamls.items():
-            try:
-                header = yaml['seclab-taskflow-agent']
+    def get_personality(self, name: str):
+        return self.get_tool(AvailableToolType.Personality, name)
+
+    def get_taskflow(self, name: str):
+        return self.get_tool(AvailableToolType.Taskflow, name)
+
+    def get_prompt(self, name: str):
+        return self.get_tool(AvailableToolType.Prompt, name)
+
+    def get_toolbox(self, name: str):
+        return self.get_tool(AvailableToolType.Toolbox, name)
+
+    def get_model_config(self, name: str):
+        return self.get_tool(AvailableToolType.ModelConfig, name)
+
+    def get_tool(self, tooltype: AvailableToolType, toolname: str):
+        """for example: available_tools.get_tool("personality", "personalities/fruit_expert")
+        This method first checks whether the tool has already been loaded. If not, it
+        finds the yaml file and parses it. It also checks that the filetype in the header
+        matches the expected tooltype.
+        """
+        try:
+            return self.__yamlcache[tooltype][toolname]
+        except KeyError:
+            pass
+        # Split the string to get the path and filename.
+        components = toolname.rsplit('.', 1)
+        if len(components) == 2:
+            path = components[0]
+            filename = components[1]
+        else:
+            path = ''
+            filename = toolname
+        try:
+            d = importlib.resources.files(path)
+            if not d.is_dir():
+                raise BadToolNameError(f'Cannot load {toolname} because {d} is not a valid directory.')
+            f = d.joinpath(filename + ".yaml")
+            with open(f) as s:
+                y = yaml.safe_load(s)
+                header = y['seclab-taskflow-agent']
                 version = header['version']
                 if version != 1:
                     raise VersionException(str(version))
-                filekey = header['filekey']
-                filetype = header['filetype']
-                if filetype == 'personality':
-                    add_yaml_to_dict(self.personalities, filekey, yaml)
-                elif filetype == 'taskflow':
-                    add_yaml_to_dict(self.taskflows, filekey, yaml)
-                elif filetype == 'prompt':
-                    add_yaml_to_dict(self.prompts, filekey, yaml)
-                elif filetype == 'toolbox':
-                    add_yaml_to_dict(self.toolboxes, filekey, yaml)
-                elif filetype == 'model_config':
-                    add_yaml_to_dict(self.model_config, filekey, yaml)
-                else:
-                    raise FileTypeException(str(filetype))
-            except KeyError as err:
-                logging.error(f'{path} does not contain the key {err.args[0]}')
-            except VersionException as err:
-                logging.error(f'{path}: seclab-taskflow-agent version {err.args[0]} is not supported')
-            except FileIDException as err:
-                logging.error(f'{path}: file ID {err.args[0]} is not unique')
-            except FileTypeException as err:
-                logging.error(f'{path}: seclab-taskflow-agent file type {err.args[0]} is not supported')
+                filetype = header['filetype'] 
+                if filetype != tooltype.value:
+                    raise FileTypeException(
+                        f'Error in {f}: expected filetype to be {tooltype}, but it\'s {filetype}.')
+                if not tooltype in self.__yamlcache:
+                    self.__yamlcache[tooltype] = {}
+                self.__yamlcache[tooltype][toolname] = y
+                return y
+        except ModuleNotFoundError as e:
+            raise BadToolNameError(f'Cannot load {toolname}: {e}')
+        except FileNotFoundError:
+            # deal with editor temp files etc. that might have disappeared
+            raise BadToolNameError(f'Cannot load {toolname} because {f} is not a valid file.')
+        except ValueError as e:
+            raise BadToolNameError(f'Cannot load {toolname}: {e}')

@@ -21,16 +21,15 @@ from agents.extensions.handoff_prompt import prompt_with_handoff_instructions
 from agents import Tool, RunContextWrapper, TContext, Agent
 from openai import BadRequestError, APITimeoutError, RateLimitError
 from openai.types.responses import ResponseTextDeltaEvent
-from typing import Any
+from typing import Any, Callable
 
 from shell_utils import shell_tool_call
 from mcp_utils import DEFAULT_MCP_CLIENT_SESSION_TIMEOUT, ReconnectingMCPServerStdio, AsyncDebugMCPServerStdio, MCPNamespaceWrap, mcp_client_params, mcp_system_prompt, StreamableMCPThread, compress_name
 from render_utils import render_model_output, flush_async_output
 from env_utils import TmpEnv
-from yaml_parser import YamlParser
 from agent import TaskAgent
 from capi import list_tool_call_models
-from available_tools import AvailableTools
+from available_tools import AvailableToolType, AvailableTools
 
 load_dotenv()
 
@@ -66,12 +65,6 @@ def parse_prompt_args(available_tools: AvailableTools,
     parser.add_argument('prompt', nargs=argparse.REMAINDER)
     #parser.add_argument('remainder', nargs=argparse.REMAINDER, help="Remaining args")
     help_msg = parser.format_help()
-    help_msg += "\nAvailable Personalities:\n\n"
-    for k in available_tools.personalities:
-        help_msg += f"`{k}`\n"
-    help_msg += "\nAvailable Taskflows:\n\n"
-    for k in available_tools.taskflows:
-        help_msg += f"`{k}`\n"
     help_msg += "\nExamples:\n\n"
     help_msg += "`-p assistant explain modems to me please`\n"
     try:
@@ -127,7 +120,7 @@ async def deploy_task_agents(available_tools: AvailableTools,
     tool_filter = create_static_tool_filter(blocked_tool_names=blocked_tools) if blocked_tools else None
 
     # fetch mcp params
-    mcp_params = mcp_client_params(available_tools.toolboxes, toolboxes)
+    mcp_params = mcp_client_params(available_tools, toolboxes)
     for tb, (params, confirms, server_prompt, client_session_timeout) in mcp_params.items():
         server_prompts.append(server_prompt)
         # https://openai.github.io/openai-agents-python/mcp/
@@ -403,9 +396,7 @@ async def main(available_tools: AvailableTools,
         await render_model_output(f"\n** 🤖🤝 Agent Handoff: {source.name} -> {agent.name}\n")
 
     if p:
-        personality = available_tools.personalities.get(p)
-        if personality is None:
-            raise ValueError(f"No such personality: {p}")
+        personality = available_tools.get_personality(p)
 
         await deploy_task_agents(
             available_tools,
@@ -417,13 +408,7 @@ async def main(available_tools: AvailableTools,
 
     if t:
 
-        taskflow = available_tools.taskflows.get(t)
-        if taskflow is None:
-            taskflow_list = '\n'.join(available_tools.taskflows.keys())
-            await render_model_output(
-                f"** 🤖❗ Input Error: No such taskflow: {t}. Available taskflows are:\n{taskflow_list}"
-            )
-            raise ValueError(f"No such taskflow: {t}")
+        taskflow = available_tools.get_taskflow(t)
 
         await render_model_output(f"** 🤖💪 Running Task Flow: {t}\n")
 
@@ -432,9 +417,7 @@ async def main(available_tools: AvailableTools,
         model_config = taskflow.get('model_config', {})
         model_keys = []
         if model_config:
-            model_dict = available_tools.model_config.get(model_config, {})
-            if not model_dict:
-                raise ValueError(f"No such model config: {model_config}")
+            model_dict = available_tools.get_model_config(model_config)
             model_dict = model_dict.get('models', {})
             if model_dict:
                 if not isinstance(model_dict, dict):
@@ -451,7 +434,7 @@ async def main(available_tools: AvailableTools,
             # can tweak reusable task configurations as they see fit
             uses = task_body.get('uses', '')
             if uses:
-                reusable_taskflow = available_tools.taskflows.get(uses)
+                reusable_taskflow = available_tools.get_taskflow(uses)
                 if reusable_taskflow is None:
                     raise ValueError(f"No such reusable taskflow: {uses}")
                 if len(reusable_taskflow['taskflow']) > 1:
@@ -484,31 +467,33 @@ async def main(available_tools: AvailableTools,
             async_task = task_body.get('async', False)
             max_concurrent_tasks = task_body.get('async_limit', 5)
 
-            def preprocess_prompt(prompt: str, tag: str, kv: dict, kv_subkey=None):
+            def preprocess_prompt(prompt: str, tag: str, kv: Callable[[str], dict], kv_subkey=None):
                 _prompt = prompt
                 for full_match in re.findall(r"\{\{\s+" + tag + r"_(?:.*?)\s+\}\}", prompt):
                     _m = re.search(r"\{\{\s+" + tag + r"_(.*?)\s+\}\}", full_match)
                     if _m:
                         key = _m.group(1)
-                        if key in kv:
-                            _prompt = _prompt.replace(
-                                full_match,
-                                str(kv.get(key)[kv_subkey]) if kv_subkey else str(kv.get(key)))
-                        else:
-                            raise KeyError(f"No such prompt key available: {key}")
+                        v = kv(key)
+                        _prompt = _prompt.replace(
+                            full_match,
+                            str(v[kv_subkey]) if kv_subkey else str(v))
                 return _prompt
 
             # pre-process the prompt for any prompts
             if prompt:
-                prompt = preprocess_prompt(prompt, 'PROMPTS', available_tools.prompts, 'prompt')
+                prompt = preprocess_prompt(prompt, 'PROMPTS',
+                                           lambda key: available_tools.get_prompt(key),
+                                           'prompt')
 
             # pre-process the prompt for any inputs
             if prompt and inputs:
-                prompt = preprocess_prompt(prompt, 'INPUTS', inputs)
+                prompt = preprocess_prompt(prompt, 'INPUTS',
+                                           lambda key: inputs.get(key))
 
             # pre-process the prompt for any globals
             if prompt and global_variables:
-                prompt = preprocess_prompt(prompt, 'GLOBALS', global_variables)
+                prompt = preprocess_prompt(prompt, 'GLOBALS',
+                                           lambda key: global_variables.get(key))
 
             with TmpEnv(env):
                 prompts_to_run = []
@@ -590,7 +575,7 @@ async def main(available_tools: AvailableTools,
                             p, _, _, prompt, _ = parse_prompt_args(available_tools, prompt)
                             agents.append(p)
                         for p in agents:
-                            personality = available_tools.personalities.get(p)
+                            personality = available_tools.get_personality(p)
                             if personality is None:
                                 raise ValueError(f"No such personality: {p}")
                             resolved_agents[p] = personality
@@ -652,12 +637,7 @@ async def main(available_tools: AvailableTools,
 
 if __name__ == '__main__':
     cwd = pathlib.Path.cwd()
-    available_tools = AvailableTools(
-        YamlParser(cwd).get_yaml_dict((cwd/'personalities').rglob('*')) |
-        YamlParser(cwd).get_yaml_dict((cwd/'taskflows').rglob('*')) |
-        YamlParser(cwd).get_yaml_dict((cwd/'prompts').rglob('*')) |
-        YamlParser(cwd).get_yaml_dict((cwd/'toolboxes').rglob('*')) |
-        YamlParser(cwd).get_yaml_dict((cwd/'configs').rglob('*')))
+    available_tools = AvailableTools()
 
     p, t, l, user_prompt, help_msg = parse_prompt_args(available_tools)
 
