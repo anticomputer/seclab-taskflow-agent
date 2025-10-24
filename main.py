@@ -229,6 +229,7 @@ async def deploy_task_agents(available_tools: AvailableTools,
             logging.error(f"RuntimeError in mcp session task: {e}")
         except asyncio.CancelledError as e:
             logging.error(f"Timeout on main session task: {e}")
+            pass
         finally:
             mcp_servers.clear()
 
