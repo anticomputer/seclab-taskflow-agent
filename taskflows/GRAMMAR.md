@@ -109,7 +109,7 @@ Example:
 
 ### Running templated tasks in a loop
 
-Often we may want to iterate through the same tasks with different inputs. For example, we may want to do fetch all the functions from a code base and then anaylze each of the function. This can be done using two consecutive task and with the help of the `repeat_prompt` field. 
+Often we may want to iterate through the same tasks with different inputs. For example, we may want to do fetch all the functions from a code base and then analyze each of the function. This can be done using two consecutive task and with the help of the `repeat_prompt` field. 
 
 ```yaml
   - task:
