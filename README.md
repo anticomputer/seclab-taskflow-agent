@@ -170,7 +170,7 @@ means that you can easily import new files by dropping them into a sub-directory
 We recommend including something like your
 GitHub `<username>/<reponame>` in your filekeys to make them globally unique.
 
-In above example, it is a `taskflow` file with `filekey` `GitHubSecurityLab/seclab-taskflow-agent/taskflows/CVE-2023-2283/CVE-2023-2283`. The `filekey` is needed to run the taskflow from command line, e.g.:
+In the above example, it is a `taskflow` file with `filekey` `GitHubSecurityLab/seclab-taskflow-agent/taskflows/CVE-2023-2283/CVE-2023-2283`. The `filekey` is needed to run the taskflow from command line, e.g.:
 
 ```
 python3 main.py -t GitHubSecurityLab/seclab-taskflow-agent/taskflows/CVE-2023-2283/CVE-2023-2283
