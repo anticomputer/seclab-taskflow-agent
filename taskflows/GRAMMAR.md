@@ -30,7 +30,7 @@ Note: The exception to this rule are `run` shell tasks.
 
 ### Agents
 
-Agents defines the system prompt to be used for the task. It contains a list of `filekey` pointing to files of `personality` `filetype`.
+Agents define the system prompt to be used for the task. It contains a list of `filekey` pointing to files of `personality` `filetype`.
 
 For example, to use the `personality` defined in the following:
 
