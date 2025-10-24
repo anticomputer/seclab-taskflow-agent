@@ -454,7 +454,7 @@ taskflow:
       model: gpt_latest
 ```
 
-Model version can then be updated by changing `gpt_latest` in the `model_config` file and applied across all taskflows that uses the config.
+Model version can then be updated by changing `gpt_latest` in the `model_config` file and applied across all taskflows that use the config.
 
 ## Passing environment variables
 
