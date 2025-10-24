@@ -310,7 +310,7 @@ confirm:
 
 ## Taskflows
 
-A sequence of interdependent tasks performed by a set of Agents. Configured through a YAML files of `filetype` `taskflow`. 
+A sequence of interdependent tasks performed by a set of Agents. Configured through YAML files of `filetype` `taskflow`. 
 Taskflows supports a number of features, and their details can be found [here](taskflows/GRAMMAR.md).
 
 Example:
