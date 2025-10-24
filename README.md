@@ -159,7 +159,7 @@ A `filetype` can be one of the followings:
   - prompt
   - model_config
 
-We'll explain these file types in more details in the following sections.
+We'll explain these file types in more detail in the following sections.
 
 The `filekey` is a unique name for the file. It is used to allow
 cross-referencing between files. For example, a taskflow can reference
