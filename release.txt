@@ -32,7 +32,6 @@
 ./env_utils.py
 ./render_utils.py
 ./shell_utils.py
-./yaml_parser.py
 
 # prompts
 ./prompts/examples/example_prompt.yaml
