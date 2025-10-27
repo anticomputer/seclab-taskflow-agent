@@ -75,7 +75,7 @@ class AvailableTools:
                 if filetype != tooltype.value:
                     raise FileTypeException(
                         f'Error in {f}: expected filetype to be {tooltype}, but it\'s {filetype}.')
-                if not tooltype in self.__yamlcache:
+                if tooltype not in self.__yamlcache:
                     self.__yamlcache[tooltype] = {}
                 self.__yamlcache[tooltype][toolname] = y
                 return y
