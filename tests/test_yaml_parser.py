@@ -8,7 +8,7 @@ import pytest
 import tempfile
 from pathlib import Path
 import yaml
-from available_tools import AvailableToolType, AvailableTools
+from available_tools import AvailableTools
 
 class TestYamlParser:
     """Test suite for YamlParser class."""
