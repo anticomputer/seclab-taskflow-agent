@@ -21,7 +21,7 @@ from agents.extensions.handoff_prompt import prompt_with_handoff_instructions
 from agents import Tool, RunContextWrapper, TContext, Agent
 from openai import BadRequestError, APITimeoutError, RateLimitError
 from openai.types.responses import ResponseTextDeltaEvent
-from typing import Any, Callable
+from typing import Callable
 
 from shell_utils import shell_tool_call
 from mcp_utils import DEFAULT_MCP_CLIENT_SESSION_TIMEOUT, ReconnectingMCPServerStdio, AsyncDebugMCPServerStdio, MCPNamespaceWrap, mcp_client_params, mcp_system_prompt, StreamableMCPThread, compress_name
@@ -29,7 +29,7 @@ from render_utils import render_model_output, flush_async_output
 from env_utils import TmpEnv
 from agent import TaskAgent
 from capi import list_tool_call_models
-from available_tools import AvailableToolType, AvailableTools
+from available_tools import AvailableTools
 
 load_dotenv()
 
