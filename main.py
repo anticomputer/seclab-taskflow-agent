@@ -474,6 +474,8 @@ async def main(available_tools: AvailableTools,
                     if _m:
                         key = _m.group(1)
                         v = kv(key)
+                        if not v:
+                            raise KeyError(f"No such prompt key available: {key}")
                         _prompt = _prompt.replace(
                             full_match,
                             str(v[kv_subkey]) if kv_subkey else str(v))
