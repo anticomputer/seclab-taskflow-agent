@@ -1,0 +1,21 @@
+seclab-taskflow-agent:
+  version: 1
+  filetype: taskflow
+
+taskflow:
+  - task:
+      model: claude-3.5-sonnet
+      max_steps: 5
+      must_complete: true
+      agents:
+        - examples.personalities.examples.echo
+      user_prompt: |
+        Hello
+  - task:
+      must_complete: true
+      agents:
+        - examples.personalities.examples.echo
+      user_prompt: |
+        Goodbye
+      env:
+        VARIABLE: "example"

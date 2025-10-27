@@ -1,0 +1,68 @@
+seclab-taskflow-agent:
+  version: 1
+  filetype: taskflow
+
+taskflow:
+  - task:
+      # taskflows can optionally choose any of the support CAPI models for a task
+      model: gpt-4.1
+      # taskflows can optionally limit the max allowed number of Agent task loop
+      # iterations to complete a task, this defaults to 50 when not provided
+      max_steps: 20
+      must_complete: true
+      # taskflows can set a primary (first entry) and handoff (additional entries) agent
+      agents:
+        - examples.personalities.c_auditer
+        - examples.personalities.examples.fruit_expert
+      user_prompt: |
+        Store an example vulnerable C program that uses `strcpy` in the
+        `vulnerable_c_example` memory key and explain why `strcpy`
+        is insecure in the C programming language. Do this before handing off
+        to any other agent.
+        
+        Finally, why are apples and oranges healthy to eat?
+        
+      # taskflows can set temporary environment variables, these support the general
+      # "{{ env FROM_EXISTING_ENVIRONMENT }" pattern we use elsewhere as well
+      # these environment variables can then be made available to any stdio mcp server
+      # through its respective yaml configuration, see memcache.yaml for an example
+      # you can use these to override top-level environment variables on a per-task basis
+      env:
+        MEMCACHE_STATE_DIR: "example_taskflow/"
+        MEMCACHE_BACKEND: "dictionary_file"
+      # taskflows can optionally override personality toolboxes, in this example
+      # this normally only has the memcache toolbox, but we extend it here with
+      # the GHSA toolbox
+      toolboxes:
+        - seclab_taskflow_agent.toolboxes.memcache
+        - seclab_taskflow_agent.toolboxes.codeql
+  - task:
+      must_complete: true
+      model: gpt-4.1
+      agents:
+        - examples.personalities.c_auditer
+      user_prompt: |
+        Retrieve C code for security review from the `vulnerable_c_example`
+        memory key and perform a review.
+
+        Clear the memory cache when you're done.
+      env:
+        MEMCACHE_STATE_DIR: "example_taskflow/"
+        MEMCACHE_BACKEND: "dictionary_file"
+      toolboxes:
+        - seclab_taskflow_agent.toolboxes.memcache
+      # headless mode does not prompt for tool call confirms configured for a server
+      # note: this will auto-allow, if you want control over potentially dangerous
+      # tool calls, then you should NOT run a task in headless mode (default: false)
+      headless: true
+  - task:
+      # tasks can also run shell scripts that return e.g. json output for repeat prompt iterable
+      must_complete: true
+      run: |
+        echo '["apple", "banana", "orange"]'
+  - task:
+      repeat_prompt: true
+      agents:
+        - examples.personalities.assistant
+      user_prompt: |
+        What kind of fruit is {{ RESULT }}?

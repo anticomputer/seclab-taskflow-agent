@@ -11,10 +11,11 @@ permissions:
 
 jobs:
   test:
-    name: Run Tests
-    runs-on: ubuntu-latest
+    name: Run Tests ${{matrix.python-version}} on ${{matrix.os}}
+    runs-on: ${{matrix.os}}
     strategy:
       matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ['3.11', '3.13'] # the one we have in the Codespace + the latest supported one by PyO3.
       fail-fast: false  # Continue testing other version(s) if one fails
 
@@ -28,17 +29,12 @@ jobs:
         python-version: ${{ matrix.python-version }}
         cache: 'pip'
 
-    - name: Install dependencies
-      run: |
-        python -m venv .venv
-        source .venv/bin/activate
-        python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt
-        python -m pip install -r requirements-test.txt
 
-    - name: Run tests with pytest
-      run: |
-        source .venv/bin/activate
-        pytest tests/ -v
-      env:
-        PYTHONPATH: ${{ github.workspace }}
+    - name: Install Hatch
+      run: pip install --upgrade hatch
+
+    - name: Run static analysis
+      run: hatch fmt --check
+
+    - name: Run tests
+      run: hatch test --python ${{ matrix.python-version }} --cover --randomize --parallel --retries 2 --retry-delay 1

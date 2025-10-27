@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2025 GitHub
+# SPDX-License-Identifier: MIT
+
 import os
 import shutil
 import subprocess

@@ -1,0 +1,12 @@
+seclab-taskflow-agent:
+  version: 1
+  filetype: taskflow
+
+taskflow:
+  - task:
+      agents:
+        - examples.personalities.examples.fruit_expert
+      user_prompt: |
+        Tell me more about apples.
+        
+        {{ PROMPTS_examples.prompts.examples.example_prompt }}

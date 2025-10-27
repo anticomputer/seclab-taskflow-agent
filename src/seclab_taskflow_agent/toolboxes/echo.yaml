@@ -1,0 +1,10 @@
+seclab-taskflow-agent:
+  version: 1
+  filetype: toolbox
+
+server_params:
+  kind: stdio
+  command: python
+  args: ["-m", "seclab_taskflow_agent.mcp_servers.echo.echo"]
+  env:
+    TEST: value
