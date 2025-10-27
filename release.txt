@@ -32,6 +32,7 @@
 ./env_utils.py
 ./render_utils.py
 ./shell_utils.py
+./available_tools.py
 
 # prompts
 ./prompts/examples/example_prompt.yaml
