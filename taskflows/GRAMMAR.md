@@ -38,7 +38,6 @@ For example, to use the `personality` defined in the following:
 seclab-taskflow-agent:
   version: 1
   filetype: personality
-  filekey: GitHubSecurityLab/seclab-taskflow-agent/personalities/assistant
 
 personality: |
   You are a helpful assistant.
@@ -58,7 +57,7 @@ The task should include the `filekey` in its list of `agents`:
 ```yaml
   - task:
       agents:
-        - GitHubSecurityLab/seclab-taskflow-agent/personalities/assistant
+        - personalities.assistant
   ...
 ```
 
@@ -148,7 +147,7 @@ The iterable can also contain a list of primitives like string or number, in whi
       max_steps: 5
       must_complete: true
       agents:
-        - GitHubSecurityLab/seclab-taskflow-agent/personalities/assistant
+        - personalities.assistant
       user_prompt: |
         Store the json array [1, 2, 3] in memory under the
         `test_repeat_prompt` key as a json object, then retrieve
@@ -160,7 +159,7 @@ The iterable can also contain a list of primitives like string or number, in whi
       must_complete: true
       repeat_prompt: true
       agents:
-        - GitHubSecurityLab/seclab-taskflow-agent/personalities/assistant
+        - personalities.assistant
       user_prompt: |
         What is the integer value of {{ RESULT }}?
 ```
@@ -256,7 +255,7 @@ Toolboxes are MCP server configurations. They can be defined at the Agent level 
   - task:
       ...
       toolboxes:
-        - GitHubSecurityLab/seclab-taskflow-agent/toolboxes/codeql
+        - toolboxes.codeql
 ```
 
 If no `toolboxes` is specified, then the `toolboxes` defined in the `personality` of the `agent` is used:
@@ -264,28 +263,28 @@ If no `toolboxes` is specified, then the `toolboxes` defined in the `personality
 ```yaml
    - task:
       agents:
-        - GitHubSecurityLab/seclab-taskflow-agent/personalities/c_auditer
+        - personalities.c_auditer
       user_prompt: |
         List all the files in the codeql database `some/codeql/db`.      
    - task:
 ```
 
-In the above `task`, as no `toolboxes` is specified, the `toolboxes` defined in the `personality` of `GitHubSecurityLab/seclab-taskflow-agent/personalities/c_auditer` is used.
+In the above `task`, as no `toolboxes` is specified, the `toolboxes` defined in the `personality` of `personalities.c_auditer` is used.
 
 Note that when `toolboxes` is defined for a task, it *overwrites* the `toolboxes` that are available. For example, in the following `task`:
 
 ```yaml
    - task:
       agents:
-        - GitHubSecurityLab/seclab-taskflow-agent/personalities/c_auditer
+        - personalities.c_auditer
       user_prompt: |
         List all the files in the codeql database `some/codeql/db`.      
       toolboxes:
-        - GitHubSecurityLab/seclab-taskflow-agent/toolboxes/echo
+        - toolboxes.echo
 
 ```
 
-For this task, the `agent` `GitHubSecurityLab/seclab-taskflow-agent/personalities/c_auditer` will have access to the `GitHubSecurityLab/seclab-taskflow-agent/toolboxes/echo` tool.
+For this task, the `agent` `personalities.c_auditer` will have access to the `toolboxes.echo` tool.
 
 ### Headless Runs
 
@@ -427,15 +426,14 @@ Example:
       user_prompt: |
         Tell me more about apples.
 
-        {{ PROMPTS_GitHubSecurityLab/seclab-taskflow-agent/prompts/examples/example_prompt }}
+        {{ PROMPTS_prompts.examples.example_prompt }}
 ```
-and `GitHubSecurityLab/seclab-taskflow-agent/prompts/examples/example_prompt` is the following:
+and `prompts.examples.example_prompt` is the following:
 
 ```yaml
 seclab-taskflow-agent:
   version: 1
   filetype: prompt
-  filekey: GitHubSecurityLab/seclab-taskflow-agent/prompts/examples/example_prompt
 
 prompt: |
   Tell me more about bananas as well.
@@ -461,9 +459,8 @@ LLM models can be configured in a taskflow by setting the `model_config` field t
 seclab-taskflow-agent:
   version: 1
   filetype: taskflow
-  filekey: GitHubSecurityLab/seclab-taskflow-agent/taskflows/CVE-2023-2283/CVE-2023-2283
 
-model_config: GitHubSecurityLab/seclab-taskflow-agent/configs/model_config
+model_config: configs.model_config
 
 ```
 
@@ -473,7 +470,6 @@ The variables defined in the `model_config` file can then be used throughout the
 seclab-taskflow-agent:
   version: 1
   filetype: model_config
-  filekey: GitHubSecurityLab/seclab-taskflow-agent/configs/model_config
 models:
    gpt_latest: gpt-5
 ```
@@ -485,7 +481,7 @@ When `gpt_latest` is used in the taskflow to specify a model, the value `gpt-5` 
       model: gpt_latest
       must_complete: false
       agents:
-        - GitHubSecurityLab/seclab-taskflow-agent/personalities/c_auditer
+        - personalities.c_auditer
       user_prompt: |
 
 ```

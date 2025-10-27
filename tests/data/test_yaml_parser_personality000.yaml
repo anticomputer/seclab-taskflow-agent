@@ -3,7 +3,6 @@ seclab-taskflow-agent:
   filetype: personality
 
 personality: |
-  Your name is Bob. You are a fruit expert.
-
+  You are a helpful assistant.
 task: |
-  Answer any questions about fruit.
+  Answer any question.

@@ -2,40 +2,39 @@
 seclab-taskflow-agent:
   version: 1
   filetype: taskflow
-  filekey: GitHubSecurityLab/seclab-taskflow-agent/taskflows/examples/example_triage_taskflow
 
 taskflow:
   - task:
       must_complete: true
       agents:
-        - GitHubSecurityLab/seclab-taskflow-agent/personalities/assistant
+        - personalities.assistant
       user_prompt: |
         Store the json array ["apples", "oranges", "bananas"] in the `fruits` memory key.
       env:
         MEMCACHE_STATE_DIR: "example_taskflow/"
         MEMCACHE_BACKEND: "dictionary_file"
       toolboxes:
-        - GitHubSecurityLab/seclab-taskflow-agent/toolboxes/memcache
+        - toolboxes.memcache
   - task:
       must_complete: true
       agents:
-        - GitHubSecurityLab/seclab-taskflow-agent/personalities/assistant
+        - personalities.assistant
       user_prompt: |
         Retrieve the contents of the `fruits` memory key.
       env:
         MEMCACHE_STATE_DIR: "example_taskflow/"
         MEMCACHE_BACKEND: "dictionary_file"
       toolboxes:
-        - GitHubSecurityLab/seclab-taskflow-agent/toolboxes/memcache
+        - toolboxes.memcache
   - task:
       model: gpt-4.1
       repeat_prompt: true
       agents:
         # primary agent for this task
-        - GitHubSecurityLab/seclab-taskflow-agent/personalities/examples/example_triage_agent
+        - personalities.examples.example_triage_agent
         # handoff agents
-        - GitHubSecurityLab/seclab-taskflow-agent/personalities/examples/apple_expert
-        - GitHubSecurityLab/seclab-taskflow-agent/personalities/examples/orange_expert
-        - GitHubSecurityLab/seclab-taskflow-agent/personalities/examples/banana_expert
+        - personalities.examples.apple_expert
+        - personalities.examples.orange_expert
+        - personalities.examples.banana_expert
       user_prompt: |
         Tell me more about how {{ RESULT }} are grown.

@@ -16,14 +16,14 @@ from mcp.types import CallToolResult, TextContent
 from agents.mcp import MCPServerStdio
 
 from env_utils import swap_env
+from available_tools import AvailableToolType, AvailableTools
 
 DEFAULT_MCP_CLIENT_SESSION_TIMEOUT = 120
 
 # The openai API complains if the name of a tool is longer than 64
-# chars. But we're encouraging people to use long descriptive
-# filekeys to avoid accidental collisions, so it's very easy to go
-# over the limit. So this function converts a name to a 12 character
-# hash.
+# chars. But it's easy to go over the limit if the yaml file is in a
+# nested sub-directory, so this function converts a name to a 12
+# character hash.
 def compress_name(name):
     m = hashlib.sha256()
     m.update(name.encode('utf-8'))
@@ -284,24 +284,106 @@ class MCPNamespaceWrap:
         result = await self._obj.call_tool(*args, **kwargs)
         return result
 
-def mcp_client_params(available_toolboxes: dict, requested_toolboxes: list):
+def mcp_client_params(available_tools: AvailableTools, requested_toolboxes: list):
     """Return all the data needed to initialize an mcp server client"""
     client_params = {}
     for tb in requested_toolboxes:
-        if tb not in available_toolboxes:
-            e = f"Task requested non-existent toolbox {tb}!"
-            logging.critical(e)
-            raise ValueError(e)
-        else:
-            kind = available_toolboxes[tb]['server_params'].get('kind')
-            reconnecting = available_toolboxes[tb]['server_params'].get('reconnecting', False)
-            server_params = {'kind': kind, 'reconnecting': reconnecting}
-            match kind:
-                case 'stdio':
-                    env = available_toolboxes[tb]['server_params'].get('env')
-                    args = available_toolboxes[tb]['server_params'].get('args')
-                    logging.debug(f"Initializing toolbox: {tb}\nargs:\n{args }\nenv:\n{env}\n")
-                    if env and isinstance(env, dict):
+        toolbox = available_tools.get_tool(AvailableToolType.Toolbox, tb)
+        kind = toolbox['server_params'].get('kind')
+        reconnecting = toolbox['server_params'].get('reconnecting', False)
+        server_params = {'kind': kind, 'reconnecting': reconnecting}
+        match kind:
+            case 'stdio':
+                env = toolbox['server_params'].get('env')
+                args = toolbox['server_params'].get('args')
+                logging.debug(f"Initializing toolbox: {tb}\nargs:\n{args }\nenv:\n{env}\n")
+                if env and isinstance(env, dict):
+                    for k, v in dict(env).items():
+                        try:
+                            env[k] = swap_env(v)
+                        except LookupError as e:
+                            logging.critical(e)
+                            logging.info("Assuming toolbox has default configuration available")
+                            del env[k]
+                logging.debug(f"Tool call environment: {env}")
+                if args and isinstance(args, list):
+                    for i, v in enumerate(args):
+                        args[i] = swap_env(v)
+                logging.debug(f"Tool call args: {args}")
+                server_params['command'] = toolbox['server_params'].get('command')
+                server_params['args'] = args
+                server_params['env'] = env
+            # XXX: SSE is deprecated in the MCP spec, but keep it around for now
+            case 'sse':
+                headers = toolbox['server_params'].get('headers')
+                # support {{ env SOMETHING }} for header values as well for e.g. tokens
+                if headers and isinstance(headers, dict):
+                    for k, v in headers.items():
+                        headers[k] = swap_env(v)
+                optional_headers = toolbox['server_params'].get('optional_headers')
+                # support {{ env SOMETHING }} for header values as well for e.g. tokens
+                if optional_headers and isinstance(optional_headers, dict):
+                    for k, v in dict(optional_headers).items():
+                        try:
+                            optional_headers[k] = swap_env(v)
+                        except LookupError as e:
+                            del optional_headers[k]
+                if isinstance(headers, dict):
+                    if isinstance(optional_headers, dict):
+                        headers.update(optional_headers)
+                elif isinstance(optional_headers, dict):
+                    headers = optional_headers
+                # if None will default to float(5) in client code
+                timeout = toolbox['server_params'].get('timeout')
+                server_params['url'] = toolbox['server_params'].get('url')
+                server_params['headers'] = headers
+                server_params['timeout'] = timeout
+            # for more involved local MCP servers, jsonrpc over stdio seems less than reliable
+            # as an alternative you can configure local toolboxes to use the streamable transport
+            # but still be started/stopped on demand similar to stdio mcp servers
+            # all it requires is a streamable config that also has cmd/args/env set
+            case 'streamable':
+                headers = toolbox['server_params'].get('headers')
+                # support {{ env SOMETHING }} for header values as well for e.g. tokens
+                if headers and isinstance(headers, dict):
+                    for k, v in headers.items():
+                        headers[k] = swap_env(v)
+                optional_headers = toolbox['server_params'].get('optional_headers')
+                # support {{ env SOMETHING }} for header values as well for e.g. tokens
+                if optional_headers and isinstance(optional_headers, dict):
+                    for k, v in dict(optional_headers).items():
+                        try:
+                            optional_headers[k] = swap_env(v)
+                        except LookupError as e:
+                            del optional_headers[k]
+                if isinstance(headers, dict):
+                    if isinstance(optional_headers, dict):
+                        headers.update(optional_headers)
+                elif isinstance(optional_headers, dict):
+                    headers = optional_headers
+                # if None will default to float(5) in client code
+                timeout = toolbox['server_params'].get('timeout')
+                server_params['url'] = toolbox['server_params'].get('url')
+                server_params['headers'] = headers
+                server_params['timeout'] = timeout
+                # if command/args/env is set, we also need to start this MCP server ourselves
+                # this way we can use the streamable transport for MCP servers that get fussy
+                # over stdio jsonrpc polling
+                env = toolbox['server_params'].get('env')
+                args = toolbox['server_params'].get('args')
+                cmd = toolbox['server_params'].get('command')
+                if cmd is not None:
+                    logging.debug(f"Initializing streamable toolbox: {tb}\nargs:\n{args }\nenv:\n{env}\n")
+                    exe = shutil.which(cmd)
+                    if exe is None:
+                        raise FileNotFoundError(f"Could not resolve path to {cmd}")
+                    start_cmd = [exe]
+                    if args is not None and isinstance(args, list):
+                        for i, v in enumerate(args):
+                            args[i] = swap_env(v)
+                        start_cmd += args
+                    server_params['command'] = start_cmd
+                    if env is not None and isinstance(env, dict):
                         for k, v in dict(env).items():
                             try:
                                 env[k] = swap_env(v)
@@ -309,99 +391,13 @@ def mcp_client_params(available_toolboxes: dict, requested_toolboxes: list):
                                 logging.critical(e)
                                 logging.info("Assuming toolbox has default configuration available")
                                 del env[k]
-                    logging.debug(f"Tool call environment: {env}")
-                    if args and isinstance(args, list):
-                        for i, v in enumerate(args):
-                            args[i] = swap_env(v)
-                    logging.debug(f"Tool call args: {args}")
-                    server_params['command'] = available_toolboxes[tb]['server_params'].get('command')
-                    server_params['args'] = args
                     server_params['env'] = env
-                # XXX: SSE is deprecated in the MCP spec, but keep it around for now
-                case 'sse':
-                    headers = available_toolboxes[tb]['server_params'].get('headers')
-                    # support {{ env SOMETHING }} for header values as well for e.g. tokens
-                    if headers and isinstance(headers, dict):
-                        for k, v in headers.items():
-                            headers[k] = swap_env(v)
-                    optional_headers = available_toolboxes[tb]['server_params'].get('optional_headers')
-                    # support {{ env SOMETHING }} for header values as well for e.g. tokens
-                    if optional_headers and isinstance(optional_headers, dict):
-                        for k, v in dict(optional_headers).items():
-                            try:
-                                optional_headers[k] = swap_env(v)
-                            except LookupError as e:
-                                del optional_headers[k]
-                    if isinstance(headers, dict):
-                        if isinstance(optional_headers, dict):
-                            headers.update(optional_headers)
-                    elif isinstance(optional_headers, dict):
-                        headers = optional_headers
-                    # if None will default to float(5) in client code
-                    timeout = available_toolboxes[tb]['server_params'].get('timeout')
-                    server_params['url'] = available_toolboxes[tb]['server_params'].get('url')
-                    server_params['headers'] = headers
-                    server_params['timeout'] = timeout
-                # for more involved local MCP servers, jsonrpc over stdio seems less than reliable
-                # as an alternative you can configure local toolboxes to use the streamable transport
-                # but still be started/stopped on demand similar to stdio mcp servers
-                # all it requires is a streamable config that also has cmd/args/env set
-                case 'streamable':
-                    headers = available_toolboxes[tb]['server_params'].get('headers')
-                    # support {{ env SOMETHING }} for header values as well for e.g. tokens
-                    if headers and isinstance(headers, dict):
-                        for k, v in headers.items():
-                            headers[k] = swap_env(v)
-                    optional_headers = available_toolboxes[tb]['server_params'].get('optional_headers')
-                    # support {{ env SOMETHING }} for header values as well for e.g. tokens
-                    if optional_headers and isinstance(optional_headers, dict):
-                        for k, v in dict(optional_headers).items():
-                            try:
-                                optional_headers[k] = swap_env(v)
-                            except LookupError as e:
-                                del optional_headers[k]
-                    if isinstance(headers, dict):
-                        if isinstance(optional_headers, dict):
-                            headers.update(optional_headers)
-                    elif isinstance(optional_headers, dict):
-                        headers = optional_headers
-                    # if None will default to float(5) in client code
-                    timeout = available_toolboxes[tb]['server_params'].get('timeout')
-                    server_params['url'] = available_toolboxes[tb]['server_params'].get('url')
-                    server_params['headers'] = headers
-                    server_params['timeout'] = timeout
-                    # if command/args/env is set, we also need to start this MCP server ourselves
-                    # this way we can use the streamable transport for MCP servers that get fussy
-                    # over stdio jsonrpc polling
-                    env = available_toolboxes[tb]['server_params'].get('env')
-                    args = available_toolboxes[tb]['server_params'].get('args')
-                    cmd = available_toolboxes[tb]['server_params'].get('command')
-                    if cmd is not None:
-                        logging.debug(f"Initializing streamable toolbox: {tb}\nargs:\n{args }\nenv:\n{env}\n")
-                        exe = shutil.which(cmd)
-                        if exe is None:
-                            raise FileNotFoundError(f"Could not resolve path to {cmd}")
-                        start_cmd = [exe]
-                        if args is not None and isinstance(args, list):
-                            for i, v in enumerate(args):
-                                args[i] = swap_env(v)
-                            start_cmd += args
-                        server_params['command'] = start_cmd
-                        if env is not None and isinstance(env, dict):
-                            for k, v in dict(env).items():
-                                try:
-                                    env[k] = swap_env(v)
-                                except LookupError as e:
-                                    logging.critical(e)
-                                    logging.info("Assuming toolbox has default configuration available")
-                                    del env[k]
-                        server_params['env'] = env
-                case _:
-                    raise ValueError(f"Unsupported MCP transport {kind}")
-            confirms = available_toolboxes[tb].get('confirm', [])
-            server_prompt = available_toolboxes[tb].get('server_prompt', '')
-            client_session_timeout = float(available_toolboxes[tb].get('client_session_timeout', 0))
-            client_params[tb] = (server_params, confirms, server_prompt, client_session_timeout)
+            case _:
+                raise ValueError(f"Unsupported MCP transport {kind}")
+        confirms = toolbox.get('confirm', [])
+        server_prompt = toolbox.get('server_prompt', '')
+        client_session_timeout = float(toolbox.get('client_session_timeout', 0))
+        client_params[tb] = (server_params, confirms, server_prompt, client_session_timeout)
     return client_params
 
 def mcp_system_prompt(system_prompt: str, task: str,
