@@ -27,7 +27,7 @@ from openai.types.responses import ResponseTextDeltaEvent
 from typing import Callable
 
 from .shell_utils import shell_tool_call
-from .mcp_utils import DEFAULT_MCP_CLIENT_SESSION_TIMEOUT, ReconnectingMCPServerStdio, AsyncDebugMCPServerStdio, MCPNamespaceWrap, mcp_client_params, mcp_system_prompt, StreamableMCPThread, compress_name
+from .mcp_utils import DEFAULT_MCP_CLIENT_SESSION_TIMEOUT, ReconnectingMCPServerStdio, MCPNamespaceWrap, mcp_client_params, mcp_system_prompt, StreamableMCPThread, compress_name
 from .render_utils import render_model_output, flush_async_output
 from .env_utils import TmpEnv
 from .agent import TaskAgent
