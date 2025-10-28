@@ -12,7 +12,7 @@ taskflow:
       must_complete: true
       # taskflows can set a primary (first entry) and handoff (additional entries) agent
       agents:
-        - examples.personalities.c_auditer
+        - seclab_taskflow_agent.personalities.c_auditer
         - examples.personalities.examples.fruit_expert
       user_prompt: |
         Store an example vulnerable C program that uses `strcpy` in the
@@ -40,7 +40,7 @@ taskflow:
       must_complete: true
       model: gpt-4.1
       agents:
-        - examples.personalities.c_auditer
+        - seclab_taskflow_agent.personalities.c_auditer
       user_prompt: |
         Retrieve C code for security review from the `vulnerable_c_example`
         memory key and perform a review.
@@ -63,6 +63,6 @@ taskflow:
   - task:
       repeat_prompt: true
       agents:
-        - examples.personalities.assistant
+        - seclab_taskflow_agent.personalities.assistant
       user_prompt: |
         What kind of fruit is {{ RESULT }}?

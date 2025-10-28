@@ -7,7 +7,7 @@ taskflow:
   - task:
       must_complete: true
       agents:
-        - examples.personalities.assistant
+        - seclab_taskflow_agent.personalities.assistant
       user_prompt: |
         Store the json array ["apples", "oranges", "bananas"] in the `fruits` memory key.
       env:
@@ -18,7 +18,7 @@ taskflow:
   - task:
       must_complete: true
       agents:
-        - examples.personalities.assistant
+        - seclab_taskflow_agent.personalities.assistant
       user_prompt: |
         Retrieve the contents of the `fruits` memory key.
       env:

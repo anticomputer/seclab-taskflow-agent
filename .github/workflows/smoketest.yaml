@@ -50,8 +50,8 @@ jobs:
         run: |
           source .venv/bin/activate
           hatch build
-          hatch run main -p examples.personalities.assistant 'explain modems to me please'
-          hatch run main -p examples.personalities.c_auditer 'explain modems to me please'
+          hatch run main -p seclab_taskflow_agent.personalities.assistant 'explain modems to me please'
+          hatch run main -p seclab_taskflow_agent.personalities.c_auditer 'explain modems to me please'
           hatch run main -p examples.personalities.examples.echo 'explain modems to me please'
           hatch run main -t examples.taskflows.CVE-2023-2283.CVE-2023-2283
           hatch run main -t examples.taskflows.examples.echo

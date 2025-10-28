@@ -7,7 +7,7 @@ taskflow:
       max_steps: 5
       must_complete: true
       agents:
-        - examples.personalities.assistant
+        - seclab_taskflow_agent.personalities.assistant
       user_prompt: |
         Store the json array [{index : 1, value : 2}, {index : 2, value : 4},
         {index : 3, value : 6}] in memory under the `test_repeat_prompt` key
@@ -24,6 +24,6 @@ taskflow:
       must_complete: true
       repeat_prompt: true
       agents:
-        - examples.personalities.assistant
+        - seclab_taskflow_agent.personalities.assistant
       user_prompt: |
         What is the value of {{ RESULT_index }} + {{ RESULT_value }}?
