@@ -57,7 +57,7 @@ The task should include the `filekey` in its list of `agents`:
 ```yaml
   - task:
       agents:
-        - personalities.assistant
+        - seclab_taskflow_agent.personalities.assistant
   ...
 ```
 
@@ -108,7 +108,7 @@ Example:
 
 ### Running templated tasks in a loop
 
-Often we may want to iterate through the same tasks with different inputs. For example, we may want to do fetch all the functions from a code base and then analyze each of the function. This can be done using two consecutive task and with the help of the `repeat_prompt` field. 
+Often we may want to iterate through the same tasks with different inputs. For example, we may want to fetch all the functions from a code base and then analyze each of the functions. This can be done using two consecutive tasks and with the help of the `repeat_prompt` field. 
 
 ```yaml
   - task:
@@ -124,7 +124,7 @@ Often we may want to iterate through the same tasks with different inputs. For e
       The function has name {{ RESULT_name }} and body {{ RESULT_body }} analyze the function.
 ```
 
-In the above, the first task fetches functions in the code base and create a json list object, with each entry having a `name` and `body` field. In the next task, `repeat_prompt` is set to true, meaning that a task is created for each individual object in the list and the object fields are referenced in the templated prompt using `{{ RESULT_<fieldname> }}`. In other words, `{{ RESULT_name }}` in the prompt is replaced with the value of the `name` field of the object etc. For example, if the list of functions fetched from the first task is:
+In the above, the first task fetches functions in the code base and creates a json list object, with each entry having a `name` and `body` field. In the next task, `repeat_prompt` is set to true, meaning that a task is created for each individual object in the list and the object fields are referenced in the templated prompt using `{{ RESULT_<fieldname> }}`. In other words, `{{ RESULT_name }}` in the prompt is replaced with the value of the `name` field of the object etc. For example, if the list of functions fetched from the first task is:
 
 ```javascript
 [{'name' : foo, 'body' : foo(){return 1;}}, {'name' : bar, 'body' : bar(a) {return a + 1;}}]
@@ -189,7 +189,7 @@ An optional limit can be set to limit the number of asynchronous tasks via `asyn
       The function has name {{ RESULT_name }} and body {{ RESULT_body }} analyze the function.
 ```
 
-Both `async` and `async_limit` have no effect when use outside of a `repeat_prompt`.
+Both `async` and `async_limit` have no effect when used outside of a `repeat_prompt`.
 
 At the moment, we do not support nested `repeat_prompt`. So the following is not allowed:
 
@@ -207,7 +207,7 @@ At the moment, we do not support nested `repeat_prompt`. So the following is not
 
 #### Shell Tasks
 
-Tasks can be entirely shell based through the run directive. This simply runs a shell command and pass the result directly to the next task. It is used for creating iterable results for `repeat_prompt`.
+Tasks can be entirely shell based through the run directive. This simply runs a shell command and pass the result directly to the next task. It can be used for creating iterable results for `repeat_prompt`.
 
 For example:
 
@@ -255,7 +255,7 @@ Toolboxes are MCP server configurations. They can be defined at the Agent level 
   - task:
       ...
       toolboxes:
-        - toolboxes.codeql
+        - seclab_taskflow_agent.toolboxes.codeql
 ```
 
 If no `toolboxes` is specified, then the `toolboxes` defined in the `personality` of the `agent` is used:
@@ -263,7 +263,7 @@ If no `toolboxes` is specified, then the `toolboxes` defined in the `personality
 ```yaml
    - task:
       agents:
-        - personalities.c_auditer
+        - seclab_taskflow_agent.personalities.c_auditer
       user_prompt: |
         List all the files in the codeql database `some/codeql/db`.      
    - task:
@@ -276,15 +276,15 @@ Note that when `toolboxes` is defined for a task, it *overwrites* the `toolboxes
 ```yaml
    - task:
       agents:
-        - personalities.c_auditer
+        - seclab_taskflow_agent.personalities.c_auditer
       user_prompt: |
         List all the files in the codeql database `some/codeql/db`.      
       toolboxes:
-        - toolboxes.echo
+        - seclab_taskflow_agent.toolboxes.echo
 
 ```
 
-For this task, the `agent` `personalities.c_auditer` will have access to the `toolboxes.echo` tool.
+For this task, the `agent` `seclab_taskflow_agent.personalities.c_auditer` will have access to the `seclab_taskflow_agent.toolboxes.echo` tool.
 
 ### Headless Runs
 
@@ -380,11 +380,9 @@ Then the `task` that uses it effectively becomes:
         - some_toolboxes
 ```
 
-which all settings inherited from `single_step_taskflow` while `model` is overwritten.
-
 Any `taskflow` that contains only a single step can be used as a reusable taskflow.
 
-A reusable taskflow can also have templated prompt that takes inputs from its user. This is specified with the `inputs` field from the user.
+A reusable taskflow can also have a templated prompt that takes inputs from its user. This is specified with the `inputs` field from the user.
 
 ```yaml
   - task:
@@ -413,7 +411,7 @@ In this case, the template parameter `{{ INPUTS_fruit }}` is replaced by the val
 
 ### Reusable Prompts
 
-Reusable prompts are defined in files of `filetype` `prompts`. These are like macros that gets replaced when a templated parameter of the form `{{ PROMPTS_<filekey> }}` is encountered.
+Reusable prompts are defined in files of `filetype` `prompts`. These are like macros that get replaced when a templated parameter of the form `{{ PROMPTS_<filekey> }}` is encountered.
 
 Tasks can incorporate templated prompts which are then replaced by the actual prompt. For example:
 
@@ -422,13 +420,13 @@ Example:
 ```yaml
   - task:
       agents:
-        - fruit_expert
+        - examples.personalities.fruit_expert
       user_prompt: |
         Tell me more about apples.
-
-        {{ PROMPTS_prompts.examples.example_prompt }}
+        
+        {{ PROMPTS_examples.prompts.example_prompt }}
 ```
-and `prompts.examples.example_prompt` is the following:
+and `examples.prompts.example_prompt` is the following:
 
 ```yaml
 seclab-taskflow-agent:
@@ -444,7 +442,7 @@ Then the actual task becomes:
 ```yaml
   - task:
       agents:
-        - fruit_expert
+        - examples.personalities.fruit_expert
       user_prompt: |
         Tell me more about apples.
 
@@ -453,15 +451,14 @@ Then the actual task becomes:
 
 ### Model config
 
-LLM models can be configured in a taskflow by setting the `model_config` field to the `filekey` of a file of `filetype` `model_config` :
+LLM models can be configured in a taskflow by setting the `model_config` field to the `filekey` of a file of `filetype` `model_config`:
 
 ```yaml
 seclab-taskflow-agent:
   version: 1
   filetype: taskflow
 
-model_config: configs.model_config
-
+model_config: examples.model_configs.model_config
 ```
 
 The variables defined in the `model_config` file can then be used throughout the taskflow, e.g.
@@ -471,7 +468,7 @@ seclab-taskflow-agent:
   version: 1
   filetype: model_config
 models:
-   gpt_latest: gpt-5
+  gpt_latest: gpt-5
 ```
 
 When `gpt_latest` is used in the taskflow to specify a model, the value `gpt-5` is used:
@@ -481,7 +478,7 @@ When `gpt_latest` is used in the taskflow to specify a model, the value `gpt-5` 
       model: gpt_latest
       must_complete: false
       agents:
-        - personalities.c_auditer
+        - seclab_taskflow_agent.personalities.c_auditer
       user_prompt: |
 
 ```
