@@ -749,7 +749,7 @@ class Watchdog(threading.Thread):
             try:
                 line = self.rpc.stdin.readline()
             except IOError:
-                pass
+                line = None
 
             if line:
                 decoded_line = line.decode('utf-8').strip()
