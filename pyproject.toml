@@ -118,6 +118,7 @@ path = "src/seclab_taskflow_agent/__about__.py"
 
 [tool.hatch.envs.default.scripts]
 main = "python -m seclab_taskflow_agent {args:tests}"
+sync-deps = ""
 
 [tool.hatch.envs.types]
 extra-dependencies = [
