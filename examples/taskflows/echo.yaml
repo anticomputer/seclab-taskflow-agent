@@ -8,13 +8,13 @@ taskflow:
       max_steps: 5
       must_complete: true
       agents:
-        - examples.personalities.examples.echo
+        - examples.personalities.echo
       user_prompt: |
         Hello
   - task:
       must_complete: true
       agents:
-        - examples.personalities.examples.echo
+        - examples.personalities.echo
       user_prompt: |
         Goodbye
       env:

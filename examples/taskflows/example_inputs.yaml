@@ -5,7 +5,7 @@ seclab-taskflow-agent:
 taskflow:
   - task:
       agents:
-        - examples.personalities.examples.fruit_expert
+        - examples.personalities.fruit_expert
       inputs:
         fruit: apples
       user_prompt: |

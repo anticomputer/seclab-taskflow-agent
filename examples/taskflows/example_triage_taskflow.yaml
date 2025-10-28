@@ -31,10 +31,10 @@ taskflow:
       repeat_prompt: true
       agents:
         # primary agent for this task
-        - examples.personalities.examples.example_triage_agent
+        - examples.personalities.example_triage_agent
         # handoff agents
-        - examples.personalities.examples.apple_expert
-        - examples.personalities.examples.orange_expert
-        - examples.personalities.examples.banana_expert
+        - examples.personalities.apple_expert
+        - examples.personalities.orange_expert
+        - examples.personalities.banana_expert
       user_prompt: |
         Tell me more about how {{ RESULT }} are grown.

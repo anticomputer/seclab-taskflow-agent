@@ -37,7 +37,7 @@ class TestRealTaskflowFiles:
 
         # check that example.yaml is parsed correctly
         example_task_flow = available_tools.get_taskflow(
-            "examples.taskflows.examples.example")
+            "examples.taskflows.example")
         assert 'taskflow' in example_task_flow
         assert isinstance(example_task_flow['taskflow'], list)
         assert len(example_task_flow['taskflow']) == 4  # 4 tasks in taskflow

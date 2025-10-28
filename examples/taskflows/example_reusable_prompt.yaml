@@ -5,8 +5,8 @@ seclab-taskflow-agent:
 taskflow:
   - task:
       agents:
-        - examples.personalities.examples.fruit_expert
+        - examples.personalities.fruit_expert
       user_prompt: |
         Tell me more about apples.
         
-        {{ PROMPTS_examples.prompts.examples.example_prompt }}
+        {{ PROMPTS_examples.prompts.example_prompt }}

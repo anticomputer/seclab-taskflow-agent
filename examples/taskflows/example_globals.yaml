@@ -7,6 +7,6 @@ globals:
 taskflow:
   - task:
       agents:
-        - examples.personalities.examples.fruit_expert
+        - examples.personalities.fruit_expert
       user_prompt: |
         Tell me more about {{ GLOBALS_fruit }}.

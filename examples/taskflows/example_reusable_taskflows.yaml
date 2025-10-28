@@ -5,6 +5,6 @@ seclab-taskflow-agent:
 taskflow:
   - task:
       # with the `uses` directive we can reuse single task taskflows
-      uses: examples.taskflows.examples.single_step_taskflow
+      uses: examples.taskflows.single_step_taskflow
       # and optionally override any of its configurations
       model: gpt-4o

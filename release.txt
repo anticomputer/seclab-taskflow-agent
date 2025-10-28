@@ -44,25 +44,25 @@
 ./src/seclab_taskflow_agent/available_tools.py
 
 # configs
-./configs/model_config.yaml
+./examples/model_configs/model_config.yaml
 
 # prompts
-./examples/prompts/examples/example_prompt.yaml
+./examples/prompts/example_prompt.yaml
 
 # taskflows
-./examples/taskflows/CVE-2023-2283/CVE-2023-2283.yaml
-./examples/taskflows/examples/example_reusable_prompt.yaml
-./examples/taskflows/examples/echo.yaml
-./examples/taskflows/examples/example.yaml
-./examples/taskflows/examples/example_inputs.yaml
-./examples/taskflows/examples/example_repeat_prompt.yaml
-./examples/taskflows/examples/example_repeat_prompt_dictionary.yaml
-./examples/taskflows/examples/example_reusable_taskflows.yaml
-./examples/taskflows/examples/example_large_list_result_iter.yaml
-./examples/taskflows/examples/example_repeat_prompt_async.yaml
-./examples/taskflows/examples/single_step_taskflow.yaml
-./examples/taskflows/examples/example_triage_taskflow.yaml
-./examples/taskflows/examples/example_globals.yaml
+./examples/taskflows/CVE-2023-2283.yaml
+./examples/taskflows/example_reusable_prompt.yaml
+./examples/taskflows/echo.yaml
+./examples/taskflows/example.yaml
+./examples/taskflows/example_inputs.yaml
+./examples/taskflows/example_repeat_prompt.yaml
+./examples/taskflows/example_repeat_prompt_dictionary.yaml
+./examples/taskflows/example_reusable_taskflows.yaml
+./examples/taskflows/example_large_list_result_iter.yaml
+./examples/taskflows/example_repeat_prompt_async.yaml
+./examples/taskflows/single_step_taskflow.yaml
+./examples/taskflows/example_triage_taskflow.yaml
+./examples/taskflows/example_globals.yaml
 
 # toolboxes
 ## github official
@@ -114,9 +114,9 @@
 # personalities
 ./src/seclab_taskflow_agent/personalities/assistant.yaml
 ./src/seclab_taskflow_agent/personalities/c_auditer.yaml
-./examples/personalities/examples/fruit_expert.yaml
-./examples/personalities/examples/echo.yaml
-./examples/personalities/examples/banana_expert.yaml
-./examples/personalities/examples/orange_expert.yaml
-./examples/personalities/examples/example_triage_agent.yaml
-./examples/personalities/examples/apple_expert.yaml
+./examples/personalities/fruit_expert.yaml
+./examples/personalities/echo.yaml
+./examples/personalities/banana_expert.yaml
+./examples/personalities/orange_expert.yaml
+./examples/personalities/example_triage_agent.yaml
+./examples/personalities/apple_expert.yaml
