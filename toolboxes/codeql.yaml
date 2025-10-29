@@ -20,14 +20,16 @@ server_prompt: |
   CodeQL supports the following languages, which you'll refer to by their
   CodeQL acronyms and which are detailed below:
 
+    - actions: GitHub Actions workflows
     - cpp: The C and C++ programming language
     - csharp: The C# programming language
     - go: The Go programming language
-    - java: The Java programming language
+    - java: The Java programming language (including Kotlin)
+    - javascript: The JavaScript programming language (including TypeScript)
     - python: The Python programming language
     - ruby: The Ruby programming language
-    - swift: The Swift programming language
     - rust: The Rust programming language
+    - swift: The Swift programming language
 
   When interacting with CodeQL databases, you will need to provide the
   appropriate language acronym for the type of project contained within the
