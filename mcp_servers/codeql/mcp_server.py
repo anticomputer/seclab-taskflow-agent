@@ -64,7 +64,7 @@ def _resolve_db_path(relative_db_path: str | Path):
     absolute_path = CODEQL_DBS_BASE_PATH / relative_db_path
     if not absolute_path.is_dir():
         _debug_log(f"Database path not found: {absolute_path}")
-        raise RuntimeError('Error: Database not found!')
+        raise RuntimeError(f"Error: Database not found at {absolute_path}!")
     return absolute_path
 
 
