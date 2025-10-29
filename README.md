@@ -474,7 +474,7 @@ Note that when using the template `{{ env ENV_VARIABLE_NAME }}`, `ENV_VARIABLE_N
 
 ## License
 
-This project is licensed under the terms of the MIT open source license. Please refer to the [LICENSE](./LICENSE) file for the full terms.
+This project is licensed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license. Please refer to the [LICENSE](./LICENSE) file for the full terms.
 
 ## Maintainers
 
