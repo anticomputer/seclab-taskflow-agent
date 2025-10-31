@@ -55,16 +55,14 @@ class AvailableTools:
             return self.__yamlcache[tooltype][toolname]
         except KeyError:
             pass
-        # Split the string to get the path and filename.
+        # Split the string to get the package and filename.
         components = toolname.rsplit('.', 1)
-        if len(components) == 2:
-            path = components[0]
-            filename = components[1]
-        else:
-            path = ''
-            filename = toolname
+        if len(components) != 2:
+            raise BadToolNameError(f'Not a valid toolname: "{toolname}". It should be something like: "packagename.filename"')
+        package = components[0]
+        filename = components[1]
         try:
-            d = importlib.resources.files(path)
+            d = importlib.resources.files(package)
             if not d.is_dir():
                 raise BadToolNameError(f'Cannot load {toolname} because {d} is not a valid directory.')
             f = d.joinpath(filename + ".yaml")
