@@ -1,0 +1,12 @@
+seclab-taskflow-agent:
+  version: 1
+  filetype: taskflow
+
+globals:
+  fruit: bananas
+taskflow:
+  - task:
+      agents:
+        - examples.personalities.fruit_expert
+      user_prompt: |
+        Tell me more about {{ GLOBALS_fruit }}.

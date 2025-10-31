@@ -1,0 +1,24 @@
+seclab-taskflow-agent:
+  version: 1
+  filetype: taskflow
+
+taskflow:
+  - task:
+      exclude_from_context: true
+      must_complete: true
+      agents:
+        - seclab_taskflow_agent.personalities.assistant
+      user_prompt: |
+        Fetch all the open pull requests from `github/codeql` github repository. 
+        You do not need to provide a summary of the results.
+      toolboxes:
+        - seclab_taskflow_agent.toolboxes.github_official
+      env:
+        GITHUB_MCP_TOOLSETS: pull_requests
+  - task:
+      must_complete: true
+      repeat_prompt: true
+      agents:
+        - seclab_taskflow_agent.personalities.assistant
+      user_prompt: |
+        Echo this:  The title is {{ RESULT_title }} and the url is {{ RESULT_url }}.
