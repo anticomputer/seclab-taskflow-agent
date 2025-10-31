@@ -198,7 +198,7 @@ toolboxes:
 ```
 
 In the above, the `personality` and `task` field specifies the system prompt to be used whenever this `personality` is used.
-The `toolboxes` are the tools that are available to this `personality`. The `toolboxes` should be a list of `filekey` specifying files of the `filetype` `toolbox`.
+The `toolboxes` are the tools that are available to this `personality`. The `toolboxes` should be a list of files of the `filetype` `toolbox`. (See the [Import paths](#import-paths) section for how to reference other files.)
 
 Personalities can be used in two ways. First it can be used standalone with a prompt input from the command line:
 
@@ -382,7 +382,7 @@ hatch run main -t examples.taskflows.CVE-2023-2283
 
 Prompts are configured through YAML files of `filetype` `prompt`. They define a reusable prompt that can be referenced in `taskflow` files.
 
-They contain only one field, the `prompt` field, which is used to replace any `{{ PROMPT_<filekey> }}` template parameter in a taskflow. For example, the following `prompt`.
+They contain only one field, the `prompt` field, which is used to replace any `{{ PROMPT_<import-path> }}` template parameter in a taskflow. For example, the following `prompt`.
 
 ```yaml
 seclab-taskflow-agent:
@@ -474,6 +474,29 @@ taskflow:
 This overwrites the environment variables `MEMCACHE_STATE_DIR` and `MEMCACHE_BACKEND` for the task only. A template `{{ env ENV_VARIABLE_NAME }}` can also be used.
 
 Note that when using the template `{{ env ENV_VARIABLE_NAME }}`, `ENV_VARIABLE_NAME` must be the name of an environment variable in the current process.
+
+## Import paths
+
+YAML files often need to refer to each other. For example, a taskflow can reference a personality like this:
+
+```yaml
+taskflow:
+  - task:
+      ...
+      agents:
+        - seclab_taskflow_agent.personalities.assistant
+```
+
+We use Python's import system, so a name like `seclab_taskflow_agent.personalities.assistant` will get resolved to a YAML file using Python's import rules. One of the benefits of this is that it makes it easy to bundle and share taskflows as Python packages on PyPI.
+
+The implementation works like this:
+
+1. A name like `seclab_taskflow_agent.personalities.assistant` gets split (at the last `.` character) into a package name (`seclab_taskflow_agent.personalities`) and a file name (`assistant`).
+2. Python's [`importlib.resources.files`](https://docs.python.org/3/library/importlib.resources.html#importlib.resources.files) is used to resolve the package name into a directory name.
+3. The extension `.yaml` is added to the filename: `assistant.yaml`.
+4. The yaml file is loaded from the directory that was returned by `importlib.resources.files`.
+
+The exact code that implements this can be found in [`available_tools.py`](src/seclab_taskflow_agent/available_tools.py).
 
 ## License
 
