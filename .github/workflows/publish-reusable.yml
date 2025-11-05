@@ -16,7 +16,11 @@ on:
         required: true
         type: string
       environment_name:
-        description: 'Name of environment that specifies PyPI/TestPyPI url'
+        description: 'Name for PyPI/TestPyPI environment'
+        type: string
+        required: true
+      environment_url:
+        description: 'URL for PyPI/TestPyPI environment'
         type: string
         required: true
     secrets:
@@ -31,7 +35,9 @@ jobs:
   publish:
     name: Build
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment_name }}
+    environment:
+      name: ${{ inputs.environment_name }}
+      url: ${{ inputs.environment_url }}
     env:
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       GITHUB_REPO: ${{ github.repository }}
