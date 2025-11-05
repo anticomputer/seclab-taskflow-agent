@@ -10,6 +10,7 @@ on:
 jobs:
   publish:
     name: Publish wheel to TestPyPI
+    runs-on: ubuntu-latest
     environment:
       name: testpypi
       url: https://test.pypi.org/p/seclab-taskflow-agent2
