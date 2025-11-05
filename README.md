@@ -4,7 +4,7 @@ The Security Lab Taskflow Agent is an MCP enabled multi-Agent framework.
 
 The Taskflow Agent is built on top of the [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/).
 
-While the Taskflow Agent does not integrate into the GitHub Doctom Copilot UX, it does operate using the Copilot API (CAPI) as its backend, similar to Copilot IDE extensions.
+While the Taskflow Agent does not integrate into the GitHub Dotcom Copilot UX, it does operate using the Copilot API (CAPI) as its backend, similar to Copilot IDE extensions.
 
 ## Core Concepts
 
@@ -12,11 +12,11 @@ The Taskflow Agent leverages a GitHub Workflow-esque YAML based grammar to perfo
 
 Its primary value proposition is as a CLI tool that allows users to quickly define and script Agentic workflows without having to write any code.
 
-Agents are defined through [personalities](personalities/), that receive a [task](taskflows/) to complete given a set of [tools](toolboxes/).
+Agents are defined through [personalities](examples/personalities/), that receive a [task](examples/taskflows/) to complete, given a set of [tools](src/seclab_taskflow_agent/toolboxes/).
 
-Agents can cooperate to complete sequences of tasks through so-called [taskflows](taskflows/GRAMMAR.md).
+Agents can cooperate to complete sequences of tasks through so-called [taskflows](doc/GRAMMAR.md).
 
-You can find a detailed overview of the taskflow grammar [here](https://github.com/GitHubSecurityLab/seclab-taskflow-agent/blob/main/taskflows/GRAMMAR.md) and example taskflows [here](https://github.com/GitHubSecurityLab/seclab-taskflow-agent/tree/main/taskflows/examples).
+You can find a detailed overview of the taskflow grammar [here](taskflows/GRAMMAR.md) and example taskflows [here](examples/taskflows/).
 
 ## Use Cases and Examples
 
@@ -26,7 +26,7 @@ Its design philosophy is centered around the belief that a prompt level focus of
 
 While the maintainer himself primarily uses this framework as a code auditing tool it also serves as a more generic swiss army knife for exploring Agentic workflows. For example, the GitHub Security Lab also uses this framework for automated code scanning alert triage.
 
-The framework includes a [CodeQL](https://codeql.github.com/) MCP server that can be used for Agentic code review, see the [CVE-2023-2283](https://github.com/GitHubSecurityLab/seclab-taskflow-agent/blob/main/taskflows/CVE-2023-2283/CVE-2023-2283.yaml) for an example of how to have an Agent review C code using a CodeQL database ([demo video](https://www.youtube.com/watch?v=eRSPSVW8RMo)).
+The framework includes a [CodeQL](https://codeql.github.com/) MCP server that can be used for Agentic code review, see the [CVE-2023-2283](examples/taskflows/CVE-2023-2283.yaml) taskflow for an example of how to have an Agent review C code using a CodeQL database ([demo video](https://www.youtube.com/watch?v=eRSPSVW8RMo)).
 
 Instead of generating CodeQL queries itself, the CodeQL MCP Server is used to provide CodeQL-query based MCP tools that allow an Agent to navigate and explore code. It leverages templated CodeQL queries to provide targeted context for model driven code analysis.
 
@@ -52,26 +52,32 @@ CODEQL_DBS_BASE_PATH="/app/my_data/codeql_databases"
 
 ## Deploying from Source
 
-First install the required dependencies:
+We use [hatch](https://hatch.pypa.io/) to build the project. Download and build like this:
 
-```sh
+```bash
+git clone https://github.com/GitHubSecurityLab/seclab-taskflow-agent.git
+cd seclab-taskflow-agent
 python -m venv .venv
 source .venv/bin/activate
+pip install hatch
+hatch build
+```
+
 python -m pip install -r requirements.txt
 ```
 
-Then run `python main.py`.
+Then run `hatch run main`.
 
 Example: deploying a prompt to an Agent Personality:
 
 ```sh
-python main.py -p assistant 'explain modems to me please'
+hatch run main -p seclab_taskflow_agent.personalities.assistant 'explain modems to me please'
 ```
 
 Example: deploying a Taskflow:
 
 ```sh
-python main.py -t example
+hatch run main -t examples.taskflows.example
 ```
 
 ## Deploying from Docker
@@ -80,7 +86,7 @@ You can deploy the Taskflow Agent via its Docker image using `docker/run.sh`.
 
 WARNING: the Agent Docker image is _NOT_ intended as a security boundary but strictly a deployment convenience.
 
-The image entrypoint is `main.py` and thus it operates the same as invoking the Agent from source directly.
+The image entrypoint is `__main__.py` and thus it operates the same as invoking the Agent from source directly.
 
 You can find the Docker image for the Seclab Taskflow Agent [here](https://github.com/GitHubSecurityLab/seclab-taskflow-agent/pkgs/container/seclab-taskflow-agent) and how it is built [here](release_tools/).
 
@@ -188,21 +194,20 @@ task: |
 
 # personality toolboxes map to mcp servers made available to this Agent
 toolboxes:
-  - toolboxes.echo
+  - seclab_taskflow_agent.toolboxes.echo
 ```
 
 In the above, the `personality` and `task` field specifies the system prompt to be used whenever this `personality` is used.
-The `toolboxes` are the tools that are available to this `personality`. The `toolboxes` should be a list of `filekey` specifying 
-files of the `filetype` `toolbox`. 
+The `toolboxes` are the tools that are available to this `personality`. The `toolboxes` should be a list of files of the `filetype` `toolbox`. (See the [Import paths](#import-paths) section for how to reference other files.)
 
 Personalities can be used in two ways. First it can be used standalone with a prompt input from the command line:
 
 ```
-python3 main.py -p personalities.examples.echo "echo this message"
+hatch run main -p examples.personalities.echo 'echo this message'
 ```
 
-In this case, `personality` and `task` from `GitHubSecurityLab/seclab-taskflow-agent/personalities/examples/echo` are used as the 
-system prompt while the user argument `echo this message` is used as a user prompt. In this use case, the only tools that this 
+In this case, `personality` and `task` from [`examples/personalities/echo.yaml`](examples/personalities/echo.yaml) are used as the
+system prompt while the user argument `echo this message` is used as a user prompt. In this use case, the only tools that this
 personality has access to is the `toolboxes` specified in the file.
 
 Personalities can also be used in a `taskflow` to perform tasks. This is done by adding the `personality` to the `agents` field in a `taskflow` file:
@@ -214,34 +219,33 @@ taskflow:
       agents:
         - personalities.assistant
       user_prompt: |
-        Fetch all the open pull requests from `github/codeql` github repository. 
+        Fetch all the open pull requests from `github/codeql` github repository.
         You do not need to provide a summary of the results.
       toolboxes:
-        - toolboxes.github_official
+        - seclab_taskflow_agent.toolboxes.github_official
 ```
 
-In this case, the `personality` specified in `agents` provides the system prompt and the user prompt is specified in `user_prompt` field of the task. A big difference in this case is that the `toolboxes` specified in the `task` will overwrite the `toolboxes` that the `personality` has access to. So in the above example, the `personalities.assistant` will have access to the `toolboxes.github_official` toolbox instead of its own toolbox. It is important to note that the `personalities` toolboxes get *overwritten* in this case, so whenever a `toolboxes` field is provided in a `task`, it'll use the provided toolboxes and `personality` loses access to its own toolboxes. e.g.
+In this case, the `personality` specified in `agents` provides the system prompt and the user prompt is specified in the `user_prompt` field of the task. A big difference in this case is that the `toolboxes` specified in the `task` will overwrite the `toolboxes` that the `personality` has access to. So in the above example, the `personalities.assistant` will have access to the `seclab_taskflow_agent.toolboxes.github_official` toolbox instead of its own toolbox. It is important to note that the `personalities` toolboxes get *overwritten* in this case, so whenever a `toolboxes` field is provided in a `task`, it'll use the provided toolboxes and `personality` loses access to its own toolboxes. e.g.
 
 ```yaml
 taskflow:
   - task:
       ...
       agents:
-        - personalities.examples.echo
+        - examples.personalities.echo
       user_prompt: |
         echo this
       toolboxes:
-        - toolboxes.github_official
+        - seclab_taskflow_agent.toolboxes.github_official
 ```
 
-In the above `task`, `personalities.examples.echo` will only have access to the `toolboxes.github_official` and can no longer access the `toolboxes.echo` `toolbox`. (Unless it is added also in the `task` `toolboxes`)
+In the above `task`, `personalities.examples.echo` will only have access to the `toolboxes.github_official` and can no longer access the `seclab_taskflow_agent.toolboxes.echo` `toolbox` (unless it is added also in the `task` `toolboxes`).
 
 ## Toolboxes
 
-MCP servers that provide tools. Configured through YAML files of `filetype` `toolboxes`. These are files that provide
-the type and parameters to start an MCP server. 
+MCP servers that provide tools. Configured through YAML files of `filetype` `toolbox`. These are files that provide the type and parameters to start an MCP server.
 
-For example, to start a stdio MCP server that are implemented in a python file:
+For example, to start a stdio MCP server that is implemented in a python file:
 
 ```yaml
 # stdio mcp server configuration
@@ -252,15 +256,14 @@ seclab-taskflow-agent:
 server_params:
   kind: stdio
   command: python
-  args:
-    - toolboxes/echo/echo.py
+  args: ["-m", "seclab_taskflow_agent.mcp_servers.echo.echo"]
   env:
-    SOME: value
+    TEST: value
 ```
 
 In the above, `command` and `args` are just the command and arguments that should be run to start the MCP server. Environment variables can be passed using the `env` field.
 
-A [streamable](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http) is also supported by specifying the `kind` to `streamable`:
+A [streamable](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http) is also supported by setting the `kind` to `streamable`:
 
 ```yaml
 server_params:
@@ -288,8 +291,8 @@ confirm:
 
 ## Taskflows
 
-A sequence of interdependent tasks performed by a set of Agents. Configured through YAML files of `filetype` `taskflow`. 
-Taskflows supports a number of features, and their details can be found [here](taskflows/GRAMMAR.md).
+A sequence of interdependent tasks performed by a set of Agents. Configured through YAML files of `filetype` `taskflow`.
+Taskflows supports a number of features, and their details can be found [here](doc/GRAMMAR.md).
 
 Example:
 
@@ -308,8 +311,8 @@ taskflow:
       must_complete: true
       # taskflows can set a primary (first entry) and handoff (additional entries) agent
       agents:
-        - personalities/c_auditer.yaml
-        - personalities/examples/fruit_expert.yaml
+        - seclab_taskflow_agent.personalities.c_auditer
+        - examples.personalities.fruit_expert
       user_prompt: |
         Store an example vulnerable C program that uses `strcpy` in the
         `vulnerable_c_example` memory key and explain why `strcpy`
@@ -330,13 +333,13 @@ taskflow:
       # this normally only has the memcache toolbox, but we extend it here with
       # the GHSA toolbox
       toolboxes:
-        - toolboxes/memcache.yaml
-        - toolboxes/codeql.yaml
+        - seclab_taskflow_agent.toolboxes.memcache
+        - seclab_taskflow_agent.toolboxes.codeql
   - task:
       must_complete: true
       model: gpt-4.1
       agents:
-        - personalities/c_auditer.yaml
+        - seclab_taskflow_agent.personalities.c_auditer
       user_prompt: |
         Retrieve C code for security review from the `vulnerable_c_example`
         memory key and perform a review.
@@ -346,7 +349,7 @@ taskflow:
         MEMCACHE_STATE_DIR: "example_taskflow/"
         MEMCACHE_BACKEND: "dictionary_file"
       toolboxes:
-        - toolboxes/memcache.yaml
+        - seclab_taskflow_agent.toolboxes.memcache
       # headless mode does not prompt for tool call confirms configured for a server
       # note: this will auto-allow, if you want control over potentially dangerous
       # tool calls, then you should NOT run a task in headless mode (default: false)
@@ -359,7 +362,7 @@ taskflow:
   - task:
       repeat_prompt: true
       agents:
-        - personalities/assistant.yaml
+        - seclab_taskflow_agent.personalities.assistant
       user_prompt: |
         What kind of fruit is {{ RESULT }}?
 ```
@@ -372,14 +375,14 @@ See the [taskflow examples](taskflows/examples) for other useful Taskflow patter
 You can run a taskflow from the command line like this:
 
 ```
-python3 main.py -t taskflows.CVE-2023-2283.CVE-2023-2283
+hatch run main -t examples.taskflows.CVE-2023-2283
 ```
 
-## Prompt
+## Prompts
 
 Prompts are configured through YAML files of `filetype` `prompt`. They define a reusable prompt that can be referenced in `taskflow` files.
 
-They contain only one field, the `prompt` field, which is used to replace any `{{ PROMPT_<filekey> }}` template parameter in a taskflow. For example, the following `prompt`.
+They contain only one field, the `prompt` field, which is used to replace any `{{ PROMPT_<import-path> }}` template parameter in a taskflow. For example, the following `prompt`.
 
 ```yaml
 seclab-taskflow-agent:
@@ -390,16 +393,16 @@ prompt: |
   Tell me more about bananas as well.
 ```
 
-would replace any `{{ PROMPT_prompts.examples.example_prompt }}` template parameter found in the `user_prompt` section in a taskflow:
+would replace any `{{ PROMPT_examples.prompts.example_prompt }}` template parameter found in the `user_prompt` section in a taskflow:
 
 ```yaml
   - task:
       agents:
-        - fruit_expert
+        - examples.personalities.fruit_expert
       user_prompt: |
         Tell me more about apples.
 
-        {{ PROMPTS_prompts.examples.example_prompt }}
+        {{ PROMPTS_examples.prompts.example_prompt }}
 ```
 
 becomes:
@@ -407,7 +410,7 @@ becomes:
 ```yaml
   - task:
       agents:
-        - fruit_expert
+        - examples.personalities.fruit_expert
       user_prompt: |
         Tell me more about apples.
 
@@ -423,20 +426,20 @@ seclab-taskflow-agent:
   version: 1
   filetype: model_config
 models:
-   gpt_latest: gpt-5
+  gpt_latest: gpt-5
 ```
 
 A `model_config` file can be used in a `taskflow` and the values defined in `models` can then be used throughout.
 
 ```yaml
-model_config: configs.model_config
+model_config: examples.model_configs.model_config
 
 taskflow:
   - task:
       model: gpt_latest
 ```
 
-Model version can then be updated by changing `gpt_latest` in the `model_config` file and applied across all taskflows that use the config.
+The model version can then be updated by changing `gpt_latest` in the `model_config` file and applied across all taskflows that use the config.
 
 ## Passing environment variables
 
@@ -448,10 +451,10 @@ server_params:
   env:
     CODEQL_DBS_BASE_PATH: "{{ env CODEQL_DBS_BASE_PATH }}"
     # prevent git repo operations on gh codeql executions
-    GH_NO_UPDATE_NOTIFIER: "Disable"
+    GH_NO_UPDATE_NOTIFIER: "disable"
 ```
 
-For `toolbox`, `env` can be used inside `server_params`. A template of the form `{{ env ENV_VARIABLE_NAME}}` can be used to pass values of the environment variable from the current process to the MCP server. So in the above, the MCP server is run with `GH_NO_UPDATE_NOTIFIER=disable` and passes the value of `CODEQL_DBS_BASE_PATH` from the current process to the MCP server. The templated paramater `{{ env CODEQL_DBS_BASE_PATH}}` is replaced by the value of the environment variable `CODEQL_DBS_BASE_PATH` in the current process. 
+For `toolbox`, `env` can be used inside `server_params`. A template of the form `{{ env ENV_VARIABLE_NAME }}` can be used to pass values of the environment variable from the current process to the MCP server. So in the above, the MCP server is run with `GH_NO_UPDATE_NOTIFIER=disable` and passes the value of `CODEQL_DBS_BASE_PATH` from the current process to the MCP server. The templated paramater `{{ env CODEQL_DBS_BASE_PATH }}` is replaced by the value of the environment variable `CODEQL_DBS_BASE_PATH` in the current process.
 
 Similarly, environment variables can be passed to a `task` in a `taskflow`:
 
@@ -460,7 +463,7 @@ taskflow:
   - task:
       must_complete: true
       agents:
-        - personalities.assistant
+        - seclab_taskflow_agent.personalities.assistant
       user_prompt: |
         Store the json array ["apples", "oranges", "bananas"] in the `fruits` memory key.
       env:
@@ -468,9 +471,32 @@ taskflow:
         MEMCACHE_BACKEND: "dictionary_file"
 ```
 
-This overwrites the environment variables `MEMCACHE_STATE_DIR` and `MEMCACHE_BACKEND` for the task only. A template `{{ env ENV_VARIABLE_NAME}}` can also be used.
+This overwrites the environment variables `MEMCACHE_STATE_DIR` and `MEMCACHE_BACKEND` for the task only. A template `{{ env ENV_VARIABLE_NAME }}` can also be used.
 
 Note that when using the template `{{ env ENV_VARIABLE_NAME }}`, `ENV_VARIABLE_NAME` must be the name of an environment variable in the current process.
+
+## Import paths
+
+YAML files often need to refer to each other. For example, a taskflow can reference a personality like this:
+
+```yaml
+taskflow:
+  - task:
+      ...
+      agents:
+        - seclab_taskflow_agent.personalities.assistant
+```
+
+We use Python's import system, so a name like `seclab_taskflow_agent.personalities.assistant` will get resolved to a YAML file using Python's import rules. One of the benefits of this is that it makes it easy to bundle and share taskflows as Python packages on PyPI.
+
+The implementation works like this:
+
+1. A name like `seclab_taskflow_agent.personalities.assistant` gets split (at the last `.` character) into a package name (`seclab_taskflow_agent.personalities`) and a file name (`assistant`).
+2. Python's [`importlib.resources.files`](https://docs.python.org/3/library/importlib.resources.html#importlib.resources.files) is used to resolve the package name into a directory name.
+3. The extension `.yaml` is added to the filename: `assistant.yaml`.
+4. The yaml file is loaded from the directory that was returned by `importlib.resources.files`.
+
+The exact code that implements this can be found in [`available_tools.py`](src/seclab_taskflow_agent/available_tools.py).
 
 ## License
 
@@ -486,4 +512,4 @@ This project is licensed under the terms of the [MIT](https://spdx.org/licenses/
 
 ## Acknowledgements
 
-Security Lab team members [Man Yue Mo](https://github.com/m-y-mo) and [Peter Stockli](https://github.com/p-) for contributing heavily to the testing and development of this framework, as well as the rest of the Security Lab team for helpful discussions and feedback.
+Security Lab team members [Man Yue Mo](https://github.com/m-y-mo) and [Peter Stöckli](https://github.com/p-) for contributing heavily to the testing and development of this framework, as well as the rest of the Security Lab team for helpful discussions and feedback.

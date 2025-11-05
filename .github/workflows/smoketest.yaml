@@ -40,7 +40,7 @@ jobs:
         run: |
           python -m venv .venv
           source .venv/bin/activate
-          python -m pip install -r requirements.txt
+          python -m pip install hatch
 
       - name: Run tests
         env:
@@ -49,19 +49,20 @@ jobs:
 
         run: |
           source .venv/bin/activate
-          python main.py -p personalities.assistant 'explain modems to me please'
-          python main.py -p personalities.c_auditer 'explain modems to me please'
-          python main.py -p personalities.examples.echo 'explain modems to me please'
-          python main.py -t taskflows.CVE-2023-2283.CVE-2023-2283
-          python main.py -t taskflows.examples.echo
-          python main.py -t taskflows.examples.example
-          python main.py -t taskflows.examples.example_globals
-          python main.py -t taskflows.examples.example_inputs
-          python main.py -t taskflows.examples.example_large_list_result_iter
-          python main.py -t taskflows.examples.example_repeat_prompt
-          python main.py -t taskflows.examples.example_repeat_prompt_async
-          python main.py -t taskflows.examples.example_repeat_prompt_dictionary
-          python main.py -t taskflows.examples.example_reusable_prompt
-          python main.py -t taskflows.examples.example_reusable_taskflows
-          python main.py -t taskflows.examples.example_triage_taskflow
-          python main.py -t taskflows.examples.single_step_taskflow
+          hatch build
+          hatch run main -p seclab_taskflow_agent.personalities.assistant 'explain modems to me please'
+          hatch run main -p seclab_taskflow_agent.personalities.c_auditer 'explain modems to me please'
+          hatch run main -p examples.personalities.echo 'explain modems to me please'
+          hatch run main -t examples.taskflows.CVE-2023-2283
+          hatch run main -t examples.taskflows.echo
+          hatch run main -t examples.taskflows.example
+          hatch run main -t examples.taskflows.example_globals
+          hatch run main -t examples.taskflows.example_inputs
+          hatch run main -t examples.taskflows.example_large_list_result_iter
+          hatch run main -t examples.taskflows.example_repeat_prompt
+          hatch run main -t examples.taskflows.example_repeat_prompt_async
+          hatch run main -t examples.taskflows.example_repeat_prompt_dictionary
+          hatch run main -t examples.taskflows.example_reusable_prompt
+          hatch run main -t examples.taskflows.example_reusable_taskflows
+          hatch run main -t examples.taskflows.example_triage_taskflow
+          hatch run main -t examples.taskflows.single_step_taskflow

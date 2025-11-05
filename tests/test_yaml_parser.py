@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2025 GitHub
+# SPDX-License-Identifier: MIT
+
 """
 Basic tests for YAML parsing functionality in the taskflow agent.
 
@@ -8,7 +11,7 @@ import pytest
 import tempfile
 from pathlib import Path
 import yaml
-from available_tools import AvailableTools
+from seclab_taskflow_agent.available_tools import AvailableTools
 
 class TestYamlParser:
     """Test suite for YamlParser class."""
@@ -34,7 +37,7 @@ class TestRealTaskflowFiles:
 
         # check that example.yaml is parsed correctly
         example_task_flow = available_tools.get_taskflow(
-            "taskflows.examples.example")
+            "examples.taskflows.example")
         assert 'taskflow' in example_task_flow
         assert isinstance(example_task_flow['taskflow'], list)
         assert len(example_task_flow['taskflow']) == 4  # 4 tasks in taskflow

@@ -4,106 +4,119 @@
 
 # release tooling
 ./release.txt
+./release_tools/release.sh
 ./release_tools/HOWTO.md
 ./release_tools/copy_files.py
 ./release_tools/publish_docker.py
 
-# license
+# license, etc.
 ./LICENSE
+./CODEOWNERS
+./CONTRIBUTING.md
+./NOTICE
+./CODE_OF_CONDUCT.md
+./SUPPORT.md
+./SECURITY.md
 
 # deps
-./requirements.txt
+./pyproject.toml
 
 # docker
 ./docker/run.sh
 
 # docs
 ./README.md
-./taskflows/GRAMMAR.md
+./doc/GRAMMAR.md
 
 # logs
 ./logs/ABOUT
 
 # code
-./main.py
-./agent.py
-./capi.py
-./mcp_utils.py
-./env_utils.py
-./render_utils.py
-./shell_utils.py
-./available_tools.py
+./src/seclab_taskflow_agent/__init__.py
+./src/seclab_taskflow_agent/__about__.py
+./src/seclab_taskflow_agent/__main__.py
+./src/seclab_taskflow_agent/agent.py
+./src/seclab_taskflow_agent/capi.py
+./src/seclab_taskflow_agent/mcp_utils.py
+./src/seclab_taskflow_agent/env_utils.py
+./src/seclab_taskflow_agent/render_utils.py
+./src/seclab_taskflow_agent/shell_utils.py
+./src/seclab_taskflow_agent/available_tools.py
+
+# configs
+./examples/model_configs/model_config.yaml
 
 # prompts
-./prompts/examples/example_prompt.yaml
+./examples/prompts/example_prompt.yaml
 
 # taskflows
-./taskflows/CVE-2023-2283/CVE-2023-2283.yaml
-./taskflows/examples/example_reusable_prompt.yaml
-./taskflows/examples/echo.yaml
-./taskflows/examples/example.yaml
-./taskflows/examples/example_inputs.yaml
-./taskflows/examples/example_repeat_prompt.yaml
-./taskflows/examples/example_repeat_prompt_dictionary.yaml
-./taskflows/examples/example_reusable_taskflows.yaml
-./taskflows/examples/example_large_list_result_iter.yaml
-./taskflows/examples/example_repeat_prompt_async.yaml
-./taskflows/examples/single_step_taskflow.yaml
-./taskflows/examples/example_triage_taskflow.yaml
-./taskflows/examples/example_globals.yaml
+./examples/taskflows/CVE-2023-2283.yaml
+./examples/taskflows/example_reusable_prompt.yaml
+./examples/taskflows/echo.yaml
+./examples/taskflows/example.yaml
+./examples/taskflows/example_inputs.yaml
+./examples/taskflows/example_repeat_prompt.yaml
+./examples/taskflows/example_repeat_prompt_dictionary.yaml
+./examples/taskflows/example_reusable_taskflows.yaml
+./examples/taskflows/example_large_list_result_iter.yaml
+./examples/taskflows/example_repeat_prompt_async.yaml
+./examples/taskflows/single_step_taskflow.yaml
+./examples/taskflows/example_triage_taskflow.yaml
+./examples/taskflows/example_globals.yaml
 
 # toolboxes
 ## github official
-./toolboxes/github_official.yaml
+./src/seclab_taskflow_agent/toolboxes/github_official.yaml
 ## echo
-./toolboxes/echo.yaml
-./mcp_servers/echo/echo.py
+./src/seclab_taskflow_agent/toolboxes/echo.yaml
+./src/seclab_taskflow_agent/mcp_servers/echo/echo.py
 ## memcache
-./toolboxes/memcache.yaml
-./mcp_servers/memcache/memcache.py
-./mcp_servers/memcache/memcache_backend/__init__.py
-./mcp_servers/memcache/memcache_backend/backend.py
-./mcp_servers/memcache/memcache_backend/dictionary_file.py
-./mcp_servers/memcache/memcache_backend/sql_models.py
-./mcp_servers/memcache/memcache_backend/sqlite.py
+./src/seclab_taskflow_agent/toolboxes/memcache.yaml
+./src/seclab_taskflow_agent/mcp_servers/memcache/__init__.py
+./src/seclab_taskflow_agent/mcp_servers/memcache/memcache.py
+./src/seclab_taskflow_agent/mcp_servers/memcache/memcache_backend/__init__.py
+./src/seclab_taskflow_agent/mcp_servers/memcache/memcache_backend/backend.py
+./src/seclab_taskflow_agent/mcp_servers/memcache/memcache_backend/dictionary_file.py
+./src/seclab_taskflow_agent/mcp_servers/memcache/memcache_backend/sql_models.py
+./src/seclab_taskflow_agent/mcp_servers/memcache/memcache_backend/sqlite.py
 ## logbook
-./toolboxes/logbook.yaml
-./mcp_servers/logbook/logbook.py
+./src/seclab_taskflow_agent/toolboxes/logbook.yaml
+./src/seclab_taskflow_agent/mcp_servers/logbook/logbook.py
 ## codeql
-./toolboxes/codeql.yaml
-./mcp_servers/codeql/mcp_server.py
-./mcp_servers/codeql/client.py
-./mcp_servers/codeql/queries/README.md
-./mcp_servers/codeql/queries/mcp-js/relative_to_absolute.ql
-./mcp_servers/codeql/queries/mcp-js/qlpack.yml
-./mcp_servers/codeql/queries/mcp-js/absolute_to_relative.ql
-./mcp_servers/codeql/queries/mcp-js/definition_location_for_function.ql
-./mcp_servers/codeql/queries/mcp-js/call_graph_from.ql
-./mcp_servers/codeql/queries/mcp-js/locations.qll
-./mcp_servers/codeql/queries/mcp-js/call_graph_to.ql
-./mcp_servers/codeql/queries/mcp-cpp/stmt_location.ql
-./mcp_servers/codeql/queries/mcp-cpp/declaration_location_for_variable.ql
-./mcp_servers/codeql/queries/mcp-cpp/relative_to_absolute.ql
-./mcp_servers/codeql/queries/mcp-cpp/call_graph_from_to.ql
-./mcp_servers/codeql/queries/mcp-cpp/qlpack.yml
-./mcp_servers/codeql/queries/mcp-cpp/absolute_to_relative.ql
-./mcp_servers/codeql/queries/mcp-cpp/codeql-pack.lock.yml
-./mcp_servers/codeql/queries/mcp-cpp/definition_location_for_function.ql
-./mcp_servers/codeql/queries/mcp-cpp/call_graph_from.ql
-./mcp_servers/codeql/queries/mcp-cpp/list_functions.ql
-./mcp_servers/codeql/queries/mcp-cpp/locations.qll
-./mcp_servers/codeql/queries/mcp-cpp/call_graph_to.ql
-./mcp_servers/codeql/jsonrpyc/LICENSE
-./mcp_servers/codeql/jsonrpyc/__meta__.py
-./mcp_servers/codeql/jsonrpyc/__init__.py
-./mcp_servers/codeql/jsonrpyc/py.typed
+./src/seclab_taskflow_agent/toolboxes/codeql.yaml
+./src/seclab_taskflow_agent/mcp_servers/codeql/mcp_server.py
+./src/seclab_taskflow_agent/mcp_servers/codeql/client.py
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/README.md
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-js/relative_to_absolute.ql
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-js/qlpack.yml
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-js/absolute_to_relative.ql
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-js/definition_location_for_function.ql
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-js/call_graph_from.ql
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-js/locations.qll
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-js/call_graph_to.ql
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-cpp/stmt_location.ql
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-cpp/declaration_location_for_variable.ql
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-cpp/relative_to_absolute.ql
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-cpp/call_graph_from_to.ql
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-cpp/qlpack.yml
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-cpp/absolute_to_relative.ql
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-cpp/codeql-pack.lock.yml
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-cpp/definition_location_for_function.ql
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-cpp/call_graph_from.ql
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-cpp/list_functions.ql
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-cpp/locations.qll
+./src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-cpp/call_graph_to.ql
+./src/seclab_taskflow_agent/mcp_servers/codeql/jsonrpyc/LICENSE
+./src/seclab_taskflow_agent/mcp_servers/codeql/jsonrpyc/__meta__.py
+./src/seclab_taskflow_agent/mcp_servers/codeql/jsonrpyc/__init__.py
+./src/seclab_taskflow_agent/mcp_servers/codeql/jsonrpyc/py.typed
 
 # personalities
-./personalities/assistant.yaml
-./personalities/c_auditer.yaml
-./personalities/examples/fruit_expert.yaml
-./personalities/examples/echo.yaml
-./personalities/examples/banana_expert.yaml
-./personalities/examples/orange_expert.yaml
-./personalities/examples/example_triage_agent.yaml
-./personalities/examples/apple_expert.yaml
+./src/seclab_taskflow_agent/personalities/assistant.yaml
+./src/seclab_taskflow_agent/personalities/c_auditer.yaml
+./examples/personalities/fruit_expert.yaml
+./examples/personalities/echo.yaml
+./examples/personalities/banana_expert.yaml
+./examples/personalities/orange_expert.yaml
+./examples/personalities/example_triage_agent.yaml
+./examples/personalities/apple_expert.yaml

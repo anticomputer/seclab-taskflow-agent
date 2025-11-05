@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2025 GitHub
+# SPDX-License-Identifier: MIT
+
 import os
 import shutil
 import subprocess
@@ -71,13 +74,14 @@ RUN curl -Ls -o /tmp/codeql.zip https://github.com/github/codeql-cli-binaries/re
 COPY . /app
 
 # Install CodeQL pack dependencies
-RUN codeql pack install /app/mcp_servers/codeql/queries/mcp-cpp
-RUN codeql pack install /app/mcp_servers/codeql/queries/mcp-js
+RUN codeql pack install /app/src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-cpp
+RUN codeql pack install /app/src/seclab_taskflow_agent/mcp_servers/codeql/queries/mcp-js
 
-# Install Python dependencies if requirements.txt exists
-RUN if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi
+# Install Python dependencies if pyproject.toml exists
+RUN pip install hatch
+RUN if [ -f pyproject.toml ]; then hatch run sync-deps; fi
 
-ENTRYPOINT ["python", "{entrypoint}"]
+ENTRYPOINT ["hatch", "run", "{entrypoint}"]
 '''
     with open(os.path.join(dest_dir, "Dockerfile"), "w") as f:
         f.write(dockerfile)
