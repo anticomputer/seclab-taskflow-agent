@@ -73,7 +73,7 @@ jobs:
       env:
         VERSION: ${{ inputs.version }}
         NOTES: ${{ inputs.release_notes }}
-      run: gh release create $VERSION --repo $GITHUB_REPO --notes ""
+      run: gh release create $VERSION --repo $GITHUB_REPO --notes $NOTES
 
     - name: Upload GitHub Release
       env:
