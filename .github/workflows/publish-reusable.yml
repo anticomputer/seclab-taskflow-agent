@@ -15,9 +15,9 @@ on:
         description: 'This is the repository-url parameter for pypa/gh-action-pypi-publish'
         required: true
         type: string
-      environment:
-        description: 'PyPI/TestPyPI name and url are required'
-        type: environment
+      environment_name:
+        description: 'Name of environment that specifies PyPI/TestPyPI url'
+        type: string
         required: true
     secrets:
       GH_TOKEN:
@@ -31,7 +31,7 @@ jobs:
   publish:
     name: Build
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: ${{ inputs.environment_name }}
     env:
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       GITHUB_REPO: ${{ github.repository }}
