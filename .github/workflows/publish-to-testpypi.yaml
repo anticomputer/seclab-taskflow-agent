@@ -10,7 +10,7 @@ jobs:
     # This environment is required as an input to pypa/gh-action-pypi-publish
     environment:
       name: testpypi
-      url: https://test.pypi.org/p/seclab-taskflow-agent2
+      url: https://test.pypi.org/p/seclab-taskflow-agent
 
     env:
       GITHUB_REPO: ${{ github.repository }}
