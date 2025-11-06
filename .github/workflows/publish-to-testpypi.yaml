@@ -60,11 +60,13 @@ jobs:
 
     - name: Create GitHub Release
       env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         RELEASE_NAME: ${{ steps.create_release_name.outputs.RELEASE_NAME }}
-        NOTES: ${{ github.head_ref }}
+        NOTES: "Test Release"
       run: gh release create $RELEASE_NAME --repo $GITHUB_REPO --notes $NOTES
 
     - name: Upload GitHub Release
       env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         RELEASE_NAME: ${{ steps.create_release_name.outputs.RELEASE_NAME }}
       run: gh release upload $RELEASE_NAME dist/** --repo $GITHUB_REPO
