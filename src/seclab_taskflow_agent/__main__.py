@@ -38,8 +38,10 @@ load_dotenv()
 
 # only model output or help message should go to stdout, everything else goes to log
 logging.getLogger('').setLevel(logging.NOTSET)
+log_dir = pathlib.Path("logs")
+log_dir.mkdir(parents=True, exist_ok=True)
 log_file_handler = RotatingFileHandler(
-    'logs/task_agent.log',
+    log_dir.joinpath('task_agent.log'),
     maxBytes=1024*1024*10,
     backupCount=10)
 log_file_handler.setLevel(os.getenv('TASK_AGENT_LOGLEVEL', default='DEBUG'))
