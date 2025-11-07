@@ -38,6 +38,7 @@ jobs:
       - name: Checkout the PR
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           gh pr checkout $PR_NUMBER
 
