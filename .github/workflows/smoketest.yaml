@@ -16,6 +16,7 @@ permissions:
 jobs:
   Linux:
     runs-on: ubuntu-latest
+    if: github.event.issue.pull_request  # Make sure the comment is on a PR
     steps:
       - name: branch-deploy
         id: branch-deploy
@@ -31,10 +32,14 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Checkout
+      - name: Checkout the repo
         uses: actions/checkout@v5
-        with:
-          ref: ${{ github.head_ref }}
+
+      - name: Checkout the PR
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh pr checkout $PR_NUMBER
 
       - name: Setup Python venv
         run: |
