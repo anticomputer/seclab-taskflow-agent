@@ -498,6 +498,13 @@ The implementation works like this:
 
 The exact code that implements this can be found in [`available_tools.py`](src/seclab_taskflow_agent/available_tools.py).
 
+## Background
+
+SecLab Taskflow Agent is an experimental agentic framework, maintained by [GitHub Security Lab](https://securitylab.github.com/). We are using it to experiment with using AI Agents for security purposes, such as auditing code for vulnerabilities, or triaging issues.
+
+We'd love to hear your feedback. Please [create an issue](https://github.com/GitHubSecurityLab/seclab-taskflow-agent/issues/new/choose) to send us a feature request or bug report. We also welcome pull requests (see our [contribution guidelines](./CONTRIBUTING.md) for more information if you wish to contribute).
+
+
 ## License
 
 This project is licensed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license. Please refer to the [LICENSE](./LICENSE) file for the full terms.
