@@ -61,10 +61,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         RELEASE_NAME: ${{ github.ref_name }}
-      run: gh release create $RELEASE_NAME --repo $GITHUB_REPO --generate-notes
-
-    - name: Upload GitHub Release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        RELEASE_NAME: ${{ github.ref_name }}
-      run: gh release upload $RELEASE_NAME dist/** --repo $GITHUB_REPO
+      run: gh release create $RELEASE_NAME dist/* --repo $GITHUB_REPO --generate-notes
