@@ -64,8 +64,7 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | d
     && rm -rf /var/lib/apt/lists/*
 
 # Install CodeQL CLI
-ENV CODEQL_VERSION=2.23.0
-RUN curl -Ls -o /tmp/codeql.zip https://github.com/github/codeql-cli-binaries/releases/download/v$CODEQL_VERSION/codeql-linux64.zip \\
+RUN curl -Ls -o /tmp/codeql.zip https://github.com/github/codeql-cli-binaries/releases/latest/download/codeql-linux64.zip \\
     && unzip /tmp/codeql.zip -d /opt \\
     && mv /opt/codeql /opt/codeql-cli \\
     && ln -s /opt/codeql-cli/codeql /usr/local/bin/codeql \\
