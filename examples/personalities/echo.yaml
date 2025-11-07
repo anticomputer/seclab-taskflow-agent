@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2025 GitHub
+# SPDX-License-Identifier: MIT
+
 # personalities define the system prompt level directives for this Agent
 seclab-taskflow-agent:
   version: 1
