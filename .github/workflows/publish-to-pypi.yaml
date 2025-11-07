@@ -1,6 +1,9 @@
-name: Publish to TestPyPI
+name: Publish to PyPI
 
-on: workflow_dispatch
+on:
+  push:
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
 
 jobs:
   publish:
@@ -9,8 +12,8 @@ jobs:
 
     # This environment is required as an input to pypa/gh-action-pypi-publish
     environment:
-      name: testpypi
-      url: https://test.pypi.org/p/seclab-taskflow-agent
+      name: pypi
+      url: https://pypi.org/p/seclab-taskflow-agent
 
     env:
       GITHUB_REPO: ${{ github.repository }}
@@ -20,10 +23,6 @@ jobs:
       id-token: write  # For trusted publishing
 
     steps:
-    - name: Generate unique name for the test release
-      id: create_release_name
-      run: echo "RELEASE_NAME=test-release-`date -Is --utc`" >> $GITHUB_OUTPUT
-
     - name: Checkout repository
       uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       with:
@@ -46,10 +45,9 @@ jobs:
         name: python-package-distributions
         path: dist/
 
-    - name: Publish to TestPyPI
+    - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0
       with:
-        repository-url: https://test.pypi.org/legacy/
         verbose: true
 
     - name: Sign with sigstore
@@ -62,11 +60,11 @@ jobs:
     - name: Create GitHub Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        RELEASE_NAME: ${{ steps.create_release_name.outputs.RELEASE_NAME }}
-      run: gh release create $RELEASE_NAME --repo $GITHUB_REPO --prerelease --generate-notes
+        RELEASE_NAME: ${{ github.ref_name }}
+      run: gh release create $RELEASE_NAME --repo $GITHUB_REPO --generate-notes
 
     - name: Upload GitHub Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        RELEASE_NAME: ${{ steps.create_release_name.outputs.RELEASE_NAME }}
+        RELEASE_NAME: ${{ github.ref_name }}
       run: gh release upload $RELEASE_NAME dist/** --repo $GITHUB_REPO
