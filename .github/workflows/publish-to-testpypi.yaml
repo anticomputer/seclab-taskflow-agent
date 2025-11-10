@@ -1,4 +1,4 @@
-name: Publish to TestPyPI
+name: Publish Pre-Release to TestPyPI
 
 on: workflow_dispatch
 
@@ -20,10 +20,6 @@ jobs:
       id-token: write  # For trusted publishing
 
     steps:
-    - name: Generate unique name for the test release
-      id: create_release_name
-      run: echo "RELEASE_NAME=test-release-`date -Is --utc`" >> $GITHUB_OUTPUT
-
     - name: Checkout repository
       uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       with:
@@ -36,6 +32,21 @@ jobs:
 
     - name: Install Hatch
       run: pip install --upgrade hatch
+
+    - name: Generate new pre-release version number
+      id: create_version_number
+      run: |
+        # Convert current version number to an alpha release of the next version.
+        # For example, 1.0.2 becomes 1.0.3a0
+        hatch version micro,a
+        # Get latest version number from test.pypi.org
+        CURRENT_VERSION_NUMBER=$(pip index versions --pre --index-url https://test.pypi.org/simple seclab-taskflow-agent | sed s'/[^(]*[(]\([^)]*\)[)].*/\1/' | head -n 1)
+        # Set version number to match test.pypi.org
+        hatch version $CURRENT_VERSION_NUMBER || echo TestPyPI is behind current version
+        # Bump version number
+        hatch version a
+        # Create a name for the release
+        echo "RELEASE_NAME=test-release-v`hatch version`" >> $GITHUB_OUTPUT
 
     - name: Build the wheel
       run: python3 -m hatch build
@@ -62,5 +73,5 @@ jobs:
     - name: Create GitHub Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        RELEASE_NAME: ${{ steps.create_release_name.outputs.RELEASE_NAME }}
+        RELEASE_NAME: ${{ steps.create_version_number.outputs.RELEASE_NAME }}
       run: gh release create $RELEASE_NAME dist/* --repo $GITHUB_REPO --prerelease --generate-notes
