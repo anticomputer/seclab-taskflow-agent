@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2025 GitHub
+# SPDX-License-Identifier: MIT
+
 # a simple example of the triage Agent pattern
 seclab-taskflow-agent:
   version: 1
