@@ -40,7 +40,7 @@ jobs:
         # For example, 1.0.2 becomes 1.0.3a0
         hatch version micro,a
         # Get latest version number from test.pypi.org
-        CURRENT_VERSION_NUMBER=$(pip index versions --pre --index-url https://test.pypi.org/simple seclab-taskflow-agent | sed s'/[^(]*[(]\([^)]*\)[)].*/\1/' | head -n 1)
+        CURRENT_VERSION_NUMBER=$(pip index versions --pre --index-url https://test.pypi.org/simple seclab-taskflow-agent | sed 's/[^(]*[(]\([^)]*\)[)].*/\1/' | head -n 1)
         # Set version number to match test.pypi.org
         hatch version $CURRENT_VERSION_NUMBER || echo TestPyPI is behind current version
         # Bump version number
