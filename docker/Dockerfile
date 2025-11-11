@@ -38,7 +38,7 @@ RUN curl -Ls -o /tmp/codeql.zip https://github.com/github/codeql-cli-binaries/re
     && ln -s /opt/codeql-cli/codeql /usr/local/bin/codeql \
     && rm /tmp/codeql.zip
 
-# Install Python dependencies if pyproject.toml exists
+# Install seclab-taskflow-agent from PyPI
 RUN pip install seclab-taskflow-agent
 
 # Install CodeQL pack dependencies
