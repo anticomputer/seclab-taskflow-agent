@@ -5,7 +5,6 @@ import os
 import shutil
 import subprocess
 import sys
-import tempfile
 
 def get_image_digest(image_name, tag):
     result = subprocess.run(
