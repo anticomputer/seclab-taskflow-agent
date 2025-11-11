@@ -2,13 +2,11 @@
 
 To release an updated version of the Agent perform the following steps:
 
-1. Add any newly created files or dependencies to `release.txt`.
-
-2. Release an updated Docker image:
+1. Release an updated Docker image:
 
 ```sh
 docker login ghcr.io -u YOUR_GITHUB_USERNAME
-python release_tools/publish_docker.py release.txt main.py ghcr.io/githubsecuritylab/seclab-taskflow-agent latest
+python release_tools/publish_docker.py ghcr.io/githubsecuritylab/seclab-taskflow-agent latest
 ```
 
 Note: your login password is a GitHub PAT with packages write/read/delete scope enabled.

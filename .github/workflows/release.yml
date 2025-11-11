@@ -35,7 +35,7 @@ jobs:
         id: docker_build
         run: |
           echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u GitHubSecurityLab --password-stdin
-          python release_tools/publish_docker.py release.txt main.py ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.IMAGE_NAME }} ${{ github.event.inputs.release_tag }}
+          python release_tools/publish_docker.py ${{ env.REGISTRY }}/${{ env.USER }}/${{ env.IMAGE_NAME }} ${{ github.event.inputs.release_tag }}
           DIGEST=$(cat /tmp/digest.txt)
           echo "digest=$DIGEST" >> $GITHUB_OUTPUT
 
