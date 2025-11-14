@@ -4,7 +4,7 @@
 # https://openai.github.io/openai-agents-python/agents/
 import os
 import logging
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from collections.abc import Callable
 from typing import Any
 from urllib.parse import urlparse
@@ -18,7 +18,7 @@ from agents import Agent, Runner, AgentHooks, RunHooks, result, function_tool, T
 from .capi import COPILOT_INTEGRATION_ID, COPILOT_API_ENDPOINT
 
 # grab our secrets from .env, this must be in .gitignore
-load_dotenv()
+load_dotenv(find_dotenv(usecwd=True))
 
 match urlparse(COPILOT_API_ENDPOINT).netloc:
     case 'api.githubcopilot.com':

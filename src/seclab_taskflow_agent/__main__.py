@@ -6,7 +6,7 @@ from threading import Thread
 import argparse
 import os
 import sys
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 import logging
 from logging.handlers import RotatingFileHandler
 from pprint import pprint, pformat
@@ -34,7 +34,7 @@ from .agent import TaskAgent
 from .capi import list_tool_call_models
 from .available_tools import AvailableTools
 
-load_dotenv()
+load_dotenv(find_dotenv(usecwd=True))
 
 # only model output or help message should go to stdout, everything else goes to log
 logging.getLogger('').setLevel(logging.NOTSET)
