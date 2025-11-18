@@ -51,7 +51,7 @@ class TestCliGlobals:
         from seclab_taskflow_agent.__main__ import parse_prompt_args
         available_tools = AvailableTools()
         
-        p, t, l, cli_globals, user_prompt, help_msg = parse_prompt_args(
+        p, t, l, cli_globals, user_prompt = parse_prompt_args(
             available_tools, "-t example -g fruit=apples")
         
         assert t == "example"
@@ -64,7 +64,7 @@ class TestCliGlobals:
         from seclab_taskflow_agent.__main__ import parse_prompt_args
         available_tools = AvailableTools()
         
-        p, t, l, cli_globals, user_prompt, help_msg = parse_prompt_args(
+        p, t, l, cli_globals, user_prompt = parse_prompt_args(
             available_tools, "-t example -g fruit=apples -g color=red")
         
         assert t == "example"
@@ -77,7 +77,7 @@ class TestCliGlobals:
         from seclab_taskflow_agent.__main__ import parse_prompt_args
         available_tools = AvailableTools()
         
-        p, t, l, cli_globals, user_prompt, help_msg = parse_prompt_args(
+        p, t, l, cli_globals, user_prompt = parse_prompt_args(
             available_tools, "-t example -g message=hello world")
         
         assert t == "example"
@@ -90,7 +90,7 @@ class TestCliGlobals:
         from seclab_taskflow_agent.__main__ import parse_prompt_args
         available_tools = AvailableTools()
         
-        p, t, l, cli_globals, user_prompt, help_msg = parse_prompt_args(
+        p, t, l, cli_globals, user_prompt = parse_prompt_args(
             available_tools, "-t example -g equation=x=5")
         
         assert t == "example"
