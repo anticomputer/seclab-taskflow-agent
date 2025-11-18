@@ -1,15 +1,27 @@
-#!/bin/sh
-# note: this provides the Docker socket to the image and is NOT intended as a security container
-if [ ! -f ".env" ]; then
-    touch ".env"
-fi
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2025 GitHub
+# SPDX-License-Identifier: MIT
+
+# Script for running seclab-taskflow-agent in a docker container
+# (using the docker image that we publish).
+#
+# To use this script, `cd` to a directory containing taskflows.
+# For example:
+#
+#   git clone https://github.com/GitHubSecurityLab/seclab-taskflow-agent.git
+#   cd seclab-taskflow-agent/src
+#   export COPILOT_TOKEN=<My GitHub PAT>
+#   export GITHUB_AUTH_HEADER=<My GitHub PAT>
+#   sudo -E ../docker/run.sh -p seclab_taskflow_agent.personalities.assistant 'explain modems to me please'
+
+touch -a .env
+mkdir -p logs
+mkdir -p data
+
 docker run -i \
-       --platform linux/amd64 \
-       --volume "$PWD/"logs:/app/logs \
-       --mount type=bind,src="$PWD/".env,dst=/app/.env,ro \
-       ${MY_DATA:+--mount type=bind,src=$MY_DATA,dst=/app/my_data} \
-       ${MY_TASKFLOWS:+--mount type=bind,src=$MY_TASKFLOWS,dst=/app/taskflows/my_taskflows,ro} \
-       ${MY_TOOLBOXES:+--mount type=bind,src=$MY_TOOLBOXES,dst=/app/toolboxes/my_toolboxes,ro} \
-       ${MY_PROMPTS:+--mount type=bind,src=$MY_PROMPTS,dst=/app/prompts/my_prompts,ro} \
-       ${MY_PERSONALITIES:+--mount type=bind,src=$MY_PERSONALITIES,dst=/app/personalities/my_personalities,ro} \
+       --mount type=bind,src="$PWD",dst=/app \
+       -e DATA_DIR=/app/data \
+       -e GITHUB_PERSONAL_ACCESS_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN" \
+       -e COPILOT_TOKEN="$COPILOT_TOKEN" \
        "ghcr.io/githubsecuritylab/seclab-taskflow-agent" "$@"
