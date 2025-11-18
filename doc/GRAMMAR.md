@@ -340,6 +340,20 @@ taskflow:
         Tell me more about {{ GLOBALS_fruit }}.
 ```
 
+Global variables can also be set or overridden from the command line using the `-g` or `--global` flag:
+
+```sh
+hatch run main -t examples.taskflows.example_globals -g fruit=apples
+```
+
+Multiple global variables can be set by repeating the flag:
+
+```sh
+hatch run main -t examples.taskflows.example_globals -g fruit=apples -g color=red
+```
+
+Command line globals override any globals defined in the taskflow YAML file, allowing you to reuse taskflows with different parameter values without editing the files.
+
 ### Reusable Tasks
 
 Tasks can reuse single step taskflows and optionally override any of its configurations. This is done by setting a `uses` field with a link to the single step taskflow YAML file as its value.
