@@ -77,6 +77,18 @@ Example: deploying a Taskflow:
 hatch run main -t examples.taskflows.example
 ```
 
+Example: deploying a Taskflow with command line global variables:
+
+```sh
+hatch run main -t examples.taskflows.example_globals -g fruit=apples
+```
+
+Multiple global variables can be set:
+
+```sh
+hatch run main -t examples.taskflows.example_globals -g fruit=apples -g color=red
+```
+
 ## Deploying from Docker
 
 You can deploy the Taskflow Agent via its Docker image using `docker/run.sh`.
@@ -104,6 +116,13 @@ Example: deploying a Taskflow (example.yaml):
 ```sh
 docker/run.sh -t example
 ```
+
+Example: deploying a Taskflow with global variables:
+
+```sh
+docker/run.sh -t example_globals -g fruit=apples
+```
+
 Example: deploying a custom taskflow (custom_taskflow.yaml):
 
 ```sh

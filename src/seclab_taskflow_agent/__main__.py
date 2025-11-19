@@ -67,21 +67,35 @@ def parse_prompt_args(available_tools: AvailableTools,
     group.add_argument("-p", help="The personality to use (mutex with -t)", required=False)
     group.add_argument("-t", help="The taskflow to use (mutex with -p)", required=False)
     group.add_argument("-l", help="List available tool call models and exit", action='store_true', required=False)
+    parser.add_argument("-g", "--global", dest="globals", action='append', help="Set global variable (KEY=VALUE). Can be used multiple times.", required=False)
     parser.add_argument('prompt', nargs=argparse.REMAINDER)
     #parser.add_argument('remainder', nargs=argparse.REMAINDER, help="Remaining args")
     help_msg = parser.format_help()
     help_msg += "\nExamples:\n\n"
     help_msg += "`-p assistant explain modems to me please`\n"
+    help_msg += "`-t example -g fruit=apples`\n"
+    help_msg += "`-t example -g fruit=apples -g color=red`\n"
     try:
         args = parser.parse_known_args(user_prompt.split(' ') if user_prompt else None)
     except SystemExit as e:
         if e.code == 2:
             logging.error(f"User provided incomplete prompt: {user_prompt}")
-            return None, None, None, help_msg
+            return None, None, None, None, help_msg
     p = args[0].p.strip() if args[0].p else None
     t = args[0].t.strip() if args[0].t else None
     l = args[0].l
-    return p, t, l, ' '.join(args[0].prompt), help_msg
+    
+    # Parse global variables from command line
+    cli_globals = {}
+    if args[0].globals:
+        for g in args[0].globals:
+            if '=' not in g:
+                logging.error(f"Invalid global variable format: {g}. Expected KEY=VALUE")
+                return None, None, None, None, None, help_msg
+            key, value = g.split('=', 1)
+            cli_globals[key.strip()] = value.strip()
+    
+    return p, t, l, cli_globals, ' '.join(args[0].prompt), help_msg
 
 async def deploy_task_agents(available_tools: AvailableTools,
                              agents: dict,
@@ -378,7 +392,7 @@ async def deploy_task_agents(available_tools: AvailableTools,
 
 
 async def main(available_tools: AvailableTools,
-               p: str | None, t: str | None, prompt: str | None):
+               p: str | None, t: str | None, cli_globals: dict, prompt: str | None):
     last_mcp_tool_results = [] # XXX: memleaky
 
     async def on_tool_end_hook(
@@ -418,7 +432,10 @@ async def main(available_tools: AvailableTools,
         await render_model_output(f"** 🤖💪 Running Task Flow: {t}\n")
 
         # optional global vars available for the taskflow tasks
+        # Start with globals from taskflow file, then override with CLI globals
         global_variables = taskflow.get('globals', {})
+        if cli_globals:
+            global_variables.update(cli_globals)
         model_config = taskflow.get('model_config', {})
         model_keys = []
         if model_config:
@@ -646,7 +663,7 @@ if __name__ == '__main__':
     cwd = pathlib.Path.cwd()
     available_tools = AvailableTools()
 
-    p, t, l, user_prompt, help_msg = parse_prompt_args(available_tools)
+    p, t, l, cli_globals, user_prompt, help_msg = parse_prompt_args(available_tools)
 
     if l:
         tool_models = list_tool_call_models(os.getenv('COPILOT_TOKEN'))
@@ -658,4 +675,4 @@ if __name__ == '__main__':
         print(help_msg)
         sys.exit(1)
 
-    asyncio.run(main(available_tools, p, t, user_prompt), debug=True)
+    asyncio.run(main(available_tools, p, t, cli_globals, user_prompt), debug=True)
