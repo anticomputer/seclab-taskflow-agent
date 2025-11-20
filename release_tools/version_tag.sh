@@ -26,7 +26,7 @@ fi
 
 # Check that this commit is signed by GitHub, to avoid
 # accidentally tagging a commit that only exists locally.
-if [ $(git verify-commit HEAD --raw 2>&1 | grep -E "GOODSIG [A-F0-9]+ GitHub" -c) -eq 0 ] ; then
+if [ "$(git verify-commit HEAD --raw 2>&1 | grep -E "GOODSIG [A-F0-9]+ GitHub" -c)" -eq 0 ] ; then
     echo "This commit hasn't been signed by GitHub."
     echo "Please check that you are attempting to tag the correct commit."
     exit 1
