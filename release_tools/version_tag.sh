@@ -18,7 +18,7 @@ if [ "$(git rev-parse --abbrev-ref HEAD)" != "main" ] ; then
 fi
 
 # Check no uncommitted changes.
-git update-index --refresh 
+git update-index --refresh
 if ! git diff-index --quiet HEAD -- ; then
     echo "There are uncommitted file changes. Aborting."
     exit 1
