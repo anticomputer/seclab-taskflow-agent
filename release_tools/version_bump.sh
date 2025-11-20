@@ -16,7 +16,7 @@
 # that manually.
 
 if [[ $# -eq 0 ]] ; then
-    echo 'usage: new_version [ARG]'
+    echo 'usage: ./release_tools/version_bump.sh [ARG]'
     echo 'ARG is passed to the hatch version command to bump the version number.'
     echo 'ARG is usually "major", "minor", or "micro".'
     exit 0
