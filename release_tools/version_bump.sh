@@ -51,7 +51,10 @@ if ! git checkout -b "version-$NEW_VERSION_NUMBER" ; then
 fi
 
 # Commit the version number change.
-git commit -a -m "Version $NEW_VERSION_NUMBER"
+if ! git commit -a -m "Version $NEW_VERSION_NUMBER" ; then
+    echo "git commit failed"
+    exit 1
+fi
 
 echo
 echo "I have updated the version number locally."
