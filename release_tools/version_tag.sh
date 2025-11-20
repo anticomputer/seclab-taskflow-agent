@@ -39,8 +39,14 @@ if ! git rev-parse HEAD^2 >/dev/null 2>&1 ; then
     exit 1
 fi
 
-PROJECT_NAME=$(hatch project metadata name)
-VERSION_NUMBER=$(hatch version)
+if ! PROJECT_NAME=$(hatch project metadata name) ; then
+    echo "Failed to retrieve project name."
+    exit 1
+fi
+if ! VERSION_NUMBER=$(hatch version) ; then
+    echo "Failed to retrieve version number."
+    exit 1
+fi
 TAG_NAME="v$VERSION_NUMBER"
 
 # Create tag
