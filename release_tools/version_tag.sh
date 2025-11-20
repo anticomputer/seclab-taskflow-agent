@@ -33,7 +33,7 @@ if [ $(git verify-commit HEAD --raw 2>&1 | grep -E "GOODSIG [A-F0-9]+ GitHub" -c
 fi
 
 # Check that this is a merge commit.
-if ! git rev-parse HEAD^2 ; then
+if ! git rev-parse HEAD^2 >/dev/null 2>&1 ; then
     echo "This is not a merge commit."
     echo "Please check that you are attempting to tag the correct commit."
     exit 1
