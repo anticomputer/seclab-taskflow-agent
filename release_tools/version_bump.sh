@@ -5,7 +5,7 @@
 
 # Script for updating the version number. Call it like this:
 #
-# ./release_tools/version_bump minor
+# ./release_tools/version_bump.sh minor
 #
 # It uses `hatch version` to update the version number. Use
 # major/minor/micro to determine which part of the version number to
