@@ -56,4 +56,4 @@ fi
 
 echo
 echo "I have created tag $TAG_NAME. You can push it to GitHub like this:"
-echo "git push $REMOTE_NAME tag $TAG_NAME"
+echo "git push \"$REMOTE_NAME\" tag \"$TAG_NAME\""
