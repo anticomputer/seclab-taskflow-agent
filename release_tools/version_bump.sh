@@ -41,7 +41,11 @@ if ! hatch version "$@" ; then
     exit 1
 fi
 
-NEW_VERSION_NUMBER=$(hatch version)
+# Read new version number
+if ! NEW_VERSION_NUMBER=$(hatch version) ; then
+    echo "Failed to retrieve version number."
+    exit 1
+fi
 
 # Create new branch
 if ! git checkout -b "version-$NEW_VERSION_NUMBER" ; then
