@@ -44,7 +44,7 @@ VERSION_NUMBER=$(hatch version)
 TAG_NAME="v$VERSION_NUMBER"
 
 # Create tag
-if ! git tag $TAG_NAME -s -m "Release $PROJECT_NAME version $VERSION_NUMBER." ; then
+if ! git tag "$TAG_NAME" -s -m "Release $PROJECT_NAME version $VERSION_NUMBER." ; then
     echo "Failed to create the tag"
     exit 1
 fi
