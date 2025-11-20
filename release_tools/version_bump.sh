@@ -36,7 +36,10 @@ if ! git diff-index --quiet HEAD -- ; then
 fi
 
 # Bump version number
-hatch version $1
+if ! hatch version "$1" ; then
+    echo "Failed to update version"
+    exit 1
+fi
 
 NEW_VERSION_NUMBER=$(hatch version)
 
