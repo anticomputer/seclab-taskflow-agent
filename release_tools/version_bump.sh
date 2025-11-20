@@ -23,7 +23,7 @@ if [[ $# -eq 0 ]] ; then
 fi
 
 # Check that the main branch is checked out.
-if [ $(git rev-parse --abbrev-ref HEAD) != "main" ] ; then
+if [ "$(git rev-parse --abbrev-ref HEAD)" != "main" ] ; then
     echo "Please check out the main branch before running this command."
     exit 1
 fi
