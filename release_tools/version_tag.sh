@@ -50,6 +50,9 @@ if ! git tag "$TAG_NAME" -s -m "Release $PROJECT_NAME version $VERSION_NUMBER." 
 fi
 
 REMOTE_NAME=$(git for-each-ref --format='%(upstream:remotename)' refs/heads/main)
+if [ -z "$REMOTE_NAME" ]; then
+    REMOTE_NAME="origin"
+fi
 
 echo
 echo "I have created tag $TAG_NAME. You can push it to GitHub like this:"
