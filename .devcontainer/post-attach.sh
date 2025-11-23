@@ -5,7 +5,7 @@ set -e
 if [ -v CODESPACES ]; then
     echo "🔐 Running in Codespaces - injecting secrets from Codespaces settings..."
     if [ ! -v COPILOT_TOKEN ]; then
-        echo "Running in Codespaces - please add COPILOT_TOKEN to your Codespaces secrets"
+        echo "⚠️ Running in Codespaces - please add COPILOT_TOKEN to your Codespaces secrets"
     fi
     if [ ! -v GITHUB_PERSONAL_ACCESS_TOKEN ]; then
         echo "⚠️ Running in Codespaces - please add GITHUB_PERSONAL_ACCESS_TOKEN to your Codespaces secrets"
