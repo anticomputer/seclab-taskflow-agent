@@ -108,6 +108,13 @@ class TestCliGlobals:
 class TestAPIEndpoint:
     """Test API endpoint configuration."""
     
+    @staticmethod
+    def _reload_capi_module():
+        """Helper method to reload the capi module."""
+        import importlib
+        import seclab_taskflow_agent.capi
+        importlib.reload(seclab_taskflow_agent.capi)
+    
     def test_default_api_endpoint(self):
         """Test that default API endpoint is set to models.github.ai/inference."""
         from seclab_taskflow_agent.capi import AI_API_ENDPOINT
@@ -127,10 +134,8 @@ class TestAPIEndpoint:
             test_endpoint = 'https://test.example.com'
             os.environ['AI_API_ENDPOINT'] = test_endpoint
             
-            # Need to reload the module to pick up the new env var
-            import importlib
-            import seclab_taskflow_agent.capi
-            importlib.reload(seclab_taskflow_agent.capi)
+            # Reload the module to pick up the new env var
+            self._reload_capi_module()
             
             from seclab_taskflow_agent.capi import AI_API_ENDPOINT
             assert AI_API_ENDPOINT == test_endpoint
@@ -141,9 +146,7 @@ class TestAPIEndpoint:
             else:
                 os.environ['AI_API_ENDPOINT'] = original_env
             # Reload again to restore original state
-            import importlib
-            import seclab_taskflow_agent.capi
-            importlib.reload(seclab_taskflow_agent.capi)
+            self._reload_capi_module()
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
