@@ -16,6 +16,7 @@ permissions:
 jobs:
   Linux:
     runs-on: ubuntu-latest
+    environment: smoketest
     if: github.event.issue.pull_request  # Make sure the comment is on a PR
     steps:
       - name: branch-deploy
