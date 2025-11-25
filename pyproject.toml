@@ -39,7 +39,6 @@ dependencies = [
   "cyclopts==3.24.0",
   "distro==1.9.0",
   "dnspython==2.8.0",
-  "docstring-to-markdown==0.17",
   "docstring_parser==0.17.0",
   "docutils==0.22",
   "email-validator==2.3.0",
