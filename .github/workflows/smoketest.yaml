@@ -25,6 +25,7 @@ jobs:
         with:
           trigger: "smoke test"
           reaction: "eyes"
+          environment: "smoketest"
           stable_branch: "main"
           update_branch: "disabled"
 
