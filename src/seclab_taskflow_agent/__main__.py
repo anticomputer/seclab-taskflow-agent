@@ -478,7 +478,7 @@ async def main(available_tools: AvailableTools,
             model_settings = {}
             if model in model_keys:
                 if model in models_params:
-                    model_settings = models_params[model]
+                    model_settings = models_params[model].copy()
                 model = model_dict[model]
             task_model_settings = task_body.get('model_settings', {})
             if not isinstance(task_model_settings, dict):
