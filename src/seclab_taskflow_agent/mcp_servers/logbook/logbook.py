@@ -19,7 +19,7 @@ mcp = FastMCP("Logbook")
 
 LOG = {}
 
-LOGBOOK = mcp_data_dir('seclab-taskflow-agent', 'memcache', 'LOGBOOK_STATE_DIR') / Path("logbook.json")
+LOGBOOK = mcp_data_dir('seclab-taskflow-agent', 'logbook', 'LOGBOOK_STATE_DIR') / Path("logbook.json")
 
 def ensure_log():
     global LOG
