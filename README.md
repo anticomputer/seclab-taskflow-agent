@@ -467,7 +467,7 @@ model_settings:
       effort: high
 ```
 
-You do not need to set parameters for all models defined in the `models` section. When parameters is not set for a model, they'll fall back to the default value. However, all the settings in this section must belong to one of the models specified in the `models` section, otherwise an error will raise:
+You do not need to set parameters for all models defined in the `models` section. When parameters are not set for a model, they'll fall back to the default value. However, all the settings in this section must belong to one of the models specified in the `models` section, otherwise an error will raise:
 
 ```yaml
 model_settings:
