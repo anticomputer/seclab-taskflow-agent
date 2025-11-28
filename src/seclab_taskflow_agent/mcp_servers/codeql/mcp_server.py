@@ -20,10 +20,11 @@ import time
 import re
 from urllib.parse import urlparse, unquote
 import zipfile
+from seclab_taskflow_agent.path_utils import mcp_data_dir
 
 mcp = FastMCP("CodeQL")
 
-CODEQL_DBS_BASE_PATH = Path(os.getenv('CODEQL_DBS_BASE_PATH', default='/workspaces'))
+CODEQL_DBS_BASE_PATH = mcp_data_dir('seclab-taskflow-agent', 'codeql', 'CODEQL_DBS_BASE_PATH')
 
 # tool name -> templated query lookup for supported languages
 TEMPLATED_QUERY_PATHS = {
