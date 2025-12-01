@@ -22,13 +22,14 @@ class TestAPIEndpoint:
     
     def test_default_api_endpoint(self):
         """Test that default API endpoint is set to models.github.ai/inference."""
-        from seclab_taskflow_agent.capi import AI_API_ENDPOINT, AI_API_ENDPOINT_ENUM
+        import seclab_taskflow_agent.capi
         # When no env var is set, it should default to models.github.ai/inference
         # Note: We can't easily test this without manipulating the environment
         # so we'll just import and verify the constant exists
-        assert AI_API_ENDPOINT is not None
-        assert isinstance(AI_API_ENDPOINT, str)
-        assert urlparse(AI_API_ENDPOINT).netloc == AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB
+        endpoint = seclab_taskflow_agent.capi.AI_API_ENDPOINT
+        assert endpoint is not None
+        assert isinstance(endpoint, str)
+        assert urlparse(endpoint).netloc == AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB
     
     def test_api_endpoint_env_override(self):
         """Test that AI_API_ENDPOINT can be overridden by environment variable."""
@@ -43,8 +44,8 @@ class TestAPIEndpoint:
             # Reload the module to pick up the new env var
             self._reload_capi_module()
             
-            from seclab_taskflow_agent.capi import AI_API_ENDPOINT
-            assert AI_API_ENDPOINT == test_endpoint
+            import seclab_taskflow_agent.capi
+            assert seclab_taskflow_agent.capi.AI_API_ENDPOINT == test_endpoint
         finally:
             # Restore original env
             if original_env is None:
