@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 
 
-def mcp_data_dir(packagename: str, mcpname: str, env_override: str | None):
+def mcp_data_dir(packagename: str, mcpname: str, env_override: str | None) -> Path:
     """
     Create a directory for an MCP to store its data.
     env_override is the name of an environment variable that
