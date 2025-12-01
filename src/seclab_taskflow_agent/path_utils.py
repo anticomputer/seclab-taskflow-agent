@@ -9,8 +9,14 @@ from pathlib import Path
 def mcp_data_dir(packagename: str, mcpname: str, env_override: str | None) -> Path:
     """
     Create a directory for an MCP to store its data.
-    env_override is the name of an environment variable that
-    can be used to override the default location.
+
+    Parameters:
+        packagename (str): The name of the package. Used as a subdirectory under the data directory.
+        mcpname (str): The name of the MCP server. Used as a subdirectory under the package directory.
+        env_override (str | None): The name of an environment variable that, if set, overrides the default data directory location. If None, the default location is used.
+
+    Returns:
+        Path: The path to the created data directory for the MCP server.
     """
     if env_override:
         p = os.getenv(env_override)
