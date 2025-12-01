@@ -8,7 +8,6 @@ Test API endpoint configuration.
 import pytest
 import os
 from urllib.parse import urlparse
-from seclab_taskflow_agent.available_tools import AvailableTools
 
 class TestAPIEndpoint:
     """Test API endpoint configuration."""
