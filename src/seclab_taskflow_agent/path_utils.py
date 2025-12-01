@@ -24,9 +24,9 @@ def mcp_data_dir(packagename: str, mcpname: str, env_override: str | None) -> Pa
             return Path(p)
     # Use [platformdirs](https://pypi.org/project/platformdirs/) to
     # choose an appropriate location.
-    d = platformdirs.user_data_dir(appname = "seclab-taskflow-agent",
-                                   appauthor = "GitHubSecurityLab",
-                                   ensure_exists = True)
+    d = platformdirs.user_data_dir(appname="seclab-taskflow-agent",
+                                   appauthor="GitHubSecurityLab",
+                                   ensure_exists=True)
     # Each MCP server gets its own sub-directory
     p = Path(d).joinpath(packagename).joinpath(mcpname)
     p.mkdir(parents=True, exist_ok=True)
