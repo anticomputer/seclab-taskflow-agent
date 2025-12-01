@@ -23,5 +23,5 @@ def mcp_data_dir(packagename: str, mcpname: str, env_override: str | None):
                                    ensure_exists = True)
     # Each MCP server gets its own sub-directory
     p = Path(d).joinpath(packagename).joinpath(mcpname)
-    p.mkdir(parents = True, exist_ok = True)
+    p.mkdir(parents=True, exist_ok=True)
     return p
