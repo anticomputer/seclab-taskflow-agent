@@ -29,7 +29,7 @@ class TestAPIEndpoint:
         endpoint = seclab_taskflow_agent.capi.AI_API_ENDPOINT
         assert endpoint is not None
         assert isinstance(endpoint, str)
-        assert urlparse(endpoint).netloc == AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB
+        assert urlparse(endpoint).netloc == seclab_taskflow_agent.capi.AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB
     
     def test_api_endpoint_env_override(self):
         """Test that AI_API_ENDPOINT can be overridden by environment variable."""
