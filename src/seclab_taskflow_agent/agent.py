@@ -15,15 +15,15 @@ from agents.run import DEFAULT_MAX_TURNS
 from agents.run import RunHooks
 from agents import Agent, Runner, AgentHooks, RunHooks, result, function_tool, Tool, RunContextWrapper, TContext, OpenAIChatCompletionsModel, set_default_openai_client, set_default_openai_api, set_tracing_disabled
 
-from .capi import COPILOT_INTEGRATION_ID, AI_API_ENDPOINT
+from .capi import COPILOT_INTEGRATION_ID, AI_API_ENDPOINT, AI_API_ENDPOINT_ENUM
 
 # grab our secrets from .env, this must be in .gitignore
 load_dotenv(find_dotenv(usecwd=True))
 
 match urlparse(AI_API_ENDPOINT).netloc:
-    case 'api.githubcopilot.com':
+    case AI_API_ENDPOINT_ENUM.AI_API_GITHUBCOPILOT:
         default_model = 'gpt-4o'
-    case 'models.github.ai':
+    case AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB:
         default_model = 'openai/gpt-4o'
     case _:
         raise ValueError(f"Unsupported Model Endpoint: {AI_API_ENDPOINT}")
