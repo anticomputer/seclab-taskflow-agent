@@ -15,7 +15,7 @@ from urllib.parse import urlparse
 # endpoint to retrieve the correct id names to use for your taskflow
 AI_API_ENDPOINT = os.getenv('AI_API_ENDPOINT', default='https://models.github.ai/inference')
 
-# Enumeration of currently support API endpoints.
+# Enumeration of currently supported API endpoints.
 class AI_API_ENDPOINT_ENUM(StrEnum):
   AI_API_MODELS_GITHUB = 'models.github.ai'
   AI_API_GITHUBCOPILOT = 'api.githubcopilot.com'
