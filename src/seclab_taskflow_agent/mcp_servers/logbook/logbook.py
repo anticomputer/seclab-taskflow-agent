@@ -12,7 +12,6 @@ logging.basicConfig(
 from fastmcp import FastMCP # move to FastMCP 2.0
 import json
 from pathlib import Path
-import os
 from seclab_taskflow_agent.path_utils import mcp_data_dir
 
 mcp = FastMCP("Logbook")
