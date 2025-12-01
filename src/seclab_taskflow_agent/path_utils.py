@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: 2025 GitHub
 # SPDX-License-Identifier: MIT
 
-import logging
 import platformdirs
 import os
 from pathlib import Path
