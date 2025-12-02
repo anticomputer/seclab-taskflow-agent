@@ -7,7 +7,6 @@ seclab-taskflow-agent:
 
 taskflow:
   - task:
-      model: gpt-4.1
       agents:
         - seclab_taskflow_agent.personalities.assistant
       user_prompt: |
