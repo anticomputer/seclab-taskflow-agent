@@ -43,7 +43,7 @@ def list_capi_models(token: str) -> dict[str, dict]:
     models = {}
     try:
         api_endpoint = get_AI_endpoint()
-        netloc = urlparse(endpoint).netloc
+        netloc = urlparse(api_endpoint).netloc
         match netloc:
             case AI_API_ENDPOINT_ENUM.AI_API_GITHUBCOPILOT:
                 models_catalog = 'models'
