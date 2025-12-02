@@ -12,7 +12,7 @@ from urllib.parse import urlparse, unquote
 import os
 import zipfile
 import yaml
-from .path_utils import log_file_name
+from seclab_taskflow_agent.path_utils import log_file_name
 
 # this is a local fork of https://github.com/riga/jsonrpyc modified for our purposes
 from . import jsonrpyc
