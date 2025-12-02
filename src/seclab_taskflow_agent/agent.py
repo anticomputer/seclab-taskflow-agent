@@ -15,18 +15,18 @@ from agents.run import DEFAULT_MAX_TURNS
 from agents.run import RunHooks
 from agents import Agent, Runner, AgentHooks, RunHooks, result, function_tool, Tool, RunContextWrapper, TContext, OpenAIChatCompletionsModel, set_default_openai_client, set_default_openai_api, set_tracing_disabled
 
-from .capi import COPILOT_INTEGRATION_ID, COPILOT_API_ENDPOINT
+from .capi import COPILOT_INTEGRATION_ID, AI_API_ENDPOINT, AI_API_ENDPOINT_ENUM
 
 # grab our secrets from .env, this must be in .gitignore
 load_dotenv(find_dotenv(usecwd=True))
 
-match urlparse(COPILOT_API_ENDPOINT).netloc:
-    case 'api.githubcopilot.com':
+match urlparse(AI_API_ENDPOINT).netloc:
+    case AI_API_ENDPOINT_ENUM.AI_API_GITHUBCOPILOT:
         default_model = 'gpt-4o'
-    case 'models.github.ai':
+    case AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB:
         default_model = 'openai/gpt-4o'
     case _:
-        raise ValueError(f"Unsupported Model Endpoint: {COPILOT_API_ENDPOINT}")
+        raise ValueError(f"Unsupported Model Endpoint: {AI_API_ENDPOINT}")
 
 DEFAULT_MODEL = os.getenv('COPILOT_DEFAULT_MODEL', default=default_model)
 
@@ -148,7 +148,7 @@ class TaskAgent:
                  model_settings: ModelSettings | None = None,
                  run_hooks: TaskRunHooks | None = None,
                  agent_hooks: TaskAgentHooks | None = None):
-        client = AsyncOpenAI(base_url=COPILOT_API_ENDPOINT,
+        client = AsyncOpenAI(base_url=AI_API_ENDPOINT,
                              api_key=os.getenv('COPILOT_TOKEN'),
                              default_headers={'Copilot-Integration-Id': COPILOT_INTEGRATION_ID})
         set_default_openai_client(client)
