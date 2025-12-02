@@ -5,9 +5,13 @@ seclab-taskflow-agent:
   version: 1
   filetype: taskflow
 
+# Import settings from a model_config file.
+model_config: examples.model_configs.model_config
+
 taskflow:
   - task:
       # taskflows can optionally choose any of the support CAPI models for a task
+      model: gpt_default
       # taskflows can optionally limit the max allowed number of Agent task loop
       # iterations to complete a task, this defaults to 50 when not provided
       max_steps: 20
