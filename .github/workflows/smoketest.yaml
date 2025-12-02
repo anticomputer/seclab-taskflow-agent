@@ -52,7 +52,7 @@ jobs:
 
       - name: Run tests
         env:
-          COPILOT_TOKEN: ${{ secrets.COPILOT_TOKEN }}
+          AI_API_ENDPOINT: ${{ secrets.AI_API_ENDPOINT }}
           GITHUB_AUTH_HEADER: "Bearer ${{ secrets.GITHUB_TOKEN }}"
 
         run: |
