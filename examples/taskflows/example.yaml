@@ -8,7 +8,6 @@ seclab-taskflow-agent:
 taskflow:
   - task:
       # taskflows can optionally choose any of the support CAPI models for a task
-      model: gpt-4.1
       # taskflows can optionally limit the max allowed number of Agent task loop
       # iterations to complete a task, this defaults to 50 when not provided
       max_steps: 20
@@ -41,7 +40,6 @@ taskflow:
         - seclab_taskflow_agent.toolboxes.codeql
   - task:
       must_complete: true
-      model: gpt-4.1
       agents:
         - seclab_taskflow_agent.personalities.c_auditer
       user_prompt: |
