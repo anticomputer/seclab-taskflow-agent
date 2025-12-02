@@ -16,6 +16,7 @@ import os
 from typing import Any
 from .memcache_backend.dictionary_file import MemcacheDictionaryFileBackend
 from .memcache_backend.sqlite import SqliteBackend
+from seclab_taskflow_agent.path_utils import mcp_data_dir
 
 mcp = FastMCP("Memcache")
 
@@ -24,10 +25,7 @@ backends = {
     'sqlite': SqliteBackend,
 }
 
-# if MEMCACHE_STATE_DIR contains an absolute path we WANT the user to be able
-# to override the relative path in that case this path join will return
-# /MEMCACHE_STATE_DIR/memory.json
-MEMORY = Path(__file__).parent.resolve() / Path(os.getenv('MEMCACHE_STATE_DIR', default='./'))
+MEMORY = mcp_data_dir('seclab-taskflow-agent', 'memcache', 'MEMCACHE_STATE_DIR')
 BACKEND = os.getenv('MEMCACHE_BACKEND', default='sqlite')
 
 backend = backends.get(BACKEND)(str(MEMORY))
