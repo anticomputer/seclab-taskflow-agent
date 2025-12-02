@@ -43,5 +43,14 @@ def log_dir() -> str:
                                      appauthor="GitHubSecurityLab",
                                      ensure_exists=True)
 
-def log_file_name(filename: str):
+def log_file_name(filename: str) -> str:
+    """
+    Construct the full path to a log file in the user log directory.
+
+    Parameters:
+        filename (str): The name of the log file.
+
+    Returns:
+        str: The full path to the log file in the user log directory.
+    """
     return os.path.join(log_dir(), filename)
