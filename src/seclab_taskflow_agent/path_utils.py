@@ -31,3 +31,11 @@ def mcp_data_dir(packagename: str, mcpname: str, env_override: str | None) -> Pa
     p = Path(d).joinpath(packagename).joinpath(mcpname)
     p.mkdir(parents=True, exist_ok=True)
     return p
+
+def log_dir():
+    return platformdirs.user_log_dir(appname="seclab-taskflow-agent",
+                                     appauthor="GitHubSecurityLab",
+                                     ensure_exists=True)
+
+def log_file_name(filename: str):
+    return os.path.join(log_dir(), filename)
