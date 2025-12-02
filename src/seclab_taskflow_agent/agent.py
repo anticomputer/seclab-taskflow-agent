@@ -15,7 +15,7 @@ from agents.run import DEFAULT_MAX_TURNS
 from agents.run import RunHooks
 from agents import Agent, Runner, AgentHooks, RunHooks, result, function_tool, Tool, RunContextWrapper, TContext, OpenAIChatCompletionsModel, set_default_openai_client, set_default_openai_api, set_tracing_disabled
 
-from .capi import COPILOT_INTEGRATION_ID, get_AI_endpoint, AI_API_ENDPOINT_ENUM
+from .capi import COPILOT_INTEGRATION_ID, get_AI_endpoint, get_AI_token, AI_API_ENDPOINT_ENUM
 
 # grab our secrets from .env, this must be in .gitignore
 load_dotenv(find_dotenv(usecwd=True))
@@ -150,7 +150,7 @@ class TaskAgent:
                  run_hooks: TaskRunHooks | None = None,
                  agent_hooks: TaskAgentHooks | None = None):
         client = AsyncOpenAI(base_url=api_endpoint,
-                             api_key=os.getenv('COPILOT_TOKEN'),
+                             api_key=get_AI_token(),
                              default_headers={'Copilot-Integration-Id': COPILOT_INTEGRATION_ID})
         set_default_openai_client(client)
         # CAPI does not yet support the Responses API: https://github.com/github/copilot-api/issues/11185
