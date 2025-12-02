@@ -107,7 +107,7 @@ async def deploy_task_agents(available_tools: AvailableTools,
                              exclude_from_context: bool = False,
                              max_turns: int = DEFAULT_MAX_TURNS,
                              model: str = DEFAULT_MODEL,
-                             model_settings: ModelSettings | None = None,
+                             model_par: dict = {},
                              run_hooks: TaskRunHooks | None = None,
                              agent_hooks: TaskAgentHooks | None = None):
 
@@ -130,10 +130,11 @@ async def deploy_task_agents(available_tools: AvailableTools,
 
     # https://openai.github.io/openai-agents-python/ref/model_settings/
     parallel_tool_calls = True if os.getenv('MODEL_PARALLEL_TOOL_CALLS') else False
-    model_settings = ModelSettings(
-        temperature=os.getenv('MODEL_TEMP', default=0.0),
-        tool_choice=('auto' if toolboxes else None),
-        parallel_tool_calls=(parallel_tool_calls if toolboxes else None))
+    model_params = {'temperature' : os.getenv('MODEL_TEMP', default = 0.0),
+                        'tool_choice' : ('auto' if toolboxes else None),
+                        'parallel_tool_calls' : (parallel_tool_calls if toolboxes else None)}
+    model_params.update(model_par)
+    model_settings = ModelSettings(**model_params)
 
     # block tools if requested
     tool_filter = create_static_tool_filter(blocked_tool_names=blocked_tools) if blocked_tools else None
@@ -438,13 +439,22 @@ async def main(available_tools: AvailableTools,
             global_variables.update(cli_globals)
         model_config = taskflow.get('model_config', {})
         model_keys = []
+        models_params = {}
         if model_config:
-            model_dict = available_tools.get_model_config(model_config)
-            model_dict = model_dict.get('models', {})
+            m_config = available_tools.get_model_config(model_config)
+            model_dict = m_config.get('models', {})
             if model_dict:
                 if not isinstance(model_dict, dict):
                     raise ValueError(f"Models section of the model_config file {model_config} must be a dictionary")
-            model_keys = model_dict.keys() 
+            model_keys = model_dict.keys()
+            models_params = m_config.get('model_settings', {})
+            if models_params and not isinstance(models_params, dict):
+                raise ValueError(f"Settings section of model_config file {model_config} must be a dictionary")
+            if not set(models_params.keys()).difference(model_keys).issubset(set([])):
+                raise ValueError(f"Settings section of model_config file {model_config} contains models that are not in the model section")
+            for k,v in models_params.items():
+                if not isinstance(v, dict):
+                    raise ValueError(f"Settings for model {k} in model_config file {model_config} is not a dictionary")
 
         for task in taskflow['taskflow']:
 
@@ -465,8 +475,17 @@ async def main(available_tools: AvailableTools,
                     if k not in task_body:
                         task_body[k] = v
             model = task_body.get('model', DEFAULT_MODEL)
+            model_settings = {}
             if model in model_keys:
+                if model in models_params:
+                    model_settings = models_params[model].copy()
                 model = model_dict[model]
+            task_model_settings = task_body.get('model_settings', {})
+            if not isinstance(task_model_settings, dict):
+                name = task.get('name', '')
+                raise ValueError(f"model_settings in task {name} needs to be a dictionary")
+            model_settings.update(task_model_settings)
+
             # parse our taskflow grammar
             name = task_body.get('name', 'taskflow') # placeholder, not used yet
             description = task_body.get('description', 'taskflow') # placeholder not used yet
@@ -622,6 +641,7 @@ async def main(available_tools: AvailableTools,
                                         on_tool_end=on_tool_end_hook,
                                         on_tool_start=on_tool_start_hook),
                                     model = model,
+                                    model_par = model_settings,
                                     agent_hooks=TaskAgentHooks(
                                         on_handoff=on_handoff_hook))
                             return result

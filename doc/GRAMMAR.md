@@ -91,6 +91,18 @@ Tasks can optionally specify which Model to use on the configured inference endp
 
 Note that model identifiers may differ between OpenAI compatible endpoint providers, make sure you change your model identifier accordingly when switching providers. If not specified, a default LLM model (`gpt-4o`) is used.
 
+Parameters to the model can also be specified in the task using the `model_settings` section:
+
+```yaml
+    model: gpt-5-mini
+    model_settings:
+      temperature: 1
+      reasoning:
+        effort: high
+```
+
+If `model_settings` is absent, then the model parameters will fall back to either the default or the ones supplied in a `model_config`. However, any parameters supplied in the task will override those that are set in the `model_config`.
+
 ### Completion Requirement
 
 Tasks can be marked as requiring completion, if a required task fails, the taskflow will abort. This defaults to false.

@@ -457,6 +457,26 @@ taskflow:
 
 The model version can then be updated by changing `gpt_latest` in the `model_config` file and applied across all taskflows that use the config.
 
+In addition, model specific parameters can be provided via `model_config`. To do so, define a `model_settings` section in the `model_config` file. This section has to be a dictionary with the model names as keys:
+
+```yaml
+model_settings:
+  gpt_latest:
+    temperature: 1
+    reasoning:
+      effort: high
+```
+
+You do not need to set parameters for all models defined in the `models` section. When parameters are not set for a model, they'll fall back to the default value. However, all the settings in this section must belong to one of the models specified in the `models` section, otherwise an error will raise:
+
+```yaml
+model_settings:
+  new_model:
+    ...
+```
+
+The above will result in an error because `new_model` is not defined in `models` section. Model parameters can also be set per task, and any settings defined in a task will override the settings in the config.
+
 ## Passing environment variables
 
 Files of types `taskflow` and `toolbox` allow environment variables to be passed using the `env` field:
