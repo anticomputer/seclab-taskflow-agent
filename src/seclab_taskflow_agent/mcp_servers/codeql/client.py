@@ -46,7 +46,7 @@ class CodeQL:
                  log_stderr=False):
         self.server_options = server_options.copy()
         if log_stderr:
-            self.stderr_log = log_file_name(codeql_stderr_log.log)
+            self.stderr_log = log_file_name('codeql_stderr_log.log')
             self.server_options.append("--log-to-stderr")
         else:
             self.stderr_log = os.devnull
