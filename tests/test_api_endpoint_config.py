@@ -8,51 +8,39 @@ Test API endpoint configuration.
 import pytest
 import os
 from urllib.parse import urlparse
+from seclab_taskflow_agent.capi import get_AI_endpoint, AI_API_ENDPOINT_ENUM
 
 class TestAPIEndpoint:
     """Test API endpoint configuration."""
-    
-    @staticmethod
-    def _reload_capi_module():
-        """Helper method to reload the capi module."""
-        import importlib
-        import seclab_taskflow_agent.capi
-        importlib.reload(seclab_taskflow_agent.capi)
-    
+
     def test_default_api_endpoint(self):
         """Test that default API endpoint is set to models.github.ai/inference."""
-        import seclab_taskflow_agent.capi
         # When no env var is set, it should default to models.github.ai/inference
-        # Note: We can't easily test this without manipulating the environment
-        # so we'll just import and verify the constant exists
-        endpoint = seclab_taskflow_agent.capi.AI_API_ENDPOINT
-        assert endpoint is not None
-        assert isinstance(endpoint, str)
-        assert urlparse(endpoint).netloc == seclab_taskflow_agent.capi.AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB
-    
-    def test_api_endpoint_env_override(self):
-        """Test that AI_API_ENDPOINT can be overridden by environment variable."""
-        # Save original env
-        original_env = os.environ.get('AI_API_ENDPOINT')
-        
         try:
-            # Set custom endpoint
-            test_endpoint = 'https://test.example.com'
-            os.environ['AI_API_ENDPOINT'] = test_endpoint
-            
-            # Reload the module to pick up the new env var
-            self._reload_capi_module()
-            
-            import seclab_taskflow_agent.capi
-            assert seclab_taskflow_agent.capi.AI_API_ENDPOINT == test_endpoint
+            # Save original env
+            original_env = os.environ
+            os.environ.pop('AI_API_ENDPOINT', None)
+            endpoint = get_AI_endpoint()
+            assert endpoint is not None
+            assert isinstance(endpoint, str)
+            assert urlparse(endpoint).netloc == AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB
         finally:
             # Restore original env
-            if original_env is None:
-                os.environ.pop('AI_API_ENDPOINT', None)
-            else:
-                os.environ['AI_API_ENDPOINT'] = original_env
-            # Reload again to restore original state
-            self._reload_capi_module()
+            os.environ = original_env
+
+    def test_api_endpoint_env_override(self):
+        """Test that AI_API_ENDPOINT can be overridden by environment variable."""
+        try:
+            # Save original env
+            original_env = os.environ
+            # Set different endpoint
+            test_endpoint = 'https://api.githubcopilot.com'
+            os.environ['AI_API_ENDPOINT'] = test_endpoint
+
+            assert get_AI_endpoint() == test_endpoint
+        finally:
+            # Restore original env
+            os.environ = original_env
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])

@@ -31,7 +31,7 @@ from .mcp_utils import DEFAULT_MCP_CLIENT_SESSION_TIMEOUT, ReconnectingMCPServer
 from .render_utils import render_model_output, flush_async_output
 from .env_utils import TmpEnv
 from .agent import TaskAgent
-from .capi import list_tool_call_models
+from .capi import list_tool_call_models, get_AI_token
 from .available_tools import AvailableTools
 
 load_dotenv(find_dotenv(usecwd=True))
@@ -686,7 +686,7 @@ if __name__ == '__main__':
     p, t, l, cli_globals, user_prompt, help_msg = parse_prompt_args(available_tools)
 
     if l:
-        tool_models = list_tool_call_models(os.getenv('COPILOT_TOKEN'))
+        tool_models = list_tool_call_models(get_AI_token())
         for model in tool_models:
             print(model)
         sys.exit(0)
