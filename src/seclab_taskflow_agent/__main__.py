@@ -33,15 +33,14 @@ from .env_utils import TmpEnv
 from .agent import TaskAgent
 from .capi import list_tool_call_models, get_AI_token
 from .available_tools import AvailableTools
+from .path_utils import log_file_name
 
 load_dotenv(find_dotenv(usecwd=True))
 
 # only model output or help message should go to stdout, everything else goes to log
 logging.getLogger('').setLevel(logging.NOTSET)
-log_dir = pathlib.Path("logs")
-log_dir.mkdir(parents=True, exist_ok=True)
 log_file_handler = RotatingFileHandler(
-    log_dir.joinpath('task_agent.log'),
+    log_file_name('task_agent.log'),
     maxBytes=1024*1024*10,
     backupCount=10)
 log_file_handler.setLevel(os.getenv('TASK_AGENT_LOGLEVEL', default='DEBUG'))

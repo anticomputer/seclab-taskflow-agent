@@ -12,6 +12,7 @@ from urllib.parse import urlparse, unquote
 import os
 import zipfile
 import yaml
+from seclab_taskflow_agent.path_utils import log_file_name
 
 # this is a local fork of https://github.com/riga/jsonrpyc modified for our purposes
 from . import jsonrpyc
@@ -45,8 +46,7 @@ class CodeQL:
                  log_stderr=False):
         self.server_options = server_options.copy()
         if log_stderr:
-            os.makedirs("logs", exist_ok=True)
-            self.stderr_log = f"logs/codeql_stderr_log.log"
+            self.stderr_log = log_file_name('codeql_stderr_log.log')
             self.server_options.append("--log-to-stderr")
         else:
             self.stderr_log = os.devnull

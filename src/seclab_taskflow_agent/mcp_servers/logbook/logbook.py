@@ -2,17 +2,18 @@
 # SPDX-License-Identifier: MIT
 
 import logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    filename='logs/mcp_logbook.log',
-    filemode='a'
-)
 #from mcp.server.fastmcp import FastMCP
 from fastmcp import FastMCP # move to FastMCP 2.0
 import json
 from pathlib import Path
-from seclab_taskflow_agent.path_utils import mcp_data_dir
+from seclab_taskflow_agent.path_utils import mcp_data_dir, log_file_name
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    filename=log_file_name('mcp_logbook.log'),
+    filemode='a'
+)
 
 mcp = FastMCP("Logbook")
 

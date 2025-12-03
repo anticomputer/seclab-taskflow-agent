@@ -2,12 +2,6 @@
 # SPDX-License-Identifier: MIT
 
 import logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    filename='logs/mcp_memcache.log',
-    filemode='a'
-)
 #from mcp.server.fastmcp import FastMCP
 from fastmcp import FastMCP # move to FastMCP 2.0
 import json
@@ -16,7 +10,14 @@ import os
 from typing import Any
 from .memcache_backend.dictionary_file import MemcacheDictionaryFileBackend
 from .memcache_backend.sqlite import SqliteBackend
-from seclab_taskflow_agent.path_utils import mcp_data_dir
+from seclab_taskflow_agent.path_utils import mcp_data_dir, log_file_name
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    filename=log_file_name('mcp_memcache.log'),
+    filemode='a'
+)
 
 mcp = FastMCP("Memcache")
 

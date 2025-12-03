@@ -2,12 +2,6 @@
 # SPDX-License-Identifier: MIT
 
 import logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    filename='logs/mcp_codeql.log',
-    filemode='a'
-)
 from .client import run_query, file_from_uri, list_src_files, _debug_log, search_in_src_archive
 from pydantic import Field
 #from mcp.server.fastmcp import FastMCP, Context
@@ -20,7 +14,14 @@ import time
 import re
 from urllib.parse import urlparse, unquote
 import zipfile
-from seclab_taskflow_agent.path_utils import mcp_data_dir
+from seclab_taskflow_agent.path_utils import mcp_data_dir, log_file_name
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    filename=log_file_name('mcp_codeql.log'),
+    filemode='a'
+)
 
 mcp = FastMCP("CodeQL")
 
