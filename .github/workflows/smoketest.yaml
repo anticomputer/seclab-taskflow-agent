@@ -34,7 +34,7 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
     needs: permission-check
-    if: ${{ needs.permission-check.outputs.allowed == 'true' }}
+    if: needs.permission-check.outputs.allowed == 'true'
     steps:
       - name: Setup Python
         uses: actions/setup-python@v5
