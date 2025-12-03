@@ -150,7 +150,6 @@ if [ ! -f ".env" ]; then
 fi
 
 docker run \
-       --volume "$PWD"/logs:/app/logs \
        --mount type=bind,src="$PWD"/.env,dst=/app/.env,ro \
        ${MY_DATA:+--mount type=bind,src=$MY_DATA,dst=/app/my_data} \
        ${MY_MCP_SERVERS:+--mount type=bind,src=$MY_MCP_SERVERS,dst=/app/my_mcp_servers,ro} \

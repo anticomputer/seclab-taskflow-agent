@@ -1,7 +1,16 @@
 # SPDX-FileCopyrightText: 2025 GitHub
 # SPDX-License-Identifier: MIT
 
+import logging
 import asyncio
+from .path_utils import log_file_name
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    filename=log_file_name('render_stdout.log'),
+    filemode='a'
+)
 
 async_output = {}
 async_output_lock = asyncio.Lock()
@@ -31,6 +40,5 @@ async def render_model_output(data: str,
                 data = "** 🤖✏️ Gathering output from async task ... please hold\n"
     if data:
         if log:
-            with open('logs/render_stdout.log', 'a') as f:
-                f.write(data)
+            logging.debug(data)
         print(data, end="", flush=True)

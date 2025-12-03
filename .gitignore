@@ -13,9 +13,6 @@ __pycache__/
 # C extensions
 *.so
 
-# Logs directory
-logs/
-
 # Distribution / packaging
 .Python
 build/
@@ -186,5 +183,3 @@ config.yaml
 
 #database
 *.db
-#logs
-logs/
