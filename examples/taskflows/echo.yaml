@@ -7,7 +7,6 @@ seclab-taskflow-agent:
 
 taskflow:
   - task:
-      model: claude-3.5-sonnet
       max_steps: 5
       must_complete: true
       agents:

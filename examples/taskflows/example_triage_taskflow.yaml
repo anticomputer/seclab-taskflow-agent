@@ -30,7 +30,6 @@ taskflow:
       toolboxes:
         - seclab_taskflow_agent.toolboxes.memcache
   - task:
-      model: gpt-4.1
       repeat_prompt: true
       agents:
         # primary agent for this task
