@@ -39,6 +39,9 @@ def log_dir() -> str:
     Returns:
         str: The path to the log directory.
     """
+    p = os.getenv("LOG_DIR")
+    if p:
+        return Path(p)
     return platformdirs.user_log_dir(appname="seclab-taskflow-agent",
                                      appauthor="GitHubSecurityLab",
                                      ensure_exists=True)
