@@ -37,7 +37,7 @@ def log_dir() -> Path:
     Get the directory path for storing log files for the seclab-taskflow-agent.
 
     Returns:
-        str: The path to the log directory.
+        Path: The path to the log directory.
     """
     p = os.getenv("LOG_DIR")
     if not p:
