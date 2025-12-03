@@ -33,6 +33,7 @@ jobs:
 
   run-tests:
     runs-on: ubuntu-latest
+    environment: smoketest
     needs: permission-check
     if: needs.permission-check.outputs.allowed == 'true'
     steps:
