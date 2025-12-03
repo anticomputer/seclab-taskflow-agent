@@ -32,7 +32,7 @@ def mcp_data_dir(packagename: str, mcpname: str, env_override: str | None) -> Pa
     p.mkdir(parents=True, exist_ok=True)
     return p
 
-def log_dir() -> str:
+def log_dir() -> Path:
     """
     Get the directory path for storing log files for the seclab-taskflow-agent.
 
@@ -46,6 +46,18 @@ def log_dir() -> str:
                                      appauthor="GitHubSecurityLab",
                                      ensure_exists=True)
 
+def log_file(filename: str) -> Path:
+    """
+    Construct the full path to a log file in the user log directory.
+
+    Parameters:
+        filename (str): The name of the log file.
+
+    Returns:
+        Path: The full path to the log file in the user log directory.
+    """
+    return log_dir().joinpath(filename)
+
 def log_file_name(filename: str) -> str:
     """
     Construct the full path to a log file in the user log directory.
@@ -56,4 +68,4 @@ def log_file_name(filename: str) -> str:
     Returns:
         str: The full path to the log file in the user log directory.
     """
-    return os.path.join(log_dir(), filename)
+    return str(log_file(filename))
