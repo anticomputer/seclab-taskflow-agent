@@ -36,7 +36,7 @@ Python >= 3.9 or Docker
 
 ## Configuration
 
-Provide a GitHub token for an account that is entitled to use [GitHub Models](https://models.github.ai) via the `AI_API_ENDPOINT` environment variable. Further configuration is use case dependent, i.e. pending which MCP servers you'd like to use in your taskflows.
+Provide a GitHub token for an account that is entitled to use [GitHub Models](https://models.github.ai) via the `AI_API_TOKEN` environment variable. Further configuration is use case dependent, i.e. pending which MCP servers you'd like to use in your taskflows.
 
 You can set persisting environment variables via an `.env` file in the project root.
 
@@ -44,7 +44,7 @@ Example:
 
 ```sh
 # Tokens
-AI_API_ENDPOINT=<your_github_token>
+AI_API_TOKEN=<your_github_token>
 # MCP configs
 GITHUB_PERSONAL_ACCESS_TOKEN=<your_github_token>
 CODEQL_DBS_BASE_PATH="/app/my_data/codeql_databases"

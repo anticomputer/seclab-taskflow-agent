@@ -52,7 +52,7 @@ jobs:
 
       - name: Run tests
         env:
-          AI_API_ENDPOINT: ${{ secrets.AI_API_ENDPOINT }}
+          AI_API_TOKEN: ${{ secrets.AI_API_TOKEN }}
           GITHUB_AUTH_HEADER: "Bearer ${{ secrets.GITHUB_TOKEN }}"
 
         run: |
