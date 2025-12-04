@@ -14,10 +14,12 @@ permissions:
   statuses: read # Required for checking if all commit statuses are "success" in order to deploy the PR
 
 jobs:
-  Linux:
+  permission-check:
     runs-on: ubuntu-latest
     environment: smoketest
     if: github.event.issue.pull_request  # Make sure the comment is on a PR
+    outputs:
+      allowed: ${{ steps.branch-deploy.outputs.continue }}
     steps:
       - name: branch-deploy
         id: branch-deploy
@@ -29,6 +31,12 @@ jobs:
           stable_branch: "main"
           update_branch: "disabled"
 
+  run-tests:
+    runs-on: ubuntu-latest
+    environment: smoketest
+    needs: permission-check
+    if: needs.permission-check.outputs.allowed == 'true'
+    steps:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
