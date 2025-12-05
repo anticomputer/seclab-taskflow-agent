@@ -29,17 +29,17 @@ jobs:
           stable_branch: "main"
           update_branch: "disabled"
 
-      - if steps.branch-deploy.outputs.continue == "true"
+      - if: steps.branch-deploy.outputs.continue == "true"
         name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - if steps.branch-deploy.outputs.continue == "true"
+      - if: steps.branch-deploy.outputs.continue == "true"
         name: Checkout the repo
         uses: actions/checkout@v5
 
-      - if steps.branch-deploy.outputs.continue == "true"
+      - if: steps.branch-deploy.outputs.continue == "true"
         name: Checkout the PR
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
@@ -47,14 +47,14 @@ jobs:
         run: |
           gh pr checkout $PR_NUMBER
 
-      - if steps.branch-deploy.outputs.continue == "true"
+      - if: steps.branch-deploy.outputs.continue == "true"
         name: Setup Python venv
         run: |
           python -m venv .venv
           source .venv/bin/activate
           python -m pip install hatch
 
-      - if steps.branch-deploy.outputs.continue == "true"
+      - if: steps.branch-deploy.outputs.continue == "true"
         name: Run tests
         env:
           AI_API_TOKEN: ${{ secrets.AI_API_TOKEN }}
