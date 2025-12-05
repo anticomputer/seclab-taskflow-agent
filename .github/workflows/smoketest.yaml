@@ -37,15 +37,9 @@ jobs:
 
       - if: steps.branch-deploy.outputs.continue == "true"
         name: Checkout the repo
-        uses: actions/checkout@v5
-
-      - if: steps.branch-deploy.outputs.continue == "true"
-        name: Checkout the PR
-        env:
-          PR_NUMBER: ${{ github.event.issue.number }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr checkout $PR_NUMBER
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.branch-deploy.outputs.sha }}
 
       - if: steps.branch-deploy.outputs.continue == "true"
         name: Setup Python venv
