@@ -46,8 +46,8 @@ Example:
 # Tokens
 AI_API_TOKEN=<your_github_token>
 # MCP configs
-GITHUB_PERSONAL_ACCESS_TOKEN=<your_github_token>
-CODEQL_DBS_BASE_PATH="/app/data/codeql_databases"
+GH_TOKEN=<your_github_token>
+CODEQL_DBS_BASE_PATH="/app/my_data/codeql_databases"
 AI_API_ENDPOINT="https://models.github.ai/inference"
 ```
 
