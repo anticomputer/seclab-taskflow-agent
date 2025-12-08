@@ -101,8 +101,10 @@ def supports_tool_calls(model: str, models: dict) -> bool:
             return 'tool-calling' in models.get(model, {}).\
                 get('capabilities', [])
         case _:
-            raise ValueError(f"Unsupported Model Endpoint: {api_endpoint}\n"
-                             f"Supported endpoints: {[e.to_url() for e in AI_API_ENDPOINT_ENUM]}")
+            raise ValueError(
+                f"Unsupported Model Endpoint: {api_endpoint}\n"
+                f"Supported endpoints: {[e.to_url() for e in AI_API_ENDPOINT_ENUM]}"
+            )
 
 def list_tool_call_models(token: str) -> dict[str, dict]:
     models = list_capi_models(token)
