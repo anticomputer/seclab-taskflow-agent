@@ -23,6 +23,8 @@ class AI_API_ENDPOINT_ENUM(StrEnum):
                 return f"https://{self}"
             case AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB:
                 return f"https://{self}/inference"
+            case _:
+                raise ValueError(f"Unsupported endpoint: {self}")
 
 COPILOT_INTEGRATION_ID = 'vscode-chat'
 
