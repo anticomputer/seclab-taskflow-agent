@@ -43,5 +43,13 @@ class TestAPIEndpoint:
             if original_env:
                 os.environ['AI_API_ENDPOINT'] = original_env
 
+    def test_to_url_models_github(self):
+        endpoint = AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB
+        assert endpoint.to_url() == 'https://models.github.ai/inference'
+
+    def test_to_url_githubcopilot(self):
+        endpoint = AI_API_ENDPOINT_ENUM.AI_API_GITHUBCOPILOT
+        assert endpoint.to_url() == 'https://api.githubcopilot.com'
+
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
