@@ -27,8 +27,10 @@ match urlparse(api_endpoint).netloc:
     case AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB:
         default_model = 'openai/gpt-4o'
     case _:
-        raise ValueError(f"Unsupported Model Endpoint: {api_endpoint}\n"
-                            f"Supported endpoints: {[e.to_url() for e in AI_API_ENDPOINT_ENUM]}")
+        raise ValueError(
+            f"Unsupported Model Endpoint: {api_endpoint}\n"
+            f"Supported endpoints: {[e.to_url() for e in AI_API_ENDPOINT_ENUM]}"
+        )
 
 DEFAULT_MODEL = os.getenv('COPILOT_DEFAULT_MODEL', default=default_model)
 
