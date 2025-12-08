@@ -46,7 +46,7 @@ Example:
 # Tokens
 AI_API_TOKEN=<your_github_token>
 # MCP configs
-GITHUB_PERSONAL_ACCESS_TOKEN=<your_github_token>
+GH_TOKEN=<your_github_token>
 CODEQL_DBS_BASE_PATH="/app/my_data/codeql_databases"
 ```
 
