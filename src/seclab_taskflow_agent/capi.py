@@ -19,12 +19,10 @@ class AI_API_ENDPOINT_ENUM(StrEnum):
         Convert the endpoint to its full URL.
         """
         match self:
-            case self.AI_API_GITHUBCOPILOT:
+            case AI_API_ENDPOINT_ENUM.AI_API_GITHUBCOPILOT:
                 return f"https://{self}"
-            case self.AI_API_MODELS_GITHUB:
+            case AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB:
                 return f"https://{self}/inference"
-            case _:
-                raise ValueError(f"Unsupported Model Endpoint: {self}")
 
 COPILOT_INTEGRATION_ID = 'vscode-chat'
 
@@ -62,7 +60,8 @@ def list_capi_models(token: str) -> dict[str, dict]:
             case AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB:
                 models_catalog = 'catalog/models'
             case _:
-                raise ValueError(f"Unsupported Model Endpoint: {api_endpoint}")
+                raise ValueError(f"Unsupported Model Endpoint: {api_endpoint}\n"
+                                 f"Supported endpoints: {[e.to_url() for e in AI_API_ENDPOINT_ENUM]}")
         r = httpx.get(httpx.URL(api_endpoint).join(models_catalog),
                       headers={
                           'Accept': 'application/json',
@@ -76,9 +75,6 @@ def list_capi_models(token: str) -> dict[str, dict]:
                 models_list = r.json().get('data', [])
             case AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB:
                 models_list = r.json()
-            case _:
-                raise ValueError(f"Unsupported Model Endpoint: {api_endpoint}\n"
-                                 f"Supported endpoints: {[e.to_url() for e in AI_API_ENDPOINT_ENUM]}")
         for model in models_list:
             models[model.get('id')] = dict(model)
     except httpx.RequestError as e:
