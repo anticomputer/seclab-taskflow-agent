@@ -44,16 +44,19 @@ class TestAPIEndpoint:
                 os.environ['AI_API_ENDPOINT'] = original_env
 
     def test_to_url_models_github(self):
+        """Test to_url method for models.github.ai endpoint."""
         endpoint = AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB
         assert endpoint.to_url() == 'https://models.github.ai/inference'
 
     def test_to_url_githubcopilot(self):
+        """Test to_url method for GitHub Copilot endpoint."""
         endpoint = AI_API_ENDPOINT_ENUM.AI_API_GITHUBCOPILOT
         assert endpoint.to_url() == 'https://api.githubcopilot.com'
 
     def test_unsupported_endpoint(self):
-        original_env = os.environ.pop('AI_API_ENDPOINT', None)
+        """Test that unsupported API endpoint raises ValueError."""
         try:
+            original_env = os.environ.pop('AI_API_ENDPOINT', None)
             api_endpoint = 'https://unsupported.example.com'
             os.environ['AI_API_ENDPOINT'] = api_endpoint
 
