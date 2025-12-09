@@ -53,17 +53,18 @@ class TestAPIEndpoint:
 
     def test_unsupported_endpoint(self):
         original_env = os.environ.pop('AI_API_ENDPOINT', None)
-        api_endpoint = 'https://unsupported.example.com'
-        os.environ['AI_API_ENDPOINT'] = api_endpoint
+        try:
+            api_endpoint = 'https://unsupported.example.com'
+            os.environ['AI_API_ENDPOINT'] = api_endpoint
 
-        with pytest.raises(ValueError) as excinfo:
-            list_capi_models("abc")
-        msg = str(excinfo.value)
-        assert 'Unsupported Model Endpoint' in msg
-        assert 'https://models.github.ai/inference' in msg
-        assert 'https://api.githubcopilot.com' in msg
-        if original_env:
-            os.environ['AI_API_ENDPOINT'] = original_env
-
+            with pytest.raises(ValueError) as excinfo:
+                list_capi_models("abc")
+            msg = str(excinfo.value)
+            assert 'Unsupported Model Endpoint' in msg
+            assert 'https://models.github.ai/inference' in msg
+            assert 'https://api.githubcopilot.com' in msg
+        finally:
+            if original_env:
+                os.environ['AI_API_ENDPOINT'] = original_env
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
