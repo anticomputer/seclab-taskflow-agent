@@ -8,7 +8,7 @@ Test API endpoint configuration.
 import pytest
 import os
 from urllib.parse import urlparse
-from seclab_taskflow_agent.capi import get_AI_endpoint, AI_API_ENDPOINT_ENUM
+from seclab_taskflow_agent.capi import get_AI_endpoint, AI_API_ENDPOINT_ENUM, list_capi_models
 
 class TestAPIEndpoint:
     """Test API endpoint configuration."""
@@ -50,6 +50,20 @@ class TestAPIEndpoint:
     def test_to_url_githubcopilot(self):
         endpoint = AI_API_ENDPOINT_ENUM.AI_API_GITHUBCOPILOT
         assert endpoint.to_url() == 'https://api.githubcopilot.com'
+
+    def test_unsupported_endpoint(self):
+        original_env = os.environ.pop('AI_API_ENDPOINT', None)
+        api_endpoint = 'https://unsupported.example.com'
+        os.environ['AI_API_ENDPOINT'] = api_endpoint
+
+        with pytest.raises(ValueError) as excinfo:
+            list_capi_models("abc")
+        msg = str(excinfo.value)
+        assert 'Unsupported Model Endpoint' in msg
+        assert 'https://models.github.ai/inference' in msg
+        assert 'https://api.githubcopilot.com' in msg
+        if original_env:
+            os.environ['AI_API_ENDPOINT'] = original_env
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])
