@@ -53,6 +53,11 @@ class TestAPIEndpoint:
         endpoint = AI_API_ENDPOINT_ENUM.AI_API_GITHUBCOPILOT
         assert endpoint.to_url() == 'https://api.githubcopilot.com'
 
+    def test_to_url_openai(self):
+        """Test to_url method for OpenAI endpoint."""
+        endpoint = AI_API_ENDPOINT_ENUM.AI_API_OPENAI
+        assert endpoint.to_url() == 'https://api.openai.com/v1'
+
     def test_unsupported_endpoint(self, monkeypatch):
         """Test that unsupported API endpoint raises ValueError."""
         api_endpoint = 'https://unsupported.example.com'

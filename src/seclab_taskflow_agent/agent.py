@@ -26,6 +26,8 @@ match urlparse(api_endpoint).netloc:
         default_model = 'gpt-4o'
     case AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB:
         default_model = 'openai/gpt-4o'
+    case AI_API_ENDPOINT_ENUM.AI_API_OPENAI:
+        default_model = 'gpt-4o'
     case _:
         raise ValueError(
             f"Unsupported Model Endpoint: {api_endpoint}\n"

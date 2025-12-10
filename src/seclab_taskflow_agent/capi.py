@@ -13,6 +13,7 @@ from urllib.parse import urlparse
 class AI_API_ENDPOINT_ENUM(StrEnum):
     AI_API_MODELS_GITHUB = 'models.github.ai'
     AI_API_GITHUBCOPILOT = 'api.githubcopilot.com'
+    AI_API_OPENAI = 'api.openai.com'
 
     def to_url(self):
         """
@@ -23,6 +24,8 @@ class AI_API_ENDPOINT_ENUM(StrEnum):
                 return f"https://{self}"
             case AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB:
                 return f"https://{self}/inference"
+            case AI_API_ENDPOINT_ENUM.AI_API_OPENAI:
+                return f"https://{self}/v1"
             case _:
                 raise ValueError(f"Unsupported endpoint: {self}")
 
@@ -61,6 +64,8 @@ def list_capi_models(token: str) -> dict[str, dict]:
                 models_catalog = 'models'
             case AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB:
                 models_catalog = 'catalog/models'
+            case AI_API_ENDPOINT_ENUM.AI_API_OPENAI:
+                models_catalog = 'models'
             case _:
                 raise ValueError(f"Unsupported Model Endpoint: {api_endpoint}\n"
                                  f"Supported endpoints: {[e.to_url() for e in AI_API_ENDPOINT_ENUM]}")
@@ -77,6 +82,8 @@ def list_capi_models(token: str) -> dict[str, dict]:
                 models_list = r.json().get('data', [])
             case AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB:
                 models_list = r.json()
+            case AI_API_ENDPOINT_ENUM.AI_API_OPENAI:
+                models_list = r.json().get('data', [])
         for model in models_list:
             models[model.get('id')] = dict(model)
     except httpx.RequestError as e:
@@ -98,6 +105,13 @@ def supports_tool_calls(model: str, models: dict) -> bool:
         case AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB:
             return 'tool-calling' in models.get(model, {}).\
                 get('capabilities', [])
+        case AI_API_ENDPOINT_ENUM.AI_API_OPENAI:
+            # OpenAI doesn't expose capabilities in the models list
+            # Check if model name indicates function calling support
+            model_lower = model.lower()
+            return any([
+                'gpt-' in model_lower,
+            ])
         case _:
             raise ValueError(
                 f"Unsupported Model Endpoint: {api_endpoint}\n"
