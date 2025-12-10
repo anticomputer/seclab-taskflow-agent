@@ -8,7 +8,7 @@ Test API endpoint configuration.
 import pytest
 import os
 from urllib.parse import urlparse
-from seclab_taskflow_agent.capi import get_AI_endpoint, AI_API_ENDPOINT_ENUM
+from seclab_taskflow_agent.capi import get_AI_endpoint, AI_API_ENDPOINT_ENUM, list_capi_models
 
 class TestAPIEndpoint:
     """Test API endpoint configuration."""
@@ -42,6 +42,27 @@ class TestAPIEndpoint:
             # Restore original env
             if original_env:
                 os.environ['AI_API_ENDPOINT'] = original_env
+
+    def test_to_url_models_github(self):
+        """Test to_url method for models.github.ai endpoint."""
+        endpoint = AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB
+        assert endpoint.to_url() == 'https://models.github.ai/inference'
+
+    def test_to_url_githubcopilot(self):
+        """Test to_url method for GitHub Copilot endpoint."""
+        endpoint = AI_API_ENDPOINT_ENUM.AI_API_GITHUBCOPILOT
+        assert endpoint.to_url() == 'https://api.githubcopilot.com'
+
+    def test_unsupported_endpoint(self, monkeypatch):
+        """Test that unsupported API endpoint raises ValueError."""
+        api_endpoint = 'https://unsupported.example.com'
+        monkeypatch.setenv('AI_API_ENDPOINT', api_endpoint)
+        with pytest.raises(ValueError) as excinfo:
+            list_capi_models("abc")
+        msg = str(excinfo.value)
+        assert 'Unsupported Model Endpoint' in msg
+        assert 'https://models.github.ai/inference' in msg
+        assert 'https://api.githubcopilot.com' in msg
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])

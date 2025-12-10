@@ -48,6 +48,7 @@ AI_API_TOKEN=<your_github_token>
 # MCP configs
 GH_TOKEN=<your_github_token>
 CODEQL_DBS_BASE_PATH="/app/my_data/codeql_databases"
+AI_API_ENDPOINT="https://models.github.ai/inference"
 ```
 
 ## Deploying from Source

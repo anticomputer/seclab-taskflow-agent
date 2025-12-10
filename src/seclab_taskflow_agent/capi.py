@@ -11,8 +11,20 @@ from urllib.parse import urlparse
 
 # Enumeration of currently supported API endpoints.
 class AI_API_ENDPOINT_ENUM(StrEnum):
-  AI_API_MODELS_GITHUB = 'models.github.ai'
-  AI_API_GITHUBCOPILOT = 'api.githubcopilot.com'
+    AI_API_MODELS_GITHUB = 'models.github.ai'
+    AI_API_GITHUBCOPILOT = 'api.githubcopilot.com'
+
+    def to_url(self):
+        """
+        Convert the endpoint to its full URL.
+        """
+        match self:
+            case AI_API_ENDPOINT_ENUM.AI_API_GITHUBCOPILOT:
+                return f"https://{self}"
+            case AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB:
+                return f"https://{self}/inference"
+            case _:
+                raise ValueError(f"Unsupported endpoint: {self}")
 
 COPILOT_INTEGRATION_ID = 'vscode-chat'
 
@@ -21,7 +33,7 @@ COPILOT_INTEGRATION_ID = 'vscode-chat'
 # since different APIs use their own id schema, use -l with your desired
 # endpoint to retrieve the correct id names to use for your taskflow
 def get_AI_endpoint():
-  return os.getenv('AI_API_ENDPOINT', default='https://models.github.ai/inference')
+    return os.getenv('AI_API_ENDPOINT', default='https://models.github.ai/inference')
 
 def get_AI_token():
     """
@@ -50,7 +62,8 @@ def list_capi_models(token: str) -> dict[str, dict]:
             case AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB:
                 models_catalog = 'catalog/models'
             case _:
-                raise ValueError(f"Unsupported Model Endpoint: {api_endpoint}")
+                raise ValueError(f"Unsupported Model Endpoint: {api_endpoint}\n"
+                                 f"Supported endpoints: {[e.to_url() for e in AI_API_ENDPOINT_ENUM]}")
         r = httpx.get(httpx.URL(api_endpoint).join(models_catalog),
                       headers={
                           'Accept': 'application/json',
@@ -64,8 +77,6 @@ def list_capi_models(token: str) -> dict[str, dict]:
                 models_list = r.json().get('data', [])
             case AI_API_ENDPOINT_ENUM.AI_API_MODELS_GITHUB:
                 models_list = r.json()
-            case _:
-                raise ValueError(f"Unsupported Model Endpoint: {api_endpoint}")
         for model in models_list:
             models[model.get('id')] = dict(model)
     except httpx.RequestError as e:
@@ -88,7 +99,10 @@ def supports_tool_calls(model: str, models: dict) -> bool:
             return 'tool-calling' in models.get(model, {}).\
                 get('capabilities', [])
         case _:
-            raise ValueError(f"Unsupported Model Endpoint: {api_endpoint}")
+            raise ValueError(
+                f"Unsupported Model Endpoint: {api_endpoint}\n"
+                f"Supported endpoints: {[e.to_url() for e in AI_API_ENDPOINT_ENUM]}"
+            )
 
 def list_tool_call_models(token: str) -> dict[str, dict]:
     models = list_capi_models(token)
