@@ -36,17 +36,26 @@ Python >= 3.9 or Docker
 
 ## Configuration
 
-Provide a GitHub token for an account that is entitled to use [GitHub Models](https://models.github.ai) via the `AI_API_TOKEN` environment variable. Further configuration is use case dependent, i.e. pending which MCP servers you'd like to use in your taskflows.
+Provide a GitHub token for an account that is entitled to use [GitHub Models](https://models.github.ai) via the `AI_API_TOKEN` environment variable. Further configuration is use case dependent, i.e. pending which MCP servers you'd like to use in your taskflows. In a terminal, you can add `AI_API_TOKEN` to the environment like this:
 
-You can set persisting environment variables via an `.env` file in the project root.
+```sh
+export AI_API_TOKEN=<your_github_token>
+```
+
+Or, if you are using GitHub Codespaces, then you can [add a Codespace secret](https://github.com/settings/codespaces/secrets/new) so that `AI_API_TOKEN` is automatically available when working in a Codespace.
+
+Many of the MCP servers in the [seclab-taskflow](https://github.com/GitHubSecurityLab/seclab-taskflows) repo also need an environment variable named `GH_TOKEN` for accessing the GitHub API. You can use two separate PATs if you want, or you can use one PAT for both purposes, like this:
+
+```sh
+export GH_TOKEN=$AI_API_TOKEN
+```
+
+We do not recommend storing secrets on disk, but you can persist non-sensitive environment variables by adding a `.env` file in the project root.
 
 Example:
 
 ```sh
-# Tokens
-AI_API_TOKEN=<your_github_token>
 # MCP configs
-GH_TOKEN=<your_github_token>
 CODEQL_DBS_BASE_PATH="/app/my_data/codeql_databases"
 AI_API_ENDPOINT="https://models.github.ai/inference"
 ```
