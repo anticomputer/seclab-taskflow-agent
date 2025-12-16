@@ -42,7 +42,7 @@ Provide a GitHub token for an account that is entitled to use [GitHub Models](ht
 export AI_API_TOKEN=<your_github_token>
 ```
 
-Or, if you are using GitHub Codespaces, then you can [add a codespace secret](https://github.com/settings/codespaces/secrets/new) so that `AI_API_TOKEN` is always available in your codespace.
+Or, if you are using GitHub Codespaces, then you can [add a codespace secret](https://github.com/settings/codespaces/secrets/new) so that `AI_API_TOKEN` is automatically available when working in a codespace.
 
 We do not recommend storing secrets on disk, but you can persist non-sensitive environment variables by adding a `.env` file in the project root.
 
