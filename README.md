@@ -44,6 +44,12 @@ export AI_API_TOKEN=<your_github_token>
 
 Or, if you are using GitHub Codespaces, then you can [add a Codespace secret](https://github.com/settings/codespaces/secrets/new) so that `AI_API_TOKEN` is automatically available when working in a Codespace.
 
+Many of the MCP servers in the [seclab-taskflow](https://github.com/GitHubSecurityLab/seclab-taskflows) repo also need an environment variable named `GH_TOKEN` for accessing the GitHub API. You can use two separate PATs if you want, or you can use one PAT for both purposes, like this:
+
+```sh
+export GH_TOKEN=$AI_API_TOKEN
+```
+
 We do not recommend storing secrets on disk, but you can persist non-sensitive environment variables by adding a `.env` file in the project root.
 
 Example:
