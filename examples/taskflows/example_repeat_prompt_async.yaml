@@ -32,4 +32,4 @@ taskflow:
       agents:
         - seclab_taskflow_agent.personalities.assistant
       user_prompt: |
-        What is the integer value of {{ RESULT }}?
+        What is the integer value of {{ result }}?

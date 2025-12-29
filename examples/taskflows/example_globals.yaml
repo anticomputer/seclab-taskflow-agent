@@ -12,4 +12,4 @@ taskflow:
       agents:
         - examples.personalities.fruit_expert
       user_prompt: |
-        Tell me more about {{ GLOBALS_fruit }}.
+        Tell me more about {{ globals.fruit }}.

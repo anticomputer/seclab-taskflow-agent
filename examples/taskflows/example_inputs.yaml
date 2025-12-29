@@ -12,5 +12,5 @@ taskflow:
       inputs:
         fruit: apples
       user_prompt: |
-        Tell me more about {{ INPUTS_fruit }}.
+        Tell me more about {{ inputs.fruit }}.
         

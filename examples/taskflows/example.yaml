@@ -70,4 +70,4 @@ taskflow:
       agents:
         - seclab_taskflow_agent.personalities.assistant
       user_prompt: |
-        What kind of fruit is {{ RESULT }}?
+        What kind of fruit is {{ result }}?

@@ -39,4 +39,4 @@ taskflow:
         - examples.personalities.orange_expert
         - examples.personalities.banana_expert
       user_prompt: |
-        Tell me more about how {{ RESULT }} are grown.
+        Tell me more about how {{ result }} are grown.

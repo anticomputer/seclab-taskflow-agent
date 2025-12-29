@@ -12,4 +12,4 @@ taskflow:
       user_prompt: |
         Tell me more about apples.
         
-        {{ PROMPTS_examples.prompts.example_prompt }}
+        {% include 'examples.prompts.example_prompt' %}
