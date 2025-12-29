@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 seclab-taskflow-agent:
-  version: 1
+  version: 2
   filetype: taskflow
 
 # Import settings from a model_config file.

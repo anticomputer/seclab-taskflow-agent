@@ -3,7 +3,7 @@
 
 # stdio mcp server configuration
 seclab-taskflow-agent:
-  version: 1
+  version: 2
   filetype: toolbox
 
 server_params:
