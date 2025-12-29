@@ -9,7 +9,6 @@ import sys
 from dotenv import load_dotenv, find_dotenv
 import logging
 from logging.handlers import RotatingFileHandler
-from pprint import pprint, pformat
 import re
 import json
 import uuid
