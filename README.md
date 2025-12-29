@@ -16,7 +16,7 @@ Agents are defined through [personalities](examples/personalities/), that receiv
 
 Agents can cooperate to complete sequences of tasks through so-called [taskflows](doc/GRAMMAR.md).
 
-You can find a detailed overview of the taskflow grammar [here](taskflows/GRAMMAR.md) and example taskflows [here](examples/taskflows/).
+You can find a detailed overview of the taskflow grammar [here](doc/GRAMMAR.md) and example taskflows [here](examples/taskflows/).
 
 ## Use Cases and Examples
 
@@ -394,7 +394,7 @@ taskflow:
 
 Taskflows support [Agent handoffs](https://openai.github.io/openai-agents-python/handoffs/). Handoffs are useful for implementing triage patterns where the primary Agent can decide to handoff a task to any subsequent Agents in the `Agents` list.
 
-See the [taskflow examples](taskflows/examples) for other useful Taskflow patterns such as repeatable and asynchronous templated prompts.
+See the [taskflow examples](examples/taskflows) for other useful Taskflow patterns such as repeatable and asynchronous templated prompts.
 
 
 You can run a taskflow from the command line like this:
