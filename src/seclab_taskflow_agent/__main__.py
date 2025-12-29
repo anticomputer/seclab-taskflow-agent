@@ -509,8 +509,8 @@ async def main(available_tools: AvailableTools,
             async_task = task_body.get('async', False)
             max_concurrent_tasks = task_body.get('async_limit', 5)
 
-            # Render prompt template with Jinja2
-            if prompt:
+            # Render prompt template with Jinja2 (skip if repeat_prompt since result is not yet available)
+            if prompt and not repeat_prompt:
                 try:
                     prompt = render_template(
                         template_str=prompt,
