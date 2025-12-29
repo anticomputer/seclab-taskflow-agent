@@ -12,4 +12,4 @@ taskflow:
       # with the `uses` directive we can reuse single task taskflows
       uses: examples.taskflows.single_step_taskflow
       # and optionally override any of its configurations
-      model: gpt_latest
+      model: gpt_default
