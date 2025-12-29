@@ -6,6 +6,24 @@ The Taskflow Agent is built on top of the [OpenAI Agents SDK](https://openai.git
 
 While the Taskflow Agent does not integrate into the GitHub Dotcom Copilot UX, it does operate using the Copilot API (CAPI) as its backend, similar to Copilot IDE extensions.
 
+## Template Syntax Migration (v2)
+
+**Breaking Change:** Taskflow YAML files now use Jinja2 templating (version 2). Version 1 files are no longer supported and will be rejected at load time.
+
+**New Jinja2 syntax:**
+- `{{ globals.key }}` instead of `{{ GLOBALS_key }}`
+- `{{ inputs.key }}` instead of `{{ INPUTS_key }}`
+- `{{ result }}` / `{{ result.key }}` instead of `{{ RESULT }}` / `{{ RESULT_key }}`
+- `{{ env('VAR') }}` instead of `{{ env VAR }}`
+- `{% include 'path' %}` instead of `{{ PROMPTS_path }}`
+
+**To migrate existing taskflows:**
+```bash
+python scripts/migrate_to_jinja2.py /path/to/your/taskflows
+```
+
+See [doc/MIGRATION.md](doc/MIGRATION.md) for detailed migration instructions and new Jinja2 features.
+
 ## Core Concepts
 
 The Taskflow Agent leverages a GitHub Workflow-esque YAML based grammar to perform a series of tasks using a set of Agents.

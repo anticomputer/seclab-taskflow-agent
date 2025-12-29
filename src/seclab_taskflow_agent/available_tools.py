@@ -71,12 +71,13 @@ class AvailableTools:
                 header = y['seclab-taskflow-agent']
                 version = header['version']
                 if version == 1:
-                    logging.warning(
-                        f"YAML file {f} uses deprecated version 1 template syntax. "
-                        f"Please migrate to version 2 using: python scripts/migrate_to_jinja2.py {f}"
+                    raise VersionException(
+                        f"YAML file {f} uses unsupported version 1 template syntax. "
+                        f"Version 2 (Jinja2) is required. "
+                        f"Migrate using: python scripts/migrate_to_jinja2.py {f}"
                     )
                 elif version != 2:
-                    raise VersionException(f"Unsupported version: {version}. Supported versions: 1 (deprecated), 2")
+                    raise VersionException(f"Unsupported version: {version}. Only version 2 is supported.")
                 filetype = header['filetype'] 
                 if filetype != tooltype.value:
                     raise FileTypeException(
