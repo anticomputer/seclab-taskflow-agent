@@ -51,13 +51,27 @@ run_test() {
 
     echo -e "${YELLOW}========================================${NC}"
 
+    # Check for error conditions first
+    if grep -qi "rate limit" "$tmpfile" || \
+       grep -q "ERROR:" "$tmpfile" || \
+       grep -q "Max rate limit backoff reached" "$tmpfile" || \
+       grep -q "APITimeoutError" "$tmpfile" || \
+       grep -q "Exception:" "$tmpfile"; then
+        echo -e "${RED}✗ $name failed (error detected)${NC}"
+        ((FAILED++))
+        FAILED_TESTS+=("$name")
+        rm "$tmpfile"
+        return 1
+    fi
+
+    # Check for successful start
     if grep -q "Running Task Flow" "$tmpfile"; then
         echo -e "${GREEN}✓ $name passed${NC}"
         ((PASSED++))
         rm "$tmpfile"
         return 0
     else
-        echo -e "${RED}✗ $name failed${NC}"
+        echo -e "${RED}✗ $name failed (did not start)${NC}"
         ((FAILED++))
         FAILED_TESTS+=("$name")
         rm "$tmpfile"
@@ -94,7 +108,15 @@ echo -e "${YELLOW}========================================${NC}"
 tmpfile=$(mktemp)
 timeout 30 python -m seclab_taskflow_agent -t examples.taskflows.example_reusable_taskflows 2>&1 | tee "$tmpfile" || true
 echo -e "${YELLOW}========================================${NC}"
-if grep -q "Running Task Flow" "$tmpfile"; then
+
+# Check for errors first
+if grep -qi "rate limit" "$tmpfile" || \
+   grep -q "Max rate limit backoff reached" "$tmpfile" || \
+   grep -q "APITimeoutError" "$tmpfile"; then
+    echo -e "${RED}✗ example_reusable_taskflows failed (error detected)${NC}"
+    ((FAILED++))
+    FAILED_TESTS+=("example_reusable_taskflows")
+elif grep -q "Running Task Flow" "$tmpfile"; then
     echo -e "${GREEN}✓ example_reusable_taskflows YAML loaded correctly${NC}"
     ((PASSED++))
 else
