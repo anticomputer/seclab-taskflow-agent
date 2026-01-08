@@ -104,7 +104,7 @@ dependencies = [
   "typing-inspection==0.4.1",
   "typing_extensions==4.14.1",
   "ujson==5.10.0",
-  "urllib3==2.6.0",
+  "urllib3==2.6.3",
   "uvicorn==0.35.0",
   "zipp==3.23.0",
 ]
