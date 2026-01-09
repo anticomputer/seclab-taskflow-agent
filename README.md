@@ -1,10 +1,8 @@
-# Seclab Taskflow Agent
+# SecLab Taskflow Agent
 
 The Security Lab Taskflow Agent is an MCP enabled multi-Agent framework.
 
 The Taskflow Agent is built on top of the [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/).
-
-While the Taskflow Agent does not integrate into the GitHub Dotcom Copilot UX, it does operate using the Copilot API (CAPI) as its backend, similar to Copilot IDE extensions.
 
 ## Core Concepts
 
@@ -328,7 +326,7 @@ seclab-taskflow-agent:
 
 taskflow:
   - task:
-      # taskflows can optionally choose any of the support CAPI models for a task
+      # taskflows can optionally choose any of the models supported by your API for a task
       model: gpt-4.1
       # taskflows can optionally limit the max allowed number of Agent task loop
       # iterations to complete a task, this defaults to 50 when not provided
