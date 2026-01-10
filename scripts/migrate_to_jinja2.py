@@ -29,6 +29,14 @@ class TemplateMigrator:
         """Apply all template transformations to content."""
         original = content
 
+        # 0. Version number: version: 1 or version: 2 -> version: "1.0"
+        content = re.sub(
+            r'^(\s*version:\s*)(?:1|2)\s*$',
+            r'\1"1.0"',
+            content,
+            flags=re.MULTILINE
+        )
+
         # 1. Environment variables: {{ env VAR }} -> {{ env('VAR') }}
         content = re.sub(
             r'\{\{\s*env\s+([A-Z0-9_]+)\s*\}\}',
