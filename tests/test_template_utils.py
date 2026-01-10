@@ -247,6 +247,55 @@ class TestPromptLoader:
         result = template.render(globals={'test': 'context_value'})
         assert 'context_value' in result
 
+    def test_include_prompt_with_globals_and_inputs(self):
+        """Test that included prompts render globals and inputs correctly."""
+        available_tools = AvailableTools()
+
+        # Use render_template to ensure context is properly set
+        template_str = """Main task prompt.
+{% include 'tests.data.test_prompt_with_variables' %}
+End of prompt."""
+
+        result = render_template(
+            template_str,
+            available_tools,
+            globals_dict={'test_global': 'global_value'},
+            inputs_dict={'test_input': 'input_value'}
+        )
+
+        assert 'Main task prompt' in result
+        assert 'global_value' in result
+        assert 'input_value' in result
+        assert 'End of prompt' in result
+
+    def test_reusable_taskflow_prompt_renders_variables(self):
+        """Test that reusable taskflow prompts render globals and inputs correctly.
+
+        This simulates what happens when a taskflow uses another taskflow:
+        1. Parent taskflow defines globals and task inputs
+        2. Reusable taskflow's user_prompt uses those variables
+        3. The prompt should render with the parent's context
+        """
+        available_tools = AvailableTools()
+
+        # Load the reusable taskflow
+        reusable_taskflow = available_tools.get_taskflow('tests.data.test_reusable_taskflow_with_variables')
+
+        # Get the user_prompt from the reusable taskflow's task
+        user_prompt = reusable_taskflow['taskflow'][0]['task']['user_prompt']
+
+        # Render it with parent's globals and inputs (simulating what __main__.py does)
+        result = render_template(
+            user_prompt,
+            available_tools,
+            globals_dict={'reusable_global': 'parent_global_value'},
+            inputs_dict={'reusable_input': 'parent_input_value'}
+        )
+
+        assert 'This is a reusable taskflow' in result
+        assert 'parent_global_value' in result
+        assert 'parent_input_value' in result
+
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])

@@ -19,7 +19,7 @@ class TestYamlParser:
         personality000 = available_tools.get_personality(
             "tests.data.test_yaml_parser_personality000")
         
-        assert personality000['seclab-taskflow-agent']['version'] == 1
+        assert personality000['seclab-taskflow-agent']['version'] == "1.0"
         assert personality000['seclab-taskflow-agent']['filetype'] == 'personality'
         assert personality000['personality'] == 'You are a helpful assistant.\n'
         assert personality000['task'] == 'Answer any question.\n'
