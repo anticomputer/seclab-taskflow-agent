@@ -3,7 +3,7 @@
 
 # a simple example of the triage Agent pattern
 seclab-taskflow-agent:
-  version: 2
+  version: "1.0"
   filetype: taskflow
 
 taskflow:
