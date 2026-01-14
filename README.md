@@ -1,4 +1,4 @@
-# SecLab Taskflow Agent
+# GitHub Security Lab Taskflow Agent
 
 The Security Lab Taskflow Agent is an MCP enabled multi-Agent framework.
 
