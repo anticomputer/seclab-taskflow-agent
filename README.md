@@ -1,10 +1,8 @@
-# Seclab Taskflow Agent
+# GitHub Security Lab Taskflow Agent
 
 The Security Lab Taskflow Agent is an MCP enabled multi-Agent framework.
 
 The Taskflow Agent is built on top of the [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/).
-
-While the Taskflow Agent does not integrate into the GitHub Dotcom Copilot UX, it does operate using the Copilot API (CAPI) as its backend, similar to Copilot IDE extensions.
 
 ## Template Syntax Migration (v2)
 
@@ -34,7 +32,7 @@ Agents are defined through [personalities](examples/personalities/), that receiv
 
 Agents can cooperate to complete sequences of tasks through so-called [taskflows](doc/GRAMMAR.md).
 
-You can find a detailed overview of the taskflow grammar [here](taskflows/GRAMMAR.md) and example taskflows [here](examples/taskflows/).
+You can find a detailed overview of the taskflow grammar [here](doc/GRAMMAR.md) and example taskflows [here](examples/taskflows/).
 
 ## Use Cases and Examples
 
@@ -346,7 +344,7 @@ seclab-taskflow-agent:
 
 taskflow:
   - task:
-      # taskflows can optionally choose any of the support CAPI models for a task
+      # taskflows can optionally choose any of the models supported by your API for a task
       model: gpt-4.1
       # taskflows can optionally limit the max allowed number of Agent task loop
       # iterations to complete a task, this defaults to 50 when not provided
@@ -412,7 +410,7 @@ taskflow:
 
 Taskflows support [Agent handoffs](https://openai.github.io/openai-agents-python/handoffs/). Handoffs are useful for implementing triage patterns where the primary Agent can decide to handoff a task to any subsequent Agents in the `Agents` list.
 
-See the [taskflow examples](taskflows/examples) for other useful Taskflow patterns such as repeatable and asynchronous templated prompts.
+See the [taskflow examples](examples/taskflows) for other useful Taskflow patterns such as repeatable and asynchronous templated prompts.
 
 
 You can run a taskflow from the command line like this:
