@@ -48,10 +48,12 @@ jobs:
 
       - name: Checkout the PR
         env:
+          PR_NUMBER: ${{ github.event.issue.number }}
           REF: ${{ needs.permission-check.outputs.sha }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr checkout $REF
+          gh pr checkout $PR_NUMBER
+          git checkout $REF
 
       - name: Setup Python venv
         run: |
