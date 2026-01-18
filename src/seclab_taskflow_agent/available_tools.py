@@ -70,18 +70,20 @@ class AvailableTools:
                 y = yaml.safe_load(s)
                 header = y['seclab-taskflow-agent']
                 version = header['version']
-                # Support both string and int for backwards compatibility during migration
-                version_str = str(version)
 
-                # Reject old integer version 1 (pre-Jinja2)
-                if version == 1:
-                    raise VersionException(
-                        f"YAML file {f} uses unsupported version 1 template syntax. "
-                        f"Version 1.0+ (Jinja2) is required. "
-                        f"Migrate using: python scripts/migrate_to_jinja2.py {f}"
-                    )
-                # Accept version "1.0" or newer (string format following semver)
-                elif not version_str.startswith("1."):
+                # Normalize version to string format for backwards compatibility
+                if isinstance(version, int):
+                    # Convert integer 1 to "1.0" for semver compatibility
+                    version_str = f"{version}.0"
+                elif isinstance(version, float):
+                    # Convert float 1.2 to "1.2"
+                    version_str = str(version)
+                else:
+                    # Already a string, use as-is
+                    version_str = str(version)
+
+                # Validate version is 1.x series
+                if not version_str.startswith("1."):
                     raise VersionException(
                         f"Unsupported version: {version}. Only version 1.x is supported."
                     )
