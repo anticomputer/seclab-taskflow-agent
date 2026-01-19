@@ -117,7 +117,7 @@ user_prompt: |
   {{ PROMPTS_examples.prompts.shared }}
 ```
 
-**Version 2:**
+**Version 0.1.0:**
 ```yaml
 user_prompt: |
   Main task.
