@@ -96,7 +96,7 @@ env:
   DATABASE: "{{ env DATABASE_URL }}"
 ```
 
-**Version 2:**
+**Version 0.1.0:**
 ```yaml
 env:
   DATABASE: "{{ env('DATABASE_URL') }}"
