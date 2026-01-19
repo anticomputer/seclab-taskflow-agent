@@ -14,7 +14,7 @@ Version 0.1.0 replaces the custom regex-based template processing with Jinja2, p
 
 ### 1. Global Variables
 
-**Version 1:**
+**Version 0.0.x:**
 ```yaml
 globals:
   fruit: apples
