@@ -24,7 +24,7 @@ taskflow:
         Tell me about {{ GLOBALS_fruit }}.
 ```
 
-**Version 2:**
+**Version 0.1.0:**
 ```yaml
 globals:
   fruit: apples
