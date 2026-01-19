@@ -90,7 +90,7 @@ user_prompt: |
 
 ### 4. Environment Variables
 
-**Version 1:**
+**Version 0.0.x:**
 ```yaml
 env:
   DATABASE: "{{ env DATABASE_URL }}"
