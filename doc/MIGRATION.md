@@ -48,7 +48,7 @@ taskflow:
 
 ### 2. Input Variables
 
-**Version 1:**
+**Version 0.0.x:**
 ```yaml
 user_prompt: |
   Color: {{ INPUTS_color }}
