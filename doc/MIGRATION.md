@@ -82,7 +82,7 @@ user_prompt: |
   Function {{ RESULT_name }} has body {{ RESULT_body }}
 ```
 
-**Version 2:**
+**Version 0.1.0:**
 ```yaml
 user_prompt: |
   Function {{ result.name }} has body {{ result.body }}
