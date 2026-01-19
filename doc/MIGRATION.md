@@ -54,7 +54,7 @@ user_prompt: |
   Color: {{ INPUTS_color }}
 ```
 
-**Version 2:**
+**Version 0.1.0:**
 ```yaml
 user_prompt: |
   Color: {{ inputs.color }}
