@@ -110,7 +110,7 @@ env:
 
 ### 5. Reusable Prompts
 
-**Version 1:**
+**Version 0.0.x:**
 ```yaml
 user_prompt: |
   Main task.
