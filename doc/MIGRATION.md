@@ -1,6 +1,6 @@
 # Jinja2 Templating Migration Guide
 
-This guide explains how to migrate taskflow YAML files from version 1 (custom template syntax) to version 2 (Jinja2 templating).
+This guide explains how to migrate taskflow YAML files from version 0.0.x (custom template syntax) to version 0.1.0 (Jinja2 templating).
 
 ## Overview
 
