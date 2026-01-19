@@ -250,7 +250,7 @@ Version 2 (Jinja2) is required.
 Migrate using: python scripts/migrate_to_jinja2.py <file>
 ```
 
-All v1 files must be migrated to v2 before use.
+All v0.0.x files must be migrated to v0.1.0 before use.
 
 ## Additional Resources
 
