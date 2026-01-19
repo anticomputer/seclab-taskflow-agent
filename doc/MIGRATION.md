@@ -62,7 +62,7 @@ user_prompt: |
 
 ### 3. Result Variables
 
-**Version 1 (primitives):**
+**Version 0.0.x (primitives):**
 ```yaml
 repeat_prompt: true
 user_prompt: |
