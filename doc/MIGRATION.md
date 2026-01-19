@@ -242,7 +242,7 @@ python -m seclab_taskflow_agent -t your.taskflow.name -g key=value
 
 ## Backwards Compatibility
 
-Version 1 syntax is no longer supported. Attempting to load a v1 file will fail with:
+Version 0.0.x syntax is no longer supported. Attempting to load a v0.1.0 file will fail with:
 
 ```
 VersionException: YAML file uses unsupported version 1 template syntax.
