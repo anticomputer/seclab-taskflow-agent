@@ -76,7 +76,7 @@ user_prompt: |
   Process {{ result }}
 ```
 
-**Version 1 (dictionary keys):**
+**Version 0.0.x (dictionary keys):**
 ```yaml
 user_prompt: |
   Function {{ RESULT_name }} has body {{ RESULT_body }}
