@@ -69,7 +69,7 @@ user_prompt: |
   Process {{ RESULT }}
 ```
 
-**Version 2:**
+**Version 0.1.0:**
 ```yaml
 repeat_prompt: true
 user_prompt: |
