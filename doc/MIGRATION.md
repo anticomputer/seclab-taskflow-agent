@@ -4,7 +4,7 @@ This guide explains how to migrate taskflow YAML files from version 0.0.x (custo
 
 ## Overview
 
-Version 2 replaces the custom regex-based template processing with Jinja2, providing:
+Version 0.1.0 replaces the custom regex-based template processing with Jinja2, providing:
 - More powerful templating features (filters, conditionals, loops)
 - Better error messages with clear variable undefined errors
 - Industry-standard syntax familiar to many developers
