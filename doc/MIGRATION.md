@@ -1,20 +1,21 @@
 # Jinja2 Templating Migration Guide
 
-This guide explains how to migrate taskflow YAML files from version 0.0.x (custom template syntax) to version 0.1.0 (Jinja2 templating).
+This guide explains how to migrate taskflow YAML files from the old custom template syntax to Jinja2 templating with version `"1.0"` format.
 
 ## Overview
 
-Version 0.1.0 replaces the custom regex-based template processing with Jinja2, providing:
+The new version replaces the custom regex-based template processing with Jinja2, providing:
 - More powerful templating features (filters, conditionals, loops)
 - Better error messages with clear variable undefined errors
 - Industry-standard syntax familiar to many developers
 - Extensibility for future template features
+- String-based version format (e.g., `"1.0"`) for semantic versioning support
 
 ## Syntax Changes
 
 ### 1. Global Variables
 
-**Version 0.0.x:**
+**Old syntax:**
 ```yaml
 globals:
   fruit: apples
@@ -24,7 +25,7 @@ taskflow:
         Tell me about {{ GLOBALS_fruit }}.
 ```
 
-**Version 0.1.0:**
+**New syntax:**
 ```yaml
 globals:
   fruit: apples
@@ -48,13 +49,13 @@ taskflow:
 
 ### 2. Input Variables
 
-**Version 0.0.x:**
+**Old syntax:**
 ```yaml
 user_prompt: |
   Color: {{ INPUTS_color }}
 ```
 
-**Version 0.1.0:**
+**New syntax:**
 ```yaml
 user_prompt: |
   Color: {{ inputs.color }}
@@ -62,27 +63,27 @@ user_prompt: |
 
 ### 3. Result Variables
 
-**Version 0.0.x (primitives):**
+**Old syntax (primitives):**
 ```yaml
 repeat_prompt: true
 user_prompt: |
   Process {{ RESULT }}
 ```
 
-**Version 0.1.0:**
+**New syntax:**
 ```yaml
 repeat_prompt: true
 user_prompt: |
   Process {{ result }}
 ```
 
-**Version 0.0.x (dictionary keys):**
+**Old syntax (dictionary keys):**
 ```yaml
 user_prompt: |
   Function {{ RESULT_name }} has body {{ RESULT_body }}
 ```
 
-**Version 0.1.0:**
+**New syntax:**
 ```yaml
 user_prompt: |
   Function {{ result.name }} has body {{ result.body }}
@@ -90,13 +91,13 @@ user_prompt: |
 
 ### 4. Environment Variables
 
-**Version 0.0.x:**
+**Old syntax:**
 ```yaml
 env:
   DATABASE: "{{ env DATABASE_URL }}"
 ```
 
-**Version 0.1.0:**
+**New syntax:**
 ```yaml
 env:
   DATABASE: "{{ env('DATABASE_URL') }}"
@@ -110,14 +111,14 @@ env:
 
 ### 5. Reusable Prompts
 
-**Version 0.0.x:**
+**Old syntax:**
 ```yaml
 user_prompt: |
   Main task.
   {{ PROMPTS_examples.prompts.shared }}
 ```
 
-**Version 0.1.0:**
+**New syntax:**
 ```yaml
 user_prompt: |
   Main task.
@@ -195,7 +196,7 @@ python scripts/migrate_to_jinja2.py myflow.yaml
 
 ## Manual Migration Checklist
 
-1. Update YAML version from `1` to `2`
+1. Update YAML version to `"1.0"` (string format, e.g., `version: "1.0"`)
 2. Replace `{{ GLOBALS_` with `{{ globals.`
 3. Replace `{{ INPUTS_` with `{{ inputs.`
 4. Replace `{{ RESULT_` with `{{ result.`
@@ -242,15 +243,29 @@ python -m seclab_taskflow_agent -t your.taskflow.name -g key=value
 
 ## Backwards Compatibility
 
-Version 0.0.x syntax is no longer supported. Attempting to load a v0.1.0 file will fail with:
+### Version Format
+
+The system now uses string-based semantic versioning (e.g., `"1.0"`, `"1.1"`). For backwards compatibility:
+
+- Integer `version: 1` is automatically converted to `"1.0"`
+- Float `version: 1.2` is automatically converted to `"1.2"`
+- String versions like `version: "1.0"` are used as-is
+
+Only versions in the `1.x` series are supported. Any version that doesn't convert to `"1.x"` format will be rejected:
 
 ```
-VersionException: YAML file uses unsupported version 1 template syntax.
-Version 2 (Jinja2) is required.
-Migrate using: python scripts/migrate_to_jinja2.py <file>
+VersionException: Unsupported version: <version>. Only version 1.x is supported.
 ```
 
-All v0.0.x files must be migrated to v0.1.0 before use.
+### Template Syntax
+
+The old custom template syntax (e.g., `{{ GLOBALS_key }}`, `{{ INPUTS_key }}`) is **no longer supported**. All files using the old syntax must be migrated to Jinja2 syntax using the migration script:
+
+```bash
+python scripts/migrate_to_jinja2.py <file>
+```
+
+The migration script will also update your version format to the string-based `"1.0"` format.
 
 ## Additional Resources
 
