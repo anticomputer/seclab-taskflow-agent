@@ -2,12 +2,13 @@
 # SPDX-License-Identifier: MIT
 
 # CAPI specific interactions
-import httpx
 import json
 import logging
 import os
-from strenum import StrEnum
 from urllib.parse import urlparse
+
+import httpx
+from strenum import StrEnum
 
 
 # Enumeration of currently supported API endpoints.
@@ -96,11 +97,11 @@ def list_capi_models(token: str) -> dict[str, dict]:
         for model in models_list:
             models[model.get("id")] = dict(model)
     except httpx.RequestError as e:
-        logging.error(f"Request error: {e}")
+        logging.exception(f"Request error: {e}")
     except json.JSONDecodeError as e:
-        logging.error(f"JSON error: {e}")
+        logging.exception(f"JSON error: {e}")
     except httpx.HTTPStatusError as e:
-        logging.error(f"HTTP error: {e}")
+        logging.exception(f"HTTP error: {e}")
     return models
 
 

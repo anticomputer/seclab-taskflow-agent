@@ -1,15 +1,16 @@
 # SPDX-FileCopyrightText: 2025 GitHub
 # SPDX-License-Identifier: MIT
 
+import json
 import os
 from pathlib import Path
+from typing import Any
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from typing import Any
-import json
 
-from .sql_models import KeyValue, Base
 from .backend import Backend
+from .sql_models import Base, KeyValue
 
 
 class SqliteBackend(Backend):
@@ -45,7 +46,7 @@ class SqliteBackend(Backend):
             for r in results[1:]:
                 existing.append(r)
             return existing
-        elif hasattr(existing, "__add__"):
+        if hasattr(existing, "__add__"):
             try:
                 for r in results[1:]:
                     existing += r
@@ -78,8 +79,7 @@ class SqliteBackend(Backend):
             session.commit()
         if result:
             return f"Deleted key `{key}` from memory cache."
-        else:
-            return f"Key `{key}` not found in memory cache."
+        return f"Key `{key}` not found in memory cache."
 
     def clear_cache(self) -> str:
         with Session(self.engine) as session:
