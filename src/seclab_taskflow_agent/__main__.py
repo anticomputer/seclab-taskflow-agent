@@ -259,9 +259,9 @@ async def deploy_task_agents(
                 finally:
                     mcp_servers.remove(s)
         except RuntimeError as e:
-            logging.exception(f"RuntimeError in mcp session task: {e}")
+            logging.exception("RuntimeError in mcp session task")
         except asyncio.CancelledError as e:
-            logging.exception(f"Timeout on main session task: {e}")
+            logging.exception("Timeout on main session task")
         finally:
             mcp_servers.clear()
 
@@ -371,13 +371,13 @@ async def deploy_task_agents(
             logging.exception(f"Exceeded max_turns: {max_turns}")
         except AgentsException as e:
             await render_model_output(f"** 🤖❗ Agent Exception: {e}\n", async_task=async_task, task_id=task_id)
-            logging.exception(f"Agent Exception: {e}")
+            logging.exception("Agent Exception")
         except BadRequestError as e:
             await render_model_output(f"** 🤖❗ Request Error: {e}\n", async_task=async_task, task_id=task_id)
-            logging.exception(f"Bad Request: {e}")
+            logging.exception("Bad Request")
         except APITimeoutError as e:
             await render_model_output(f"** 🤖❗ Timeout Error: {e}\n", async_task=async_task, task_id=task_id)
-            logging.exception(f"Bad Request: {e}")
+            logging.exception("Bad Request")
 
         if async_task:
             await flush_async_output(task_id)
@@ -395,7 +395,7 @@ async def deploy_task_agents(
             except asyncio.TimeoutError:
                 continue
             except Exception as e:
-                logging.exception(f"Exception in mcp server cleanup task: {e}")
+                logging.exception("Exception in mcp server cleanup task")
 
 
 async def main(available_tools: AvailableTools, p: str | None, t: str | None, cli_globals: dict, prompt: str | None):
@@ -585,7 +585,7 @@ async def main(available_tools: AvailableTools, p: str | None, t: str | None, cl
                             return True
                         except RuntimeError as e:
                             await render_model_output(f"** 🤖❗ Shell Task Exception: {e}\n")
-                            logging.exception(f"Shell task error: {e}")
+                            logging.exception("Shell task error")
                             return False
 
                     tasks = []
