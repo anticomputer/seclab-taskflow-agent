@@ -22,7 +22,7 @@ The Seclab Taskflow Agent framework was primarily designed to fit the iterative 
 
 Its design philosophy is centered around the belief that a prompt level focus of capturing vulnerability patterns will greatly improve and scale security research results as frontier model capabilities evolve over time.
 
-While the maintainers themselves primarily use this framework as a code auditing tool it also serves as a more generic swiss army knife for exploring Agentic workflows. For example, the GitHub Security Lab also uses this framework for automated code scanning alert triage.
+At GitHub Security Lab, we primarily use this framework as a code auditing tool, but it can also serve as a more generic swiss army knife for exploring Agentic workflows. For example, we also use this framework for automated code scanning alert triage.
 
 The framework includes a [CodeQL](https://codeql.github.com/) MCP server that can be used for Agentic code review, see the [CVE-2023-2283](examples/taskflows/CVE-2023-2283.yaml) taskflow for an example of how to have an Agent review C code using a CodeQL database ([demo video](https://www.youtube.com/watch?v=eRSPSVW8RMo)).
 
