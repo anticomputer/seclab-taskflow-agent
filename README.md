@@ -30,7 +30,7 @@ Instead of generating CodeQL queries itself, the CodeQL MCP Server is used to pr
 
 ## Requirements
 
-Python >= 3.9 or Docker
+Python >= 3.10 or Docker
 
 ## Configuration
 
