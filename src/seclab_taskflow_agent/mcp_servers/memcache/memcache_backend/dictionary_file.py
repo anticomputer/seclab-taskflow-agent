@@ -1,10 +1,11 @@
 # SPDX-FileCopyrightText: 2025 GitHub
 # SPDX-License-Identifier: MIT
 
-from .backend import Backend
 import json
 from pathlib import Path
 from typing import Any
+
+from .backend import Backend
 
 
 class MemcacheDictionaryFileBackend(Backend):
@@ -32,7 +33,7 @@ class MemcacheDictionaryFileBackend(Backend):
 
     def _inflate_memory(self):
         self._ensure_memory()
-        with open(self.memory, "r") as memory:
+        with open(self.memory) as memory:
             self.memcache = json.loads(memory.read())
 
     def with_memory(self, f):
@@ -68,8 +69,7 @@ class MemcacheDictionaryFileBackend(Backend):
             if key in self.memcache:
                 del self.memcache[key]
                 return f"Deleted key `{key}` from memory cache."
-            else:
-                return f"Key `{key}` not found in memory cache."
+            return f"Key `{key}` not found in memory cache."
 
         return _delete_state(key)
 
@@ -87,11 +87,10 @@ class MemcacheDictionaryFileBackend(Backend):
             if type(existing) == type(value) and hasattr(existing, "__add__"):
                 self.memcache[key] = existing + value
                 return f"Updated and added to value in memory for key: `{key}`"
-            elif type(existing) == list:
+            if type(existing) == list:
                 self.memcache[key].append(value)
                 return f"Updated and added to value in memory for key: `{key}`"
-            else:
-                return f"Error: unsupported types for memcache add `{type(existing)} + {type(value)}` for key `{key}`"
+            return f"Error: unsupported types for memcache add `{type(existing)} + {type(value)}` for key `{key}`"
 
         return _add_state(key, value)
 

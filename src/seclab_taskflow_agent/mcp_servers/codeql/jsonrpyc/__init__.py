@@ -1,35 +1,32 @@
-# coding: utf-8
 
 from __future__ import annotations
 
 __all__: list[str] = []
 
-import os
-import sys
-import json
 import io
-import time
-import threading
+import json
+import os
 import re
-from typing import Any, Callable, Type, Protocol, Optional
-
-from typing_extensions import TypeAlias
+import sys
+import threading
+import time
+from collections.abc import Callable
+from typing import Any, Optional, Protocol, Type, TypeAlias
 
 # package infos
 from .__meta__ import (  # noqa
-    __doc__,
     __author__,
-    __email__,
+    __contact__,
     __copyright__,
     __credits__,
-    __contact__,
+    __doc__,
+    __email__,
     __license__,
     __status__,
     __version__,
 )
 
-
-Callback: TypeAlias = Callable[[Optional[Exception], Optional[Any]], None]
+Callback: TypeAlias = Callable[[Exception | None, Any | None], None]
 
 
 class InputStream(Protocol):
@@ -60,7 +57,7 @@ class OutputStream(Protocol):
     def flush(self) -> None: ...
 
 
-class Spec(object):
+class Spec:
     """
     This class wraps methods that create JSON-RPC 2.0 compatible string representations of
     request, response and error objects. All methods are class members, so you might never want to
@@ -246,7 +243,7 @@ class Spec(object):
         return err
 
 
-class RPC(object):
+class RPC:
     """
     The main class of *jsonrpyc*. Instances of this class wrap an input stream *stdin* and an output
     stream *stdout* in order to communicate with other services. A service is not even forced to be
@@ -351,13 +348,13 @@ class RPC(object):
         if stdin is None:
             stdin = sys.stdin
         self.original_stdin = stdin
-        self.stdin = io.open(stdin.fileno(), "rb")
+        self.stdin = open(stdin.fileno(), "rb")
 
         # open output stream
         if stdout is None:
             stdout = sys.stdout
         self.original_stdout = stdout
-        self.stdout = io.open(stdout.fileno(), "wb")
+        self.stdout = open(stdout.fileno(), "wb")
 
         # other attributes
         self._i = -1
@@ -394,7 +391,7 @@ class RPC(object):
         *,
         callback: Callback | None = None,
         block: int = 0,
-        timeout: float | int = 0,
+        timeout: float = 0,
         params: dict | None = None,
     ) -> int:
         """
@@ -667,7 +664,7 @@ class Watchdog(threading.Thread):
         self,
         rpc: RPC,
         name: str = "watchdog",
-        interval: float | int = 0.1,
+        interval: float = 0.1,
         daemon: bool = False,
         start: bool = True,
     ) -> None:
@@ -729,12 +726,12 @@ class Watchdog(threading.Thread):
                 break
 
             # Keep linter happy
-            if self.rpc.original_stdin and self.rpc.original_stdin.closed:  # type: ignore[attr-defined] # noqa
+            if self.rpc.original_stdin and self.rpc.original_stdin.closed:  # type: ignore[attr-defined]
                 break
 
             try:
                 line = self.rpc.stdin.readline()
-            except IOError:
+            except OSError:
                 line = None
 
             if line:
@@ -821,11 +818,11 @@ class RPCError(Exception):
         return self.message
 
 
-error_map_code: dict[int, Type[RPCError]] = {}
-error_map_code_range: dict[tuple[int, int], Type[RPCError]] = {}
+error_map_code: dict[int, type[RPCError]] = {}
+error_map_code_range: dict[tuple[int, int], type[RPCError]] = {}
 
 
-def register_error(cls: Type[RPCError]) -> Type[RPCError]:
+def register_error(cls: type[RPCError]) -> type[RPCError]:
     """
     Decorator that registers a new RPC error derived from :py:class:`RPCError`. The purpose of
     error registration is to have a mapping of error codes/code ranges to error classes for faster
@@ -855,7 +852,7 @@ def register_error(cls: Type[RPCError]) -> Type[RPCError]:
     return cls
 
 
-def get_error(code: int) -> Type[RPCError]:
+def get_error(code: int) -> type[RPCError]:
     """
     Returns the RPC error class that was previously registered to *code*. A ``ValueError`` is raised
     if no error class was found for *code*.

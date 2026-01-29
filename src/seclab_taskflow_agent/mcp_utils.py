@@ -1,25 +1,24 @@
 # SPDX-FileCopyrightText: 2025 GitHub
 # SPDX-License-Identifier: MIT
 
-import logging
 import asyncio
-from threading import Thread, Event
-import json
-import subprocess
-from typing import Optional, Callable
-import shutil
-import time
-import os
-import socket
-import signal
 import hashlib
+import json
+import logging
+import os
+import shutil
+import socket
+import subprocess
+import time
+from collections.abc import Callable
+from threading import Event, Thread
 from urllib.parse import urlparse
 
-from mcp.types import CallToolResult, TextContent
 from agents.mcp import MCPServerStdio
+from mcp.types import CallToolResult, TextContent
 
+from .available_tools import AvailableTools, AvailableToolType
 from .env_utils import swap_env
-from .available_tools import AvailableToolType, AvailableTools
 
 DEFAULT_MCP_CLIENT_SESSION_TIMEOUT = 120
 
@@ -42,10 +41,10 @@ class StreamableMCPThread(Thread):
         self,
         cmd,
         url: str = "",
-        on_output: Optional[Callable[[str], None]] = None,
-        on_error: Optional[Callable[[str], None]] = None,
+        on_output: Callable[[str], None] | None = None,
+        on_error: Callable[[str], None] | None = None,
         poll_interval: float = 0.5,
-        env: Optional[dict[str, str]] = None,
+        env: dict[str, str] | None = None,
     ):
         super().__init__(daemon=True)
         self.url = url
@@ -58,7 +57,7 @@ class StreamableMCPThread(Thread):
         self._stop_event = Event()
         self.process = None
         self.exit_code = None
-        self.exception: Optional[BaseException] = None
+        self.exception: BaseException | None = None
 
     async def async_wait_for_connection(self, timeout=30.0, poll_interval=0.5):
         parsed = urlparse(self.url)
@@ -145,7 +144,7 @@ class StreamableMCPThread(Thread):
     def is_running(self):
         return self.process and self.process.poll() is None
 
-    def join_and_raise(self, timeout: Optional[float] = None):
+    def join_and_raise(self, timeout: float | None = None):
         self.join(timeout)
         if self.is_alive():
             raise RuntimeError("Process thread did not exit within timeout.")
@@ -264,7 +263,7 @@ class MCPNamespaceWrap:
             )
             if yn in ["yes", "y"]:
                 return True
-            elif yn in ["no", "n"]:
+            if yn in ["no", "n"]:
                 return False
 
     async def call_tool(self, *args, **kwargs):
@@ -326,7 +325,7 @@ def mcp_client_params(available_tools: AvailableTools, requested_toolboxes: list
                     for k, v in dict(optional_headers).items():
                         try:
                             optional_headers[k] = swap_env(v)
-                        except LookupError as e:
+                        except LookupError:
                             del optional_headers[k]
                 if isinstance(headers, dict):
                     if isinstance(optional_headers, dict):
@@ -354,7 +353,7 @@ def mcp_client_params(available_tools: AvailableTools, requested_toolboxes: list
                     for k, v in dict(optional_headers).items():
                         try:
                             optional_headers[k] = swap_env(v)
-                        except LookupError as e:
+                        except LookupError:
                             del optional_headers[k]
                 if isinstance(headers, dict):
                     if isinstance(optional_headers, dict):
@@ -411,9 +410,9 @@ def mcp_system_prompt(
     server_prompts: list[str] = [],
 ):
     """Return a well constructed system prompt"""
-    prompt = """
+    prompt = f"""
 {system_prompt}
-""".format(system_prompt=system_prompt)
+"""
 
     if tools:
         prompt += """
@@ -457,12 +456,12 @@ def mcp_system_prompt(
 """.format(server_prompts="\n\n".join(server_prompts))
 
     if task:
-        prompt += """
+        prompt += f"""
 
 # Primary Task to Complete
 
 {task}
 
-""".format(task=task)
+"""
 
     return prompt

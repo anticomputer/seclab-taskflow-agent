@@ -6,6 +6,7 @@ Test CLI global variable parsing.
 """
 
 import pytest
+
 from seclab_taskflow_agent.available_tools import AvailableTools
 
 
