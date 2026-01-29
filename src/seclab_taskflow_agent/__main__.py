@@ -27,6 +27,7 @@ from openai.types.responses import ResponseTextDeltaEvent
 
 from .agent import DEFAULT_MODEL, TaskAgent, TaskAgentHooks, TaskRunHooks
 from .available_tools import AvailableTools
+from .banner import get_banner
 from .capi import get_AI_token, list_tool_call_models
 from .env_utils import TmpEnv
 from .mcp_utils import (
@@ -677,4 +678,5 @@ if __name__ == "__main__":
         print(help_msg)
         sys.exit(1)
 
+    print(get_banner()) # print banner only before starting main event loop
     asyncio.run(main(available_tools, p, t, cli_globals, user_prompt), debug=True)
