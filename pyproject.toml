@@ -168,7 +168,6 @@ ignore = [
   "E741",     # Ambiguous variable name
   "EM101",    # Exception string literal
   "EM102",    # Exception f-string
-  "F401",     # Unused import
   "F541",     # f-string without placeholders
   "F811",     # Redefinition of unused name
   "F821",     # Undefined name
