@@ -25,6 +25,8 @@ from dotenv import find_dotenv, load_dotenv
 from openai import APITimeoutError, BadRequestError, RateLimitError
 from openai.types.responses import ResponseTextDeltaEvent
 
+from seclab_taskflow_agent.banner import get_banner
+
 from .agent import DEFAULT_MODEL, TaskAgent, TaskAgentHooks, TaskRunHooks
 from .available_tools import AvailableTools
 from .capi import get_AI_token, list_tool_call_models
@@ -677,4 +679,5 @@ if __name__ == "__main__":
         print(help_msg)
         sys.exit(1)
 
+    print(get_banner()) # print banner only before starting main event loop
     asyncio.run(main(available_tools, p, t, cli_globals, user_prompt), debug=True)
