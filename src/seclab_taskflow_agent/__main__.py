@@ -27,6 +27,7 @@ from openai.types.responses import ResponseTextDeltaEvent
 
 from .agent import DEFAULT_MODEL, TaskAgent, TaskAgentHooks, TaskRunHooks
 from .available_tools import AvailableTools
+from .banner import get_banner
 from .capi import get_AI_token, list_tool_call_models
 from .env_utils import TmpEnv
 from .mcp_utils import (
@@ -82,9 +83,8 @@ def parse_prompt_args(available_tools: AvailableTools, user_prompt: str | None =
     # parser.add_argument('remainder', nargs=argparse.REMAINDER, help="Remaining args")
     help_msg = parser.format_help()
     help_msg += "\nExamples:\n\n"
-    help_msg += "`-p assistant explain modems to me please`\n"
-    help_msg += "`-t example -g fruit=apples`\n"
-    help_msg += "`-t example -g fruit=apples -g color=red`\n"
+    help_msg += "`-p seclab_taskflow_agent.personalities.assistant explain modems to me please`\n"
+    help_msg += "`-t examples.taskflows.example_globals -g fruit=apples`\n"
     try:
         args = parser.parse_known_args(user_prompt.split(" ") if user_prompt else None)
     except SystemExit as e:
@@ -677,4 +677,5 @@ if __name__ == "__main__":
         print(help_msg)
         sys.exit(1)
 
+    print(get_banner()) # print banner only before starting main event loop
     asyncio.run(main(available_tools, p, t, cli_globals, user_prompt), debug=True)
