@@ -1,9 +1,9 @@
 # SPDX-FileCopyrightText: 2025 GitHub
 # SPDX-License-Identifier: MIT
 
-from enum import Enum
-import logging
 import importlib.resources
+from enum import Enum
+
 import yaml
 
 
