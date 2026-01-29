@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 GitHub
+# SPDX-License-Identifier: MIT
+
 from seclab_taskflow_agent.capi import get_AI_endpoint
 
 def get_banner():
