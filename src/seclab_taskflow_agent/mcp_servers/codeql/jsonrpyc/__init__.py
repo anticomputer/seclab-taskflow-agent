@@ -3,7 +3,6 @@ from __future__ import annotations
 
 __all__: list[str] = []
 
-import io
 import json
 import os
 import re
@@ -11,7 +10,7 @@ import sys
 import threading
 import time
 from collections.abc import Callable
-from typing import Any, Optional, Protocol, Type, TypeAlias
+from typing import Any, Protocol, TypeAlias
 
 # package infos
 from .__meta__ import (  # noqa
