@@ -90,10 +90,10 @@ class AvailableTools:
                     # Already a string, use as-is
                     version_str = str(version)
 
-                # Validate version is 1.x series
-                if not version_str.startswith("1."):
+                # Validate version is 1.0
+                if version_str != "1.0":
                     raise VersionException(
-                        f"Unsupported version: {version}. Only version 1.x is supported."
+                        f"Unsupported version: {version}. Only version 1.0 is supported."
                     )
                 filetype = header['filetype'] 
                 if filetype != tooltype.value:
