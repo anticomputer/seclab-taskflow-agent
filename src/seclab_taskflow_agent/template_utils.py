@@ -32,6 +32,7 @@ class PromptLoader(jinja2.BaseLoader):
         Raises:
             jinja2.TemplateNotFound: If prompt not found
         """
+        del environment # unused arg
         try:
             prompt_data = self.available_tools.get_prompt(template)
             if not prompt_data:
