@@ -90,7 +90,7 @@ class TemplateMigrator:
         Returns:
             True if file was modified, False otherwise
         """
-        if not file_path.suffix == '.yaml':
+        if file_path.suffix != '.yaml':
             print(f"Skipping non-YAML file: {file_path}")
             return False
 
@@ -127,7 +127,7 @@ class TemplateMigrator:
         orig_lines = original.splitlines()
         mig_lines = migrated.splitlines()
 
-        for i, (orig, mig) in enumerate(zip(orig_lines, mig_lines), 1):
+        for i, (orig, mig) in enumerate(zip(orig_lines, mig_lines, strict=False), 1):
             if orig != mig:
                 print(f"Line {i}:")
                 print(f"  - {orig}")
