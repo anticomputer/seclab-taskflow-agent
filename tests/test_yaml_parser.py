@@ -8,7 +8,9 @@ Simple parsing + parsing of example taskflows.
 """
 
 import pytest
+
 from seclab_taskflow_agent.available_tools import AvailableTools
+
 
 class TestYamlParser:
     """Test suite for YamlParser class."""
@@ -53,12 +55,12 @@ class TestRealTaskflowFiles:
         available_tools = AvailableTools()
 
         # check that example.yaml is parsed correctly
-        example_task_flow = available_tools.get_taskflow(
-            "examples.taskflows.example")
-        assert 'taskflow' in example_task_flow
-        assert isinstance(example_task_flow['taskflow'], list)
-        assert len(example_task_flow['taskflow']) == 4  # 4 tasks in taskflow
-        assert example_task_flow['taskflow'][0]['task']['max_steps'] == 20
+        example_task_flow = available_tools.get_taskflow("examples.taskflows.example")
+        assert "taskflow" in example_task_flow
+        assert isinstance(example_task_flow["taskflow"], list)
+        assert len(example_task_flow["taskflow"]) == 4  # 4 tasks in taskflow
+        assert example_task_flow["taskflow"][0]["task"]["max_steps"] == 20
 
-if __name__ == '__main__':
-    pytest.main([__file__, '-v'])
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

@@ -3,6 +3,8 @@
 
 import os
 import jinja2
+import re
+
 
 
 def swap_env(s: str) -> str:
@@ -36,6 +38,7 @@ def swap_env(s: str) -> str:
     except jinja2.TemplateError:
         # Not a template or failed to render, return as-is
         return s
+
 
 class TmpEnv:
     def __init__(self, env):
