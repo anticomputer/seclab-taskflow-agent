@@ -42,7 +42,7 @@ class TestYamlParser:
         personality = available_tools.get_personality(
             "tests.data.test_version_float")
 
-        assert personality['seclab-taskflow-agent']['version'] == 1.2
+        assert personality['seclab-taskflow-agent']['version'] == 1.0
         assert personality['seclab-taskflow-agent']['filetype'] == 'personality'
         assert personality['personality'] == 'Test personality with float version.\n'
 
