@@ -8,7 +8,6 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 import pathlib
-import re
 import sys
 import uuid
 from collections.abc import Callable
