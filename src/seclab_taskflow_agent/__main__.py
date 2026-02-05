@@ -10,9 +10,7 @@ import os
 import pathlib
 import sys
 import uuid
-from collections.abc import Callable
 from logging.handlers import RotatingFileHandler
-from pprint import pformat
 
 from agents import Agent, RunContextWrapper, TContext, Tool
 from agents.agent import ModelSettings
