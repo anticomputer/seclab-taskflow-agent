@@ -1,10 +1,8 @@
-# Seclab Taskflow Agent
+# GitHub Security Lab Taskflow Agent
 
 The Security Lab Taskflow Agent is an MCP enabled multi-Agent framework.
 
 The Taskflow Agent is built on top of the [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/).
-
-While the Taskflow Agent does not integrate into the GitHub Dotcom Copilot UX, it does operate using the Copilot API (CAPI) as its backend, similar to Copilot IDE extensions.
 
 ## Core Concepts
 
@@ -16,7 +14,7 @@ Agents are defined through [personalities](examples/personalities/), that receiv
 
 Agents can cooperate to complete sequences of tasks through so-called [taskflows](doc/GRAMMAR.md).
 
-You can find a detailed overview of the taskflow grammar [here](taskflows/GRAMMAR.md) and example taskflows [here](examples/taskflows/).
+You can find a detailed overview of the taskflow grammar [here](doc/GRAMMAR.md) and example taskflows [here](examples/taskflows/).
 
 ## Use Cases and Examples
 
@@ -24,7 +22,7 @@ The Seclab Taskflow Agent framework was primarily designed to fit the iterative 
 
 Its design philosophy is centered around the belief that a prompt level focus of capturing vulnerability patterns will greatly improve and scale security research results as frontier model capabilities evolve over time.
 
-While the maintainer himself primarily uses this framework as a code auditing tool it also serves as a more generic swiss army knife for exploring Agentic workflows. For example, the GitHub Security Lab also uses this framework for automated code scanning alert triage.
+At GitHub Security Lab, we primarily use this framework as a code auditing tool, but it can also serve as a more generic swiss army knife for exploring Agentic workflows. For example, we also use this framework for automated code scanning alert triage.
 
 The framework includes a [CodeQL](https://codeql.github.com/) MCP server that can be used for Agentic code review, see the [CVE-2023-2283](examples/taskflows/CVE-2023-2283.yaml) taskflow for an example of how to have an Agent review C code using a CodeQL database ([demo video](https://www.youtube.com/watch?v=eRSPSVW8RMo)).
 
@@ -32,22 +30,32 @@ Instead of generating CodeQL queries itself, the CodeQL MCP Server is used to pr
 
 ## Requirements
 
-Python >= 3.9 or Docker
+Python >= 3.10 or Docker
 
 ## Configuration
 
-Provide a GitHub token for an account that is entitled to use [GitHub Models](https://models.github.ai) via the `AI_API_TOKEN` environment variable. Further configuration is use case dependent, i.e. pending which MCP servers you'd like to use in your taskflows.
+Provide a GitHub token for an account that is entitled to use [GitHub Models](https://models.github.ai) via the `AI_API_TOKEN` environment variable. Further configuration is use case dependent, i.e. pending which MCP servers you'd like to use in your taskflows. In a terminal, you can add `AI_API_TOKEN` to the environment like this:
 
-You can set persisting environment variables via an `.env` file in the project root.
+```sh
+export AI_API_TOKEN=<your_github_token>
+```
+
+Or, if you are using GitHub Codespaces, then you can [add a Codespace secret](https://github.com/settings/codespaces/secrets/new) so that `AI_API_TOKEN` is automatically available when working in a Codespace.
+
+Many of the MCP servers in the [seclab-taskflow](https://github.com/GitHubSecurityLab/seclab-taskflows) repo also need an environment variable named `GH_TOKEN` for accessing the GitHub API. You can use two separate PATs if you want, or you can use one PAT for both purposes, like this:
+
+```sh
+export GH_TOKEN=$AI_API_TOKEN
+```
+
+We do not recommend storing secrets on disk, but you can persist non-sensitive environment variables by adding a `.env` file in the project root.
 
 Example:
 
 ```sh
-# Tokens
-AI_API_TOKEN=<your_github_token>
 # MCP configs
-GITHUB_PERSONAL_ACCESS_TOKEN=<your_github_token>
 CODEQL_DBS_BASE_PATH="/app/my_data/codeql_databases"
+AI_API_ENDPOINT="https://models.github.ai/inference"
 ```
 
 ## Deploying from Source
@@ -318,7 +326,7 @@ seclab-taskflow-agent:
 
 taskflow:
   - task:
-      # taskflows can optionally choose any of the support CAPI models for a task
+      # taskflows can optionally choose any of the models supported by your API for a task
       model: gpt-4.1
       # taskflows can optionally limit the max allowed number of Agent task loop
       # iterations to complete a task, this defaults to 50 when not provided
@@ -384,7 +392,7 @@ taskflow:
 
 Taskflows support [Agent handoffs](https://openai.github.io/openai-agents-python/handoffs/). Handoffs are useful for implementing triage patterns where the primary Agent can decide to handoff a task to any subsequent Agents in the `Agents` list.
 
-See the [taskflow examples](taskflows/examples) for other useful Taskflow patterns such as repeatable and asynchronous templated prompts.
+See the [taskflow examples](examples/taskflows) for other useful Taskflow patterns such as repeatable and asynchronous templated prompts.
 
 
 You can run a taskflow from the command line like this:

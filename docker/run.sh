@@ -19,6 +19,6 @@ touch -a .env
 
 docker run -i \
        --mount type=bind,src="$PWD",dst=/app \
-       -e GITHUB_PERSONAL_ACCESS_TOKEN="$GITHUB_PERSONAL_ACCESS_TOKEN" \
+       -e GH_TOKEN="$GH_TOKEN" \
        -e AI_API_TOKEN="$AI_API_TOKEN" \
        "ghcr.io/githubsecuritylab/seclab-taskflow-agent" "$@"
