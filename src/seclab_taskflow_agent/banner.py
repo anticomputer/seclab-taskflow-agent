@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2026 GitHub
+# SPDX-FileCopyrightText: GitHub, Inc.
 # SPDX-License-Identifier: MIT
 
 from .capi import get_AI_endpoint
