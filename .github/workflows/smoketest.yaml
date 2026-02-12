@@ -30,26 +30,26 @@ jobs:
           update_branch: "disabled"
 
       - name: Setup Python
-        if: steps.branch-deploy.outputs.continue == "true"
+        if: steps.branch-deploy.outputs.continue == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Checkout the repo
-        if: steps.branch-deploy.outputs.continue == "true"
+        if: steps.branch-deploy.outputs.continue == 'true'
         uses: actions/checkout@v6
         with:
           ref: ${{ steps.branch-deploy.outputs.sha }}
 
       - name: Setup Python venv
-        if: steps.branch-deploy.outputs.continue == "true"
+        if: steps.branch-deploy.outputs.continue == 'true'
         run: |
           python -m venv .venv
           source .venv/bin/activate
           python -m pip install hatch
 
       - name: Run tests
-        if: steps.branch-deploy.outputs.continue == "true"
+        if: steps.branch-deploy.outputs.continue == 'true'
         env:
           MODEL_TEMP: ${{ vars.SMOKETEST_TEMPERATURE }}
           AI_API_ENDPOINT: ${{ vars.SMOKETEST_ENDPOINT }}
