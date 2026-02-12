@@ -14,15 +14,12 @@ permissions:
   statuses: read # Required for checking if all commit statuses are "success" in order to deploy the PR
 
 jobs:
-  permission-check:
+  Linux:
     runs-on: ubuntu-latest
     environment: smoketest
     if: github.event.issue.pull_request  # Make sure the comment is on a PR
-    outputs:
-      allowed: ${{ steps.branch-deploy.outputs.continue }}
-      sha: ${{ steps.branch-deploy.outputs.sha }}
     steps:
-      - name: branch-deploy
+      - name: Branch Deploy
         id: branch-deploy
         uses: github/branch-deploy@48285b12b35e47e2dde0c27d2abb33daa846d98b # v11.0.0
         with:
@@ -32,36 +29,27 @@ jobs:
           stable_branch: "main"
           update_branch: "disabled"
 
-  run-tests:
-    runs-on: ubuntu-latest
-    environment: smoketest
-    needs: permission-check
-    if: needs.permission-check.outputs.allowed == 'true'
-    steps:
       - name: Setup Python
+        if: steps.branch-deploy.outputs.continue == "true"
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
       - name: Checkout the repo
-        uses: actions/checkout@v5
-
-      - name: Checkout the PR
-        env:
-          PR_NUMBER: ${{ github.event.issue.number }}
-          REF: ${{ needs.permission-check.outputs.sha }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr checkout $PR_NUMBER
-          git checkout $REF
+        if: steps.branch-deploy.outputs.continue == "true"
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.branch-deploy.outputs.sha }}
 
       - name: Setup Python venv
+        if: steps.branch-deploy.outputs.continue == "true"
         run: |
           python -m venv .venv
           source .venv/bin/activate
           python -m pip install hatch
 
       - name: Run tests
+        if: steps.branch-deploy.outputs.continue == "true"
         env:
           MODEL_TEMP: ${{ vars.SMOKETEST_TEMPERATURE }}
           AI_API_ENDPOINT: ${{ vars.SMOKETEST_ENDPOINT }}
