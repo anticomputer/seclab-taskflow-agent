@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025 GitHub
+# SPDX-FileCopyrightText: GitHub, Inc.
 # SPDX-License-Identifier: MIT
 
 """Jinja2 template utilities for taskflow template rendering."""

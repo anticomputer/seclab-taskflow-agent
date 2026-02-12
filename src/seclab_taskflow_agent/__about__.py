@@ -1,3 +1,3 @@
-# SPDX-FileCopyrightText: 2025 GitHub
+# SPDX-FileCopyrightText: GitHub, Inc.
 # SPDX-License-Identifier: MIT
 __version__ = "0.1.0"
